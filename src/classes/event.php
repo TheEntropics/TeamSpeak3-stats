@@ -1,5 +1,5 @@
 <?php
 
-class Evento {
-    // TODO: implementare classe Evento
+class Event {
+    // TODO: implementare classe Event
 }
