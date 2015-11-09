@@ -4,6 +4,8 @@ Diagramma generale del funzionamento: [link](https://drive.google.com/file/d/0B8
 
 UML: [link](https://drive.google.com/file/d/0B8DkYHzJmFnnTEVaOVVTaHd3OE0/view?usp=sharing)
 
+E-R: [link](https://drive.google.com/file/d/0B8DkYHzJmFnnejBxZnE1UTRHQXM/view?usp=sharing)
+
 Log: [link](https://docs.google.com/document/d/1fjHg2-4pGGtqKoocNcY8gMemCrRdtWW4L4cduCT2BY8/edit?usp=sharing)
 
 Download logs: [serben.tk](https://edoardo.serben.tk/logs.zip)
