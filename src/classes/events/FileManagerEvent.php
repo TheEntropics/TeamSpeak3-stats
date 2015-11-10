@@ -8,5 +8,4 @@ class FileManagerEvent extends Event {
     public $type = EventType::FileManager;
 
     public $fileManagerType;
-    public $user_id;
 }

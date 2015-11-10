@@ -15,6 +15,7 @@ class Controller {
 
     private static function init() {
         Controller::initDB();
+        Controller::loadClasses();
     }
 
     private static function updateCache() {
@@ -23,6 +24,12 @@ class Controller {
 
     private static function runAnalysis() {
         MainAnalyzer::runAnalysis();
+    }
+
+
+    private static function loadClasses() {
+        Controller::loadFolder(__DIR__);
+        Controller::loadFolder(__DIR__ . '/events');
     }
 
     private static function loadFolder($folder) {
