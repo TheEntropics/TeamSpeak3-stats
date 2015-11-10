@@ -1,5 +1,7 @@
 <?php
 
 class Config {
-    const DB_STRING = "sqlite:/" . __DIR__ . "/../db/database.sqlite";
+    const DB_STRING = "mysql:host=localhost;dbname=ts3stats";
+    const USERNAME = "root";
+    const PASSWORD = "password";
 }

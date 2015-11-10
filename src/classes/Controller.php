@@ -1,8 +1,12 @@
 <?php
 
 require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/DB.php';
+require_once __DIR__ . '/CacheService.php';
+require_once __DIR__ . '/MainAnalyzer.php';
 
 class Controller {
+
     public static function run() {
         Controller::init();
         Controller::updateCache();
@@ -10,21 +14,15 @@ class Controller {
     }
 
     private static function init() {
-        // TODO caricare il database
-        Controller::loadFiles();
+        Controller::initDB();
     }
 
     private static function updateCache() {
-        // TODO aggiornare la cache con CacheService
+        CacheService::updateCache();
     }
 
     private static function runAnalysis() {
-        // TODO avviare l'analisi con MainAnalyzer
-    }
-
-    private static function loadFiles() {
-        Controller::loadFolder(__DIR__);
-        Controller::loadFolder(__DIR__ . '/events');
+        MainAnalyzer::runAnalysis();
     }
 
     private static function loadFolder($folder) {
@@ -35,6 +33,14 @@ class Controller {
                 Controller::loadFolder("$folder/$file");
             else
                 require_once "$folder/$file";
+        }
+    }
+
+    private static function initDB() {
+        try {
+            DB::$DB = new PDO(Config::DB_STRING, Config::USERNAME, Config::PASSWORD);
+        } catch (PDOException $ex) {
+            die("Error connecting to db");
         }
     }
 }
