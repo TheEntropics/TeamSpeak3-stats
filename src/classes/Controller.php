@@ -11,7 +11,7 @@ class Controller {
 
     private static function init() {
         // TODO caricare il database
-        // TODO caricare tutte le classi
+        Controller::loadFiles();
     }
 
     private static function updateCache() {
@@ -20,5 +20,21 @@ class Controller {
 
     private static function runAnalysis() {
         // TODO avviare l'analisi con MainAnalyzer
+    }
+
+    private static function loadFiles() {
+        Controller::loadFolder(__DIR__);
+        Controller::loadFolder(__DIR__ . '/events');
+    }
+
+    private static function loadFolder($folder) {
+        $d = scandir($folder);
+        foreach ($d as $file) {
+            if ($file == "." || $file == "..") continue;
+            if (is_dir("$folder/$file"))
+                Controller::loadFolder("$folder/$file");
+            else
+                require_once "$folder/$file";
+        }
     }
 }
