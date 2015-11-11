@@ -1,13 +1,15 @@
 <?php
 
+require_once __DIR__ . '/../../config/config.php';
 
 class FileReader {
     private $logFiles;
 
     public function __construct() {
         $this->logFiles = array();
-        foreach(Config::LOG_FOLDERS as $i){
-            loadFolder($i);
+
+        foreach(Config::LOG_FOLDERS as $i) {
+            $this->loadFolder($i);
         }
     }
 
