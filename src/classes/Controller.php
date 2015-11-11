@@ -14,6 +14,7 @@ class Controller {
     }
 
     private static function init() {
+        date_default_timezone_set("Europe/Rome");
         Controller::initDB();
         Controller::loadClasses();
     }

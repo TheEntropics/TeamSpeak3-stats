@@ -103,47 +103,47 @@ CREATE TABLE `users` (
 -- Indici per le tabelle `channel_events`
 --
 ALTER TABLE `channel_events`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `date` (`date`),
-  ADD KEY `user_id` (`user_id`);
+ADD PRIMARY KEY (`id`),
+ADD KEY `date` (`date`),
+ADD KEY `user_id` (`user_id`);
 
 --
 -- Indici per le tabelle `clients`
 --
 ALTER TABLE `clients`
-  ADD PRIMARY KEY (`id`);
+ADD PRIMARY KEY (`id`);
 
 --
 -- Indici per le tabelle `client_connected_events`
 --
 ALTER TABLE `client_connected_events`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `date` (`date`);
+ADD PRIMARY KEY (`id`),
+ADD KEY `user_id` (`user_id`),
+ADD KEY `date` (`date`);
 
 --
 -- Indici per le tabelle `client_disconnected_events`
 --
 ALTER TABLE `client_disconnected_events`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `date` (`date`),
-  ADD KEY `user_id` (`user_id`);
+ADD PRIMARY KEY (`id`),
+ADD KEY `date` (`date`),
+ADD KEY `user_id` (`user_id`);
 
 --
 -- Indici per le tabelle `file_manager_events`
 --
 ALTER TABLE `file_manager_events`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `date` (`date`);
+ADD PRIMARY KEY (`id`),
+ADD KEY `user_id` (`user_id`),
+ADD KEY `date` (`date`);
 
 --
 -- Indici per le tabelle `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `client_id` (`client_id`),
-  ADD KEY `username` (`username`);
+ADD PRIMARY KEY (`id`),
+ADD KEY `client_id` (`client_id`),
+ADD KEY `username` (`username`);
 
 --
 -- AUTO_INCREMENT per le tabelle scaricate
@@ -153,32 +153,32 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT per la tabella `channel_events`
 --
 ALTER TABLE `channel_events`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT per la tabella `clients`
 --
 ALTER TABLE `clients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT per la tabella `client_connected_events`
 --
 ALTER TABLE `client_connected_events`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT per la tabella `client_disconnected_events`
 --
 ALTER TABLE `client_disconnected_events`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT per la tabella `file_manager_events`
 --
 ALTER TABLE `file_manager_events`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT per la tabella `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
