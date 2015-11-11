@@ -22,4 +22,36 @@ class ChannelEvent extends Event {
             case "deleted": $this->channelType = ChannelEventType::ChannelDeletedEvent; break;
         }
     }
+
+    public function saveEvent() {
+        if ($this->id) $this->updateEvent();
+        else $this->createEvent();
+    }
+
+    private function updateEvent() {
+        $sql = "UPDATE channel_events SET date = :date, type = :type, name = :name, user_id = :user_id WHERE id = :id";
+        $query = DB::$DB->prepare($sql);
+
+        $query->bindParam("id", $this->id);
+        $query->bindParam("date", $this->date->format("Y-m-d H:i:s.u"));
+        $query->bindParam("type", $this->type);
+        $query->bindParam("name", $this->name);
+        $query->bindParam("user_id", $this->user_id);
+
+        $query->execute();
+    }
+
+    private function createEvent() {
+        $sql = "INSERT INTO channel_events (date, type, name, user_id)
+                VALUE (:date, :type, :name, :user_id)";
+        $query = DB::$DB->prepare($sql);
+
+        $query->bindParam("date", $this->date->format("Y-m-d H:i:s.u"));
+        $query->bindParam("type", $this->type);
+        $query->bindParam("name", $this->name);
+        $query->bindParam("user_id", $this->user_id);
+
+        $query->execute();
+        $this->id = DB::$DB->lastInsertId();
+    }
 }

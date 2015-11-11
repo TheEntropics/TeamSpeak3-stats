@@ -4,10 +4,10 @@
 class Parser {
 
     const Matchers = array(
-        "ClientConnectedEvent" => "/^([^|]*)\\|[^|]*\\|[^|]*\\|[^|]*\\| client connected '([^']+)'\\(id:(\\d+)\\) from ([\\d.]+):\\d+$/",
+        "ClientConnectedEvent" =>    "/^([^|]*)\\|[^|]*\\|[^|]*\\|[^|]*\\| client connected '([^']+)'\\(id:(\\d+)\\) from ([\\d.]+):\\d+$/",
         "ClientDisconnectedEvent" => "/^([^|]*)\\|[^|]*\\|[^|]*\\|[^|]*\\| client disconnected '([^']+)'\\(id:(\\d+)\\) reason '.*reasonmsg=(.+?)( bantime=(\\d+))?'$/",
-        "FileManagerEvent" => "/^([^|]*)\\|[^|]*\\|[^|]*\\|[^|]*\\| file (upload|download|deleted) .* by client '([^']+)'\\(id:(\\d+)\\)$/",
-        "ChannelEvent" => "/^([^|]*)\\|[^|]*\\|[^|]*\\|[^|]*\\| channel '([^']+)'\\(id:\\d+\\) (created|deleted)(?: as sub channel of '[^']+'\\(id:\\d+\\))? by '([^']+)'\\(id:(\\d+)\\)$/"
+        "FileManagerEvent" =>        "/^([^|]*)\\|[^|]*\\|[^|]*\\|[^|]*\\| file (upload|download|deleted) .* by client '([^']+)'\\(id:(\\d+)\\)$/",
+        "ChannelEvent" =>            "/^([^|]*)\\|[^|]*\\|[^|]*\\|[^|]*\\| channel '([^']+)'\\(id:\\d+\\) (created|deleted)(?: as sub channel of '[^']+'\\(id:\\d+\\))? by '([^']+)'\\(id:(\\d+)\\)$/"
     );
 
     public static function parseLine($line) {

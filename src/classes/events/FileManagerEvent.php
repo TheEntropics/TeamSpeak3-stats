@@ -21,4 +21,34 @@ class FileManagerEvent extends Event {
             case "deleted": $this->fileManagerType = FileManagerEventType::Delete; break;
         }
     }
+
+    public function saveEvent() {
+        if ($this->id) $this->updateEvent();
+        else $this->createEvent();
+    }
+
+    private function updateEvent() {
+        $sql = "UPDATE file_manager_events SET date = :date, type = :type, user_id = :user_id WHERE id = :id";
+        $query = DB::$DB->prepare($sql);
+
+        $query->bindParam("id", $this->id);
+        $query->bindParam("date", $this->date->format("Y-m-d H:i:s.u"));
+        $query->bindParam("type", $this->type);
+        $query->bindParam("user_id", $this->user_id);
+
+        $query->execute();
+    }
+
+    private function createEvent() {
+        $sql = "INSERT INTO file_manager_events (date, type, user_id)
+                VALUE (:date, :type, :user_id)";
+        $query = DB::$DB->prepare($sql);
+
+        $query->bindParam("date", $this->date->format("Y-m-d H:i:s.u"));
+        $query->bindParam("type", $this->type);
+        $query->bindParam("user_id", $this->user_id);
+
+        $query->execute();
+        $this->id = DB::$DB->lastInsertId();
+    }
 }
