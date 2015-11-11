@@ -15,7 +15,7 @@ class ClientDisconnectedEvent extends Event {
         $client_id = $matches[3];
         $this->user_id = User::findOrCreate($username, $client_id)->id;
         // ban time = $matches[6]
-        if (count($matches) > 5)
+        if (count($matches) == 4 || count($matches) > 5)
             $this->reason = "Ban";
         else
             $this->reason = $matches[4];

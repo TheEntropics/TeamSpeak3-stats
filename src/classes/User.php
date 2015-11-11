@@ -28,6 +28,20 @@ class User {
         return new User($result[0]['id'], $result[0]['username'], $result[0]['client_id']);
     }
 
+    public static function fromId($id) {
+        $sql = "SELECT * FROM users WHERE id = :id";
+
+        $query = DB::$DB->prepare($sql);
+        $query->bindParam('id', $id);
+
+        $query->execute();
+
+        $result = $query->fetchAll();
+        if (count($result) == 0) return null;
+
+        return new User($result[0]['id'], $result[0]['username'], $result[0]['client_id']);
+    }
+
     public static function findOrCreate($username, $client_id) {
         $user = User::fromUsername($username, $client_id);
         if ($user) return $user;
