@@ -13,7 +13,7 @@ class Controller {
         Controller::runAnalysis();
     }
 
-    private static function init() {
+    public static function init() {
         date_default_timezone_set("Europe/Rome");
         Controller::initDB();
         Controller::loadClasses();
