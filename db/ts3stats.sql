@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Creato il: Nov 10, 2015 alle 19:07
+-- Creato il: Nov 11, 2015 alle 19:39
 -- Versione del server: 10.0.22-MariaDB-log
 -- Versione PHP: 5.6.15
 
@@ -28,21 +28,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `channel_events` (
   `id` int(11) NOT NULL,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `type` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `user_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Struttura della tabella `clients`
---
-
-CREATE TABLE `clients` (
-  `id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ;
 
 -- --------------------------------------------------------
 
@@ -52,10 +39,8 @@ CREATE TABLE `clients` (
 
 CREATE TABLE `client_connected_events` (
   `id` int(11) NOT NULL,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `ip` varchar(15) NOT NULL,
-  `user_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ;
 
 -- --------------------------------------------------------
 
@@ -65,10 +50,8 @@ CREATE TABLE `client_connected_events` (
 
 CREATE TABLE `client_disconnected_events` (
   `id` int(11) NOT NULL,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `reason` varchar(200) NOT NULL,
-  `user_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ;
 
 -- --------------------------------------------------------
 
@@ -78,9 +61,18 @@ CREATE TABLE `client_disconnected_events` (
 
 CREATE TABLE `file_manager_events` (
   `id` int(11) NOT NULL,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `type` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL
+  `date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `uptime_results`
+--
+
+CREATE TABLE `uptime_results` (
+  `client_id` int(11) NOT NULL,
+  `uptime` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -100,48 +92,17 @@ CREATE TABLE `users` (
 --
 
 --
--- Indici per le tabelle `channel_events`
+-- Indici per le tabelle `uptime_results`
 --
-ALTER TABLE `channel_events`
-ADD PRIMARY KEY (`id`),
-ADD KEY `date` (`date`),
-ADD KEY `user_id` (`user_id`);
-
---
--- Indici per le tabelle `clients`
---
-ALTER TABLE `clients`
-ADD PRIMARY KEY (`id`);
-
---
--- Indici per le tabelle `client_connected_events`
---
-ALTER TABLE `client_connected_events`
-ADD PRIMARY KEY (`id`),
-ADD KEY `user_id` (`user_id`),
-ADD KEY `date` (`date`);
-
---
--- Indici per le tabelle `client_disconnected_events`
---
-ALTER TABLE `client_disconnected_events`
-ADD PRIMARY KEY (`id`),
-ADD KEY `date` (`date`),
-ADD KEY `user_id` (`user_id`);
-
---
--- Indici per le tabelle `file_manager_events`
---
-ALTER TABLE `file_manager_events`
-ADD PRIMARY KEY (`id`),
-ADD KEY `user_id` (`user_id`),
-ADD KEY `date` (`date`);
+ALTER TABLE `uptime_results`
+ADD PRIMARY KEY (`client_id`);
 
 --
 -- Indici per le tabelle `users`
 --
 ALTER TABLE `users`
 ADD PRIMARY KEY (`id`),
+ADD UNIQUE KEY `username_2` (`username`,`client_id`),
 ADD KEY `client_id` (`client_id`),
 ADD KEY `username` (`username`);
 
@@ -153,11 +114,6 @@ ADD KEY `username` (`username`);
 -- AUTO_INCREMENT per la tabella `channel_events`
 --
 ALTER TABLE `channel_events`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT per la tabella `clients`
---
-ALTER TABLE `clients`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT per la tabella `client_connected_events`
