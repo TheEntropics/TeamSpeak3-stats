@@ -20,7 +20,7 @@ class CacheService {
                 ) AS temp";
         $query = DB::$DB->query($sql)->fetchAll();
         if (count($query) == 0) return new DateTime("@0");
-        var_dump($query[0][0]);
+
         return new DateTime($query[0][0]);
     }
 
