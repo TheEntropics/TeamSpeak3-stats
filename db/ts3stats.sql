@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Creato il: Nov 11, 2015 alle 19:36
+-- Creato il: Nov 12, 2015 alle 16:35
 -- Versione del server: 10.0.22-MariaDB-log
 -- Versione PHP: 5.6.15
 
@@ -67,6 +67,28 @@ CREATE TABLE `file_manager_events` (
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `misc_results`
+--
+
+CREATE TABLE `misc_results` (
+  `key` varchar(50) NOT NULL,
+  `value` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `online_results`
+--
+
+CREATE TABLE `online_results` (
+  `num_users` int(11) NOT NULL,
+  `seconds` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `uptime_results`
 --
 
@@ -90,6 +112,18 @@ CREATE TABLE `users` (
 --
 -- Indici per le tabelle scaricate
 --
+
+--
+-- Indici per le tabelle `misc_results`
+--
+ALTER TABLE `misc_results`
+ADD PRIMARY KEY (`key`);
+
+--
+-- Indici per le tabelle `online_results`
+--
+ALTER TABLE `online_results`
+ADD PRIMARY KEY (`num_users`);
 
 --
 -- Indici per le tabelle `uptime_results`

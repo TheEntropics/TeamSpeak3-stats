@@ -1,11 +1,5 @@
 <?php
 
-class OnlineRangePriorityQueue extends SplPriorityQueue {
-    public function compare($p1, $p2) {
-        if ($p1 === $p2) return 0;
-        return ($p1 < $p2) ? 1 : -1;
-    }
-}
 
 class OnlineAnalyzer extends BaseAnalyzer {
 
@@ -19,14 +13,18 @@ class OnlineAnalyzer extends BaseAnalyzer {
         $maxOnline = 0;
         $maxOnlineTime = null;
 
+        $timeSlicer = new TimeSlicer();
+
         foreach ($ranges as $range) {
+            // disconnette gli utenti
             while ($queue->valid() && $queue->current()->end < $range->start) {
-                OnlineAnalyzer::addTimePerNumUser($onlineCount, $queue->current()->end);
+                $timeSlicer->addTimePerNumUser($onlineCount, $queue->current()->end);
                 $onlineCount--;
                 $queue->extract();
             }
 
-            OnlineAnalyzer::addTimePerNumUser($onlineCount, $range->start);
+            // connette l'utente dell'intervallo
+            $timeSlicer->addTimePerNumUser($onlineCount, $range->start);
             $queue->insert($range, $range->end);
             $onlineCount++;
 
@@ -35,21 +33,15 @@ class OnlineAnalyzer extends BaseAnalyzer {
                 $maxOnlineTime = $range->start;
             }
         }
+        // svuota la coda
+        while ($queue->valid()) {
+            $timeSlicer->addTimePerNumUser($onlineCount, $queue->current()->end);
+            $onlineCount--;
+            $queue->extract();
+        }
 
         OnlineAnalyzer::saveMaxPeak($maxOnline, $maxOnlineTime);
-        OnlineAnalyzer::saveTimePerNum();
-    }
-
-    private static $timePerNumUser = array();
-    private static $lastEventTime = null;
-
-    private static function addTimePerNumUser($numUser, $time) {
-        if (!isset(OnlineAnalyzer::$timePerNumUser[$numUser]))
-            OnlineAnalyzer::$timePerNumUser[$numUser] = 0;
-        if (OnlineAnalyzer::$lastEventTime == null)
-            OnlineAnalyzer::$lastEventTime = $time;
-        OnlineAnalyzer::$timePerNumUser[$numUser] += $time->getTimestamp() - OnlineAnalyzer::$lastEventTime->getTimestamp();
-        OnlineAnalyzer::$lastEventTime = $time;
+        OnlineAnalyzer::saveTimePerNum($timeSlicer->getTimePerNumUser());
     }
 
     private static function saveMaxPeak($count, $time) {
@@ -66,8 +58,8 @@ class OnlineAnalyzer extends BaseAnalyzer {
         $qry->execute();
     }
 
-    private static function saveTimePerNum() {
-        foreach (OnlineAnalyzer::$timePerNumUser as $num_users => $seconds) {
+    private static function saveTimePerNum($timePerNumUser) {
+        foreach ($timePerNumUser as $num_users => $seconds) {
             $sql = "INSERT INTO online_results (num_users, seconds) VALUES (:num_users, :seconds) ON DUPLICATE KEY UPDATE seconds = VALUES(seconds)";
             $query = DB::$DB->prepare($sql);
 
@@ -76,6 +68,5 @@ class OnlineAnalyzer extends BaseAnalyzer {
 
             $query->execute();
         }
-        print_r(OnlineAnalyzer::$timePerNumUser);
     }
 }
