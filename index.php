@@ -5,7 +5,7 @@
 
 require_once __DIR__ . '/src/classes/Controller.php';
 
-Controller::init();
+Controller::run();
 
 $uptimeSql = "SELECT * FROM uptime_results JOIN users ON uptime_results.client_id = users.client_id GROUP BY users.client_id ORDER BY uptime DESC";
 $uptimeResults = DB::$DB->query($uptimeSql)->fetchAll();

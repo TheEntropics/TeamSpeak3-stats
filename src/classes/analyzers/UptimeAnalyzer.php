@@ -4,52 +4,18 @@
 class UptimeAnalyzer extends BaseAnalyzer {
 
     public static function runAnalysis() {
-        $rows = UptimeAnalyzer::fetchAllRows();
-        $times = UptimeAnalyzer::buildTimes($rows);
+        $times = UptimeAnalyzer::buildTimes();
         UptimeAnalyzer::saveTimes($times);
     }
 
-    private static function fetchAllRows() {
-        $sql = "SELECT * FROM (
-                  SELECT *, 'c' as type FROM client_connected_events
-                  UNION
-                  SELECT *, 'd' as type FROM client_disconnected_events
-                ) as x JOIN users ON x.user_id = users.id ORDER BY client_id, date";
-        $query = DB::$DB->query($sql);
-        return $query->fetchAll();
-    }
-
-    private static function buildTimes($rows) {
+    private static function buildTimes() {
         $times = array();
+        $ranges = OnlineRange::getRanges();
 
-        $currentClientId = -1;
-        $timer = 0;
-        $user = null;
-        for ($i = 0, $count = count($rows); $i < $count; $i++) {
-            if ($currentClientId != $rows[$i]['client_id']) {
-                if ($currentClientId != -1) {
-                    if (!isset($times[$currentClientId]))
-                        $times[$currentClientId] = $timer;
-                    else
-                        $times[$currentClientId] += $timer;
-                }
-                $timer = 0;
-                $currentClientId = $rows[$i]['client_id'];
-            }
-
-            // salta tutti i disconnected fino al primo connected
-            while ($i < $count && $rows[$i]['type'] == 'd') $i++;
-
-            $start = (new DateTime($rows[$i]['date']))->getTimestamp();
-
-            // se non c'è il corrispondente 'disconnected' ignora tutto
-            if ($rows[$i+1]['type'] == 'c') continue;
-            if ($rows[$i+1]['client_id'] != $currentClientId) continue;
-
-            $i++;
-            $end = (new DateTime($rows[$i]['date']))->getTimestamp();
-
-            $timer += $end - $start;
+        foreach ($ranges as $range) {
+            if (!isset($times[$range->user->client_id]))
+                $times[$range->user->client_id] = 0;
+            $times[$range->user->client_id] += $range->end->getTimestamp() - $range->start->getTimestamp();
         }
 
         return $times;
