@@ -47,6 +47,8 @@ class Controller {
     private static function initDB() {
         try {
             DB::$DB = new PDO(Config::DB_STRING, Config::USERNAME, Config::PASSWORD);
+            DB::$DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            DB::$DB->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         } catch (PDOException $ex) {
             die("Error connecting to db");
         }

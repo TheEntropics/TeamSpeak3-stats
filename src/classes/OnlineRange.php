@@ -15,6 +15,13 @@ class OnlineRange {
         $this->ip = $ip;
     }
 
+    public static function cmpByStart($a, $b) {
+        if ($a->start == $b->start)
+            if ($a->end == $b->end) return 0;
+            else return ($a->end < $b->end) ? -1 : 1;
+        return ($a->start < $b->start) ? -1 : 1;
+    }
+
     private static $users_cache = array();
     private static $ranges_cache = null;
 
