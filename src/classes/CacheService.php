@@ -6,6 +6,7 @@ class CacheService {
         $lastDate = CacheService::fetchLastDate();
         $events = CacheService::getEvents($lastDate);
         CacheService::putEvents($events);
+        return count($events);
     }
 
     private static function fetchLastDate() {
@@ -30,7 +31,7 @@ class CacheService {
 
         while (($line = $fileReader->getLine()) != null) {
             $event = Parser::parseLine($line);
-            if ($event->date > $lastDate)
+            if ($event && $event->date > $lastDate)
                 $events[] = $event;
         }
 

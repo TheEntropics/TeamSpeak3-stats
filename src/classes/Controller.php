@@ -9,8 +9,8 @@ class Controller {
 
     public static function run() {
         Controller::init();
-        Controller::updateCache();
-        Controller::runAnalysis();
+        $count = Controller::updateCache();
+        if ($count > 0) Controller::runAnalysis();
     }
 
     public static function init() {
@@ -20,7 +20,7 @@ class Controller {
     }
 
     private static function updateCache() {
-        CacheService::updateCache();
+        return CacheService::updateCache();
     }
 
     private static function runAnalysis() {
