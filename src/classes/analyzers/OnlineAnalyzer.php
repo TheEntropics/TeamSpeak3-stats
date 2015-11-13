@@ -45,17 +45,8 @@ class OnlineAnalyzer extends BaseAnalyzer {
     }
 
     private static function saveMaxPeak($count, $time) {
-        $sql = "INSERT INTO misc_results (`key`, `value`) VALUES (:key, :value) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)";
-
-        $qry = DB::$DB->prepare($sql);
-        $qry->bindValue("key", "maxOnline");
-        $qry->bindValue("value", $count);
-        $qry->execute();
-
-        $qry = DB::$DB->prepare($sql);
-        $qry->bindValue("key", "maxOnlineTime");
-        $qry->bindValue("value", $time->format('Y-m-d H:i:s.u'));
-        $qry->execute();
+        Utils::saveMiscResult("maxOnline", $count);
+        Utils::saveMiscResult("maxOnlineTime", $time->format('Y-m-d H:i:s.u'));
     }
 
     private static function saveTimePerNum($timePerNumUser) {

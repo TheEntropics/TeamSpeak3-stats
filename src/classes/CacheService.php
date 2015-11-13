@@ -19,10 +19,11 @@ class CacheService {
                     UNION ALL
                     SELECT MAX(date) as max_date FROM channel_events
                 ) AS temp";
-        $query = DB::$DB->query($sql)->fetchAll();
-        if (count($query) == 0) return new DateTime("@0");
+        $query = DB::$DB->query($sql)->fetch();
+        if ($query[0] == null)
+            return new DateTime("@0");
 
-        return new DateTime($query[0][0]);
+        return new DateTime($query[0]);
     }
 
     private static function getEvents($lastDate) {
