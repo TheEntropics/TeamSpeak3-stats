@@ -1,18 +1,19 @@
-<pre><?php
+<?php
 
 // TODO: implementare la home page delle statistiche
 // i dati verranno estratti dal database, non sarà necessario calcolarli, basta formattarli
 
 require_once __DIR__ . '/src/classes/Controller.php';
 
-$start = microtime(true);
 Controller::run();
-echo "Total time: " . (microtime(true) - $start) . "<br>";
 
 $uptimeSql = "SELECT * FROM uptime_results JOIN users ON uptime_results.client_id = users.client_id GROUP BY users.client_id ORDER BY uptime DESC";
 $uptimeResults = DB::$DB->query($uptimeSql)->fetchAll();
 
-$grid = DailyAnalyzer::runAnalysis();
+$grid = array();
+$gridSql = "SELECT * FROM daily_results";
+$gridQuery = DB::$DB->query($gridSql)->fetchAll();
+foreach ($gridQuery as $row) $grid[$row['cell_id']] = $row['average'];
 
 function toColor($n) {
     $r = 30;
