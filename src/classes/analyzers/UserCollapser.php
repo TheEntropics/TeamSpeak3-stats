@@ -6,10 +6,11 @@ class UserCollapser extends BaseAnalyzer {
     public static $priority = 1000;
     public static $enabled = true;
 
-    const K1 = 0.2;
+    const K1 = 0.6;
     const K2 = 0.5;
     const IP_SUBNET = 16;
     const MERGE_THRESHOLD = 0.9;
+    const MERGE_IP_THRESHOLD = 0.95;
 
     private static $unionFind = array();
 
@@ -71,7 +72,8 @@ class UserCollapser extends BaseAnalyzer {
     }
 
     private static function saveResults() {
-        $sql = "INSERT IGNORE INTO user_collapser_results (client_id1, client_id2) VALUES (?, ?)";
+        DB::$DB->query("DELETE FROM user_collapser_results");
+        $sql = "INSERT INTO user_collapser_results (client_id1, client_id2) VALUES (?, ?)";
         $query = DB::$DB->prepare($sql);
 
         foreach (UserCollapser::$unionFind as $client_id => $parent) {
@@ -99,6 +101,11 @@ class UserCollapser extends BaseAnalyzer {
         $ip = UserCollapser::testIP($parent1, $parent2);
         $username = UserCollapser::testUsername($parent1, $parent2);
 
+        $ip = 2 * $ip - $ip * $ip;
+        $username = 2 * $username - $username * $username;
+
+        if ($ip >= UserCollapser::MERGE_IP_THRESHOLD) return true;
+
         $value = $ip * 0.5 + $username * 0.5;
         return $value >= UserCollapser::MERGE_THRESHOLD;
     }
@@ -115,11 +122,14 @@ class UserCollapser extends BaseAnalyzer {
 
         // se ogni ip è usato da entrambi per almeno K1% del tempo totale allora lo considero ed avrà un valore
         // proporzionale al tempo utilizzato rispetto al tempo totale
-        foreach ($commonIPs as $ip)
-            if ($user1['ips'][$ip] >= UserCollapser::K1 * $user1['time'] && $user2['ips'][$ip] >= UserCollapser::K1 * $user2['time'])
-                $value += $user1['ips'][$ip]/$user1['time'] + $user2['ips'][$ip]/$user2['time'];
+        foreach ($commonIPs as $ip) {
+            $tresh1 = $user1['time'] / count($user1['ips']) * UserCollapser::K1;
+            $tresh2 = $user2['time'] / count($user2['ips']) * UserCollapser::K1;
+            if ($user1['ips'][$ip] >= $tresh1 && $user2['ips'][$ip] >= $tresh2)
+                $value += $user1['ips'][$ip] / $user1['time'] + $user2['ips'][$ip] / $user2['time'];
+        }
 
-        return min($value / 2, 2.0);
+        return min($value / 2, 1.0);
     }
 
     private static function testUsername($client_id1, $client_id2) {
@@ -138,7 +148,7 @@ class UserCollapser extends BaseAnalyzer {
                     $value += $user1['usernames'][$username1]/$user1['time'] + $user2['usernames'][$username2]/$user2['time'];
             }
 
-        return min($value / 2, 2.0);
+        return min($value / 2, 1.0);
     }
 
     private static function inSameSet($client_id1, $client_id2) {
