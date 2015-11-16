@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . "/../../vendor/rgb_hsl_converter.inc.php";
 
 class DailyVisualizer {
 
@@ -21,10 +22,21 @@ class DailyVisualizer {
 
 
     private static function toColor($n) {
-        $r = 30;
-        $g = (int)($n*256/4);
-        $b = 200;
-        $color = $r*256*256 + $g*256 + $b;
-        return("#".substr("000000".dechex($color),-6));
+        $startColor = array(208/360, 1.0, 0.64);
+        $endColor = array(0, 1.0, 0.64);
+
+        $t = $n / 3;
+
+        $color = array(
+            DailyVisualizer::interpolate($startColor[0], $endColor[0], $t),
+            DailyVisualizer::interpolate($startColor[1], $endColor[1], $t),
+            DailyVisualizer::interpolate($startColor[2], $endColor[2], $t)
+        );
+
+        return hsl2hex($color);
+    }
+
+    private static function interpolate($from, $to, $t) {
+        return $from * (1 - $t) + $to * $t;
     }
 }
