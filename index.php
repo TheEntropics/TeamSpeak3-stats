@@ -1,14 +1,10 @@
 <?php
 
-// TODO: implementare la home page delle statistiche
-// i dati verranno estratti dal database, non sarà necessario calcolarli, basta formattarli
-
 require_once __DIR__ . '/src/classes/Controller.php';
 
 Controller::run();
 
-$uptimeSql = "SELECT * FROM uptime_results JOIN users ON uptime_results.client_id = users.client_id GROUP BY users.client_id ORDER BY uptime DESC";
-$uptimeResults = DB::$DB->query($uptimeSql)->fetchAll();
+$scoreboard = UptimeVisualizer::getUptimeScoreboard();
 
 $grid = array();
 $gridSql = "SELECT * FROM daily_results";
@@ -37,8 +33,8 @@ function toColor($n) {
 
     <h2>Uptime</h2>
     <ol>
-        <?php foreach($uptimeResults as $user) { ?>
-            <li><?php echo $user['username'] ?> <small><?php echo $user['uptime'] ?></small></li>
+        <?php foreach($scoreboard as $user) { ?>
+            <li><?php echo $user['username'] ?> <small><?php echo $user['total_uptime'] ?></small></li>
         <?php } ?>
     </ol>
 

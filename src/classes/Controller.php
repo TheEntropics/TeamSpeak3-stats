@@ -10,7 +10,8 @@ class Controller {
     public static function run() {
         Controller::init();
         $count = Controller::updateCache();
-        if ($count > 0) Controller::runAnalysis();
+        if ($count > 0)
+            Controller::runAnalysis();
     }
 
     public static function init() {

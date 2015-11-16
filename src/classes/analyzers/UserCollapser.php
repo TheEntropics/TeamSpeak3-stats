@@ -27,7 +27,7 @@ class UserCollapser extends BaseAnalyzer {
 
         foreach ($ranges as $range) {
             $client_id = $range->user->client_id;
-            $username = UserCollapser::preprocessUsername($range->user->username);
+            $username = $range->user->username;
             $ip = UserCollapser::preprocessIP($range->ip);
             $time = $range->end->getTimestamp() - $range->start->getTimestamp();
 
@@ -75,10 +75,19 @@ class UserCollapser extends BaseAnalyzer {
         $query = DB::$DB->prepare($sql);
 
         foreach (UserCollapser::$unionFind as $client_id => $parent) {
-            if ($client_id == $parent) continue;
-
             $query->execute(array($client_id, $parent));
+            if ($client_id == $parent)
+                UserCollapser::saveUsername($parent);
         }
+    }
+
+    private static function saveUsername($client_id) {
+        $usernames = UserCollapser::$users[$client_id]['usernames'];
+        $username = array_keys($usernames, max($usernames))[0];
+
+        $sql = "INSERT INTO probable_username (client_id, username) VALUES (?, ?) ON DUPLICATE KEY UPDATE username = VALUES(username)";
+        $query = DB::$DB->prepare($sql);
+        $query->execute(array($client_id, $username));
     }
 
     private static function mergable($client_id1, $client_id2) {
@@ -123,7 +132,9 @@ class UserCollapser extends BaseAnalyzer {
         // valore proporzionale al tempo utilizzato rispetto al tempo totale
         foreach ($user1['usernames'] as $username1 => $time1)
             foreach ($user2['usernames'] as $username2 => $time2) {
-                if (levenshtein($username1, $username2) < min(strlen($username1), strlen($username2)) * UserCollapser::K2)
+                $username1_stripped = UserCollapser::preprocessUsername($username1);
+                $username2_stripped = UserCollapser::preprocessUsername($username2);
+                if (levenshtein($username1_stripped, $username2_stripped) < min(strlen($username1_stripped), strlen($username2_stripped)) * UserCollapser::K2)
                     $value += $user1['usernames'][$username1]/$user1['time'] + $user2['usernames'][$username2]/$user2['time'];
             }
 
