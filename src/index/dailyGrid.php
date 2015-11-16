@@ -5,7 +5,7 @@
         'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'
     );
 ?>
-<h2>Grid</h2>
+<h2>Utenti connessi per fascia oraria</h2>
 <table class="table">
     <tr>
         <th></th>
