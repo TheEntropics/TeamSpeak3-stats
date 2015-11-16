@@ -3,18 +3,11 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Creato il: Nov 12, 2015 alle 16:35
+-- Creato il: Nov 16, 2015 alle 14:56
 -- Versione del server: 10.0.22-MariaDB-log
 -- Versione PHP: 5.6.15
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `ts3stats`
@@ -28,7 +21,10 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `channel_events` (
   `id` int(11) NOT NULL,
-  `date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `date` timestamp(6) NOT NULL,
+  `type` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `user_id` int(11) NOT NULL
 ) ;
 
 -- --------------------------------------------------------
@@ -39,7 +35,9 @@ CREATE TABLE `channel_events` (
 
 CREATE TABLE `client_connected_events` (
   `id` int(11) NOT NULL,
-  `date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `date` timestamp(6) NOT NULL,
+  `ip` varchar(15) NOT NULL,
+  `user_id` int(11) NOT NULL
 ) ;
 
 -- --------------------------------------------------------
@@ -50,7 +48,20 @@ CREATE TABLE `client_connected_events` (
 
 CREATE TABLE `client_disconnected_events` (
   `id` int(11) NOT NULL,
-  `date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `date` timestamp(6) NOT NULL,
+  `reason` varchar(200) NOT NULL,
+  `user_id` int(11) NOT NULL
+) ;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `daily_results`
+--
+
+CREATE TABLE `daily_results` (
+  `cell_id` int(11) NOT NULL,
+  `average` float NOT NULL
 ) ;
 
 -- --------------------------------------------------------
@@ -61,7 +72,9 @@ CREATE TABLE `client_disconnected_events` (
 
 CREATE TABLE `file_manager_events` (
   `id` int(11) NOT NULL,
-  `date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `date` timestamp(6) NOT NULL,
+  `type` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL
 ) ;
 
 -- --------------------------------------------------------
@@ -73,7 +86,7 @@ CREATE TABLE `file_manager_events` (
 CREATE TABLE `misc_results` (
   `key` varchar(50) NOT NULL,
   `value` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ;
 
 -- --------------------------------------------------------
 
@@ -84,7 +97,7 @@ CREATE TABLE `misc_results` (
 CREATE TABLE `online_results` (
   `num_users` int(11) NOT NULL,
   `seconds` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ;
 
 -- --------------------------------------------------------
 
@@ -95,7 +108,7 @@ CREATE TABLE `online_results` (
 CREATE TABLE `uptime_results` (
   `client_id` int(11) NOT NULL,
   `uptime` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ;
 
 -- --------------------------------------------------------
 
@@ -107,11 +120,60 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
   `client_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `user_collapser_results`
+--
+
+CREATE TABLE `user_collapser_results` (
+  `client_id1` int(11) NOT NULL,
+  `client_id2` int(11) NOT NULL
+) ;
 
 --
 -- Indici per le tabelle scaricate
 --
+
+--
+-- Indici per le tabelle `channel_events`
+--
+ALTER TABLE `channel_events`
+ADD PRIMARY KEY (`id`),
+ADD KEY `date` (`date`),
+ADD KEY `user_id` (`user_id`);
+
+--
+-- Indici per le tabelle `client_connected_events`
+--
+ALTER TABLE `client_connected_events`
+ADD PRIMARY KEY (`id`),
+ADD KEY `user_id` (`user_id`),
+ADD KEY `date` (`date`);
+
+--
+-- Indici per le tabelle `client_disconnected_events`
+--
+ALTER TABLE `client_disconnected_events`
+ADD PRIMARY KEY (`id`),
+ADD KEY `date` (`date`),
+ADD KEY `user_id` (`user_id`);
+
+--
+-- Indici per le tabelle `daily_results`
+--
+ALTER TABLE `daily_results`
+ADD PRIMARY KEY (`cell_id`);
+
+--
+-- Indici per le tabelle `file_manager_events`
+--
+ALTER TABLE `file_manager_events`
+ADD PRIMARY KEY (`id`),
+ADD KEY `user_id` (`user_id`),
+ADD KEY `date` (`date`);
 
 --
 -- Indici per le tabelle `misc_results`
@@ -139,6 +201,12 @@ ADD PRIMARY KEY (`id`),
 ADD UNIQUE KEY `username_2` (`username`,`client_id`),
 ADD KEY `client_id` (`client_id`),
 ADD KEY `username` (`username`);
+
+--
+-- Indici per le tabelle `user_collapser_results`
+--
+ALTER TABLE `user_collapser_results`
+ADD PRIMARY KEY (`client_id1`,`client_id2`);
 
 --
 -- AUTO_INCREMENT per le tabelle scaricate
@@ -169,6 +237,3 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 ALTER TABLE `users`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
