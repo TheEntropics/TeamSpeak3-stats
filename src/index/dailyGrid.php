@@ -6,7 +6,7 @@
     );
 ?>
 <h2>Utenti connessi per fascia oraria</h2>
-<table class="table">
+<table class="table text-center">
     <tr>
         <th></th>
         <?php for ($i = 0; $i < 24; $i++) { ?>

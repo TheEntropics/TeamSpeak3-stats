@@ -24,7 +24,7 @@ Controller::init();
 
 
     <?php include __DIR__ . "/src/index/scoreboard.php"; ?>
-    <?php include __DIR__ . "/src/index/disconnected.php"; ?>
+    <?php include __DIR__ . "/src/index/counter.php"; ?>
     <div class="clearfix"></div>
     <?php include __DIR__ . "/src/index/dailyGrid.php"; ?>
 

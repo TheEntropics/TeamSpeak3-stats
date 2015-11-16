@@ -33,7 +33,7 @@ class FileManagerEvent extends Event {
 
         $query->bindParam("id", $this->id);
         $query->bindParam("date", $this->date->format("Y-m-d H:i:s.u"));
-        $query->bindParam("type", $this->type);
+        $query->bindParam("type", $this->fileManagerType);
         $query->bindParam("user_id", $this->user_id);
 
         $query->execute();
@@ -45,7 +45,7 @@ class FileManagerEvent extends Event {
         $query = DB::$DB->prepare($sql);
 
         $query->bindParam("date", $this->date->format("Y-m-d H:i:s.u"));
-        $query->bindParam("type", $this->type);
+        $query->bindParam("type", $this->fileManagerType);
         $query->bindParam("user_id", $this->user_id);
 
         $query->execute();
