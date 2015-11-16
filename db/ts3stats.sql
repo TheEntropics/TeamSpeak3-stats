@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Creato il: Nov 16, 2015 alle 14:56
+-- Creato il: Nov 16, 2015 alle 20:57
 -- Versione del server: 10.0.22-MariaDB-log
 -- Versione PHP: 5.6.15
 
@@ -102,6 +102,17 @@ CREATE TABLE `online_results` (
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `probable_username`
+--
+
+CREATE TABLE `probable_username` (
+  `client_id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL
+) ;
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `uptime_results`
 --
 
@@ -186,6 +197,12 @@ ADD PRIMARY KEY (`key`);
 --
 ALTER TABLE `online_results`
 ADD PRIMARY KEY (`num_users`);
+
+--
+-- Indici per le tabelle `probable_username`
+--
+ALTER TABLE `probable_username`
+ADD PRIMARY KEY (`client_id`);
 
 --
 -- Indici per le tabelle `uptime_results`
