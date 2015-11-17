@@ -25,5 +25,3 @@ if (md5($passcode) != Config::PASSCODE) {
 }
 
 Controller::run();
-
-echo "done";

@@ -7,7 +7,12 @@ class DailyAnalyzer extends BaseAnalyzer {
 
     public static function runAnalysis() {
         DailyAnalyzer::$numOfWeeks = DailyAnalyzer::getNumOfWeek();
+
+        $startTime = microtime(true);
         $ranges = DailyAnalyzer::expandRanges(OnlineRange::getRanges());
+        $endTime = microtime(true);
+
+        Logger::log("    Expand ranges -> ", $endTime-$startTime);
 
         usort($ranges, "OnlineRange::cmpByStart");
 
@@ -21,17 +26,17 @@ class DailyAnalyzer extends BaseAnalyzer {
     }
 
     private static function expandRanges($ranges) {
+        // TODO optimize this!
         $result = array();
         foreach ($ranges as $range)
-            $result = array_merge($result, DailyAnalyzer::expandRange($range));
+            DailyAnalyzer::expandRange($range, $result);
+        Logger::log("    expandRanges: from", count($ranges), "to", count($result));
         return $result;
     }
 
-    private static function expandRange($range) {
+    private static function expandRange($range, &$ranges) {
         $step = clone $range->start;
         $step->setTime(intval($step->format('H'))+1, 0, 0);
-
-        $ranges = array();
 
         $ONE_HOUR = new DateInterval("PT1H");
 
@@ -42,8 +47,6 @@ class DailyAnalyzer extends BaseAnalyzer {
             $ranges[] = new OnlineRange($start, $end, $range->user, $range->ip);
         }
         $ranges[count($ranges)-1]->end = $range->end;
-
-        return $ranges;
     }
 
     private static function divideRanges($ranges) {

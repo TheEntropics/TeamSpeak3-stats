@@ -4,9 +4,20 @@
 class MainAnalyzer {
     public static function runAnalysis() {
         $analyzers = MainAnalyzer::loadAnalyzers();
+
+        $analysisStart = microtime(true);
         foreach ($analyzers as $analyzer) {
+            Logger::log("Avviato $analyzer");
+
+            $startTime = microtime(true);
             $analyzer::runAnalysis();
+            $endTime = microtime(true);
+
+            Logger::log("    Tempo impiegato:", $endTime-$startTime);
         }
+        $analysisEnd = microtime(true);
+
+        Logger::log("Fine analisi. Tempo impiegato:", $analysisEnd-$analysisStart);
     }
 
     private static function loadAnalyzers() {
@@ -21,6 +32,11 @@ class MainAnalyzer {
                     $classes[] = $analyzerName;
         }
         usort($classes, "MainAnalyzer::analyzerCmp");
+
+        Logger::log("Analisi da eseguire: ");
+        foreach ($classes as $class)
+            Logger::log("   ", $class);
+
         return $classes;
     }
 

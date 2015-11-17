@@ -4,7 +4,12 @@
 class UptimeAnalyzer extends BaseAnalyzer {
 
     public static function runAnalysis() {
+        $startTime = microtime(true);
         $times = UptimeAnalyzer::buildTimes();
+        $endTime = microtime(true);
+
+        Logger::log("    UptimeAnalyzer::buildTimes() ->", $endTime-$startTime);
+
         UptimeAnalyzer::saveTimes($times);
     }
 

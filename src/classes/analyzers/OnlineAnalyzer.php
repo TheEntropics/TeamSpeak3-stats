@@ -40,6 +40,8 @@ class OnlineAnalyzer extends BaseAnalyzer {
             $queue->extract();
         }
 
+        Logger::log("    Picco massimo di utenti", $maxOnline, "il", $maxOnlineTime->format('Y-m-d H:i:s'));
+
         OnlineAnalyzer::saveMaxPeak($maxOnline, $maxOnlineTime);
         OnlineAnalyzer::saveTimePerNum($timeSlicer->getTimePerNumUser());
     }

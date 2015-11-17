@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/src/classes/Controller.php';
 
-Controller::init();
+Controller::init(true);
 
 ?>
 <!DOCTYPE html>

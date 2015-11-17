@@ -4,17 +4,28 @@ require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/DB.php';
 require_once __DIR__ . '/CacheService.php';
 require_once __DIR__ . '/MainAnalyzer.php';
+require_once __DIR__ . '/Logger.php';
 
 class Controller {
 
     public static function run() {
         Controller::init();
+        Logger::log("Controller avviato");
         $count = Controller::updateCache();
-        if ($count > 0)
+        Logger::log($count, "nuovi eventi nei log");
+        //if ($count > 0)
             Controller::runAnalysis();
+        //else
+        //    Logger::log("Nessuna azione eseguita");
     }
 
-    public static function init() {
+    public static function init($quiet = false) {
+        if (!isset($argv) || isset($_SERVER['REQUEST_METHOD']))
+            define("CONSOLE", false);
+        else
+            define("CONSOLE", true);
+        define("QUIET", $quiet);
+        Logger::init();
         date_default_timezone_set("Europe/Rome");
         Controller::initDB();
         Controller::loadClasses();
@@ -51,6 +62,8 @@ class Controller {
             DB::$DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             DB::$DB->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         } catch (PDOException $ex) {
+            Logger::log($ex->getMessage());
+            Logger::log($ex->getTraceAsString());
             die("Error connecting to db");
         }
     }

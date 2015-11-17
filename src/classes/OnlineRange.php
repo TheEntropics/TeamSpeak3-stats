@@ -34,8 +34,15 @@ class OnlineRange {
     public static function getRanges() {
         if (OnlineRange::$ranges_cache)
             return OnlineRange::$ranges_cache;
+
+        $startTime = microtime(true);
         $rows = OnlineRange::fetchAllRows();
-        return OnlineRange::$ranges_cache = OnlineRange::buildRanges($rows);
+        $result = OnlineRange::$ranges_cache = OnlineRange::buildRanges($rows);
+        $endTime = microtime(true);
+
+        Logger::log("      OnlineRange::getRanges() -> ", $endTime-$startTime);
+
+        return $result;
     }
 
     private static function fetchAllRows() {

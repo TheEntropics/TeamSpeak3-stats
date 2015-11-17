@@ -17,8 +17,16 @@ class UserCollapser extends BaseAnalyzer {
     private static $users = array();
 
     public static function runAnalysis() {
+        $startTime = microtime(true);
         UserCollapser::$users = UserCollapser::prepare();
+        $endTime = microtime(true);
+        Logger::log("    prepare() ->", $endTime-$startTime);
+
+        $startTime = microtime(true);
         UserCollapser::loop();
+        $endTime = microtime(true);
+        Logger::log("    loop() ->", $endTime-$startTime);
+
         UserCollapser::saveResults();
     }
 
