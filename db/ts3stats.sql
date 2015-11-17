@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Creato il: Nov 16, 2015 alle 20:57
+-- Creato il: Nov 17, 2015 alle 19:40
 -- Versione del server: 10.0.22-MariaDB-log
 -- Versione PHP: 5.6.15
 
@@ -21,7 +21,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `channel_events` (
   `id` int(11) NOT NULL,
-  `date` timestamp(6) NOT NULL,
+  `date` timestamp NOT NULL,
   `type` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
   `user_id` int(11) NOT NULL
@@ -35,7 +35,7 @@ CREATE TABLE `channel_events` (
 
 CREATE TABLE `client_connected_events` (
   `id` int(11) NOT NULL,
-  `date` timestamp(6) NOT NULL,
+  `date` timestamp NOT NULL,
   `ip` varchar(15) NOT NULL,
   `user_id` int(11) NOT NULL
 ) ;
@@ -48,7 +48,7 @@ CREATE TABLE `client_connected_events` (
 
 CREATE TABLE `client_disconnected_events` (
   `id` int(11) NOT NULL,
-  `date` timestamp(6) NOT NULL,
+  `date` timestamp NOT NULL,
   `reason` varchar(200) NOT NULL,
   `user_id` int(11) NOT NULL
 ) ;
@@ -72,7 +72,7 @@ CREATE TABLE `daily_results` (
 
 CREATE TABLE `file_manager_events` (
   `id` int(11) NOT NULL,
-  `date` timestamp(6) NOT NULL,
+  `date` timestamp NULL,
   `type` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
 ) ;

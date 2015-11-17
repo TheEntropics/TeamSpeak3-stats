@@ -28,5 +28,6 @@ Controller::init(true);
     <div class="clearfix"></div>
     <?php include __DIR__ . "/src/index/dailyGrid.php"; ?>
 
+    <?php include __DIR__ . "/src/index/footer.php"; ?>
 </body>
 </html>

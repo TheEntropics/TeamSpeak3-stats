@@ -28,7 +28,13 @@ class CacheService {
         if ($query[0] == null)
             return new DateTime("@0");
 
-        return new DateTime($query[0]);
+        $lastDate = $query[0];
+
+        $sql = "INSERT INTO misc_results (`key`, `value`) VALUES ('lastDate', ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)";
+        $query = DB::$DB->prepare($sql);
+        $query->execute(array($lastDate));
+
+        return new DateTime($lastDate);
     }
 
     private static function getEvents($lastDate) {
