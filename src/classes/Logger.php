@@ -18,8 +18,9 @@ class Logger {
     }
 
     private static function write($string) {
-        if (!CONSOLE && !QUIET)
-            echo $string . "<br>";
+        if (!QUIET)
+            if (CONSOLE) echo $string . "\n";
+            else         echo $string . "<br>";
         if (Logger::$logFile)
             fputs(Logger::$logFile, $string . "\n");
     }

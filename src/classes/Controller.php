@@ -20,6 +20,7 @@ class Controller {
     }
 
     public static function init($quiet = false) {
+        global $argv;
         if (!isset($argv) || isset($_SERVER['REQUEST_METHOD']))
             define("CONSOLE", false);
         else

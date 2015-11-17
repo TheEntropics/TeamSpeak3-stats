@@ -3,9 +3,6 @@
 
 class UserCollapser extends BaseAnalyzer {
 
-    public static $priority = 1000;
-    public static $enabled = true;
-
     const K1 = 0.6;
     const K2 = 0.5;
     const IP_SUBNET = 16;
