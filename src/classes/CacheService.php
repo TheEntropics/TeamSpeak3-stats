@@ -29,11 +29,6 @@ class CacheService {
             return new DateTime("@0");
 
         $lastDate = $query[0];
-
-        $sql = "INSERT INTO misc_results (`key`, `value`) VALUES ('lastDate', ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)";
-        $query = DB::$DB->prepare($sql);
-        $query->execute(array($lastDate));
-
         return new DateTime($lastDate);
     }
 

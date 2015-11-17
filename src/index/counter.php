@@ -34,6 +34,6 @@
         <dt>Utenti massimi</dt>
         <dd><?php echo $counters['maxOnline'] ?></dd>
         <dt>il</dt>
-        <dd><?php echo (new DateTime($counters['maxOnlineTime']))->format('d/m/Y \a\l\l\e h:i:s') ?></dd>
+        <dd><?php echo (new DateTime($counters['maxOnlineTime']))->format('d/m/Y \a\l\l\e H:i:s') ?></dd>
     </dl>
 </div>

@@ -17,6 +17,9 @@ class Controller {
             Controller::runAnalysis();
         else
             Logger::log("Nessuna azione eseguita");
+        $sql = "INSERT INTO misc_results (`key`, `value`) VALUES ('lastDate', ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)";
+        $query = DB::$DB->prepare($sql);
+        $query->execute(array(date('Y-m-d H:i:s')));
     }
 
     public static function init($quiet = false) {
