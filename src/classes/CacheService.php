@@ -3,9 +3,14 @@
 
 class CacheService {
     public static function updateCache() {
+        $startTime = microtime(true);
         $lastDate = CacheService::fetchLastDate();
         $events = CacheService::getEvents($lastDate);
         CacheService::putEvents($events);
+        $endTime = microtime(true);
+
+        Logger::log("Tempo di fetch dei log:", $endTime-$startTime);
+
         return count($events);
     }
 
