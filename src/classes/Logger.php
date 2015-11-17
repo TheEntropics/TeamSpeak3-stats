@@ -7,7 +7,8 @@ class Logger {
 
     public static function init() {
         Logger::$logFile = fopen(__DIR__ . "/../../" . Config::APP_LOG_FILE, "a");
-        fputs(Logger::$logFile, "--------------------------------------\n");
+        if (!QUIET)
+            fputs(Logger::$logFile, "--------------------------------------\n");
         if (!CONSOLE && !QUIET)
             echo "<pre>";
     }
