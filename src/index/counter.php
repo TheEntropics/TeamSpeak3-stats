@@ -3,7 +3,7 @@
 ?>
 
 <div class="col-md-6">
-    <h2>Conteggi</h2>
+    <h2>Statistiche</h2>
     <h4>Connessioni</h4>
     <dl class="dl-horizontal">
         <dt>Totali</dt>
@@ -28,5 +28,12 @@
         <dd><?php echo $counters['fileDownloadCount'] ?></dd>
         <dt>File cancellati</dt>
         <dd><?php echo $counters['fileDeletedCount'] ?></dd>
+    </dl>
+    <h4>Picco utenti</h4>
+    <dl class="dl-horizontal">
+        <dt>Utenti massimi</dt>
+        <dd><?php echo $counters['maxOnline'] ?></dd>
+        <dt>il</dt>
+        <dd><?php echo (new DateTime($counters['maxOnlineTime']))->format('d/m/Y \a\l\l\e h:i:s') ?></dd>
     </dl>
 </div>

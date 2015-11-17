@@ -3,7 +3,10 @@
 
 class CounterVisualizer {
     public static function getCounters() {
-        $sql = "SELECT * FROM misc_results WHERE `key` IN ('connectionLostCount', 'leavingCount', 'othersDisconnectCount', 'connectionCount', 'fileUploadCount', 'fileDownloadCount', 'fileDeletedCount')";
+        $sql = "SELECT * FROM misc_results WHERE `key` IN (
+                  'connectionLostCount', 'leavingCount', 'othersDisconnectCount', 'connectionCount',
+                  'fileUploadCount', 'fileDownloadCount', 'fileDeletedCount',
+                  'maxOnline', 'maxOnlineTime')";
         $query = DB::$DB->query($sql);
         $rows = $query->fetchAll();
 
