@@ -7,7 +7,7 @@ class UserCollapser extends BaseAnalyzer {
     const K2 = 0.5;
     const IP_SUBNET = 16;
     const MERGE_THRESHOLD = 0.9;
-    const MERGE_IP_THRESHOLD = 0.95;
+    const MERGE_FIXED_THRESHOLD = 0.95;
 
     private static $unionFind = array();
 
@@ -109,7 +109,10 @@ class UserCollapser extends BaseAnalyzer {
         $ip = 2 * $ip - $ip * $ip;
         $username = 2 * $username - $username * $username;
 
-        if ($ip >= UserCollapser::MERGE_IP_THRESHOLD) return true;
+        if (($ip >= UserCollapser::MERGE_FIXED_THRESHOLD && $username >= 1 - UserCollapser::MERGE_FIXED_THRESHOLD) ||
+            ($username >= UserCollapser::MERGE_FIXED_THRESHOLD && $ip >= 1 - UserCollapser::MERGE_FIXED_THRESHOLD)) {
+            return true;
+        }
 
         $value = $ip * 0.5 + $username * 0.5;
         return $value >= UserCollapser::MERGE_THRESHOLD;
