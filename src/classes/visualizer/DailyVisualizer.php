@@ -25,7 +25,7 @@ class DailyVisualizer {
         $startColor = array(208/360, 1.0, 0.64);
         $endColor = array(0, 1.0, 0.64);
 
-        $t = $n / 3;
+        $t = min($n / 3, 1.0);
 
         $color = array(
             DailyVisualizer::interpolate($startColor[0], $endColor[0], $t),
