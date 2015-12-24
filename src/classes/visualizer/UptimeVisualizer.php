@@ -8,7 +8,8 @@ class UptimeVisualizer {
                 JOIN user_collapser_results ON uptime_results.client_id = user_collapser_results.client_id1
                 JOIN probable_username ON user_collapser_results.client_id2 = probable_username.client_id
                 GROUP BY user_collapser_results.client_id2
-                ORDER BY total_uptime DESC";
+                ORDER BY total_uptime DESC
+                LIMIT 50";
         $scores = DB::$DB->query($sql)->fetchAll();
         foreach ($scores as $i => $score) {
             $scores[$i]['score'] = UptimeVisualizer::formatTime($score['total_uptime']);

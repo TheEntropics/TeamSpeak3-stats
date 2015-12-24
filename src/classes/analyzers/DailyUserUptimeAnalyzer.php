@@ -3,8 +3,6 @@
 
 class DailyUserUptimeAnalyzer extends BaseAnalyzer {
 
-    public static $priority = 10000;
-
     private static $times = array();
 
     public static function runAnalysis() {
