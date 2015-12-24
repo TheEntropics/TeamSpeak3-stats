@@ -17,7 +17,7 @@ class UptimeVisualizer {
         return $scores;
     }
 
-    private static function formatTime($time) {
+    public static function formatTime($time) {
         $seconds = intval($time % 60);
         $minutes = intval($time / 60 % 60);
         $hours = intval($time / 60 / 60 % 24);

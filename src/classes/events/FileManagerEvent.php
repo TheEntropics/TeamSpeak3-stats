@@ -57,6 +57,6 @@ class FileManagerEvent extends Event {
     }
 
     protected static function getInsertString($event) {
-        return "('{$event->date->format("Y-m-d H:i:s.u")}', {$event->type}, {$event->user_id})";
+        return "('{$event->date->format("Y-m-d H:i:s.u")}', {$event->fileManagerType}, {$event->user_id})";
     }
 }

@@ -6,7 +6,7 @@
     <ol>
         <?php for ($i = 0; $i < 10; $i++) { ?>
             <li>
-                <?php echo $scoreboard[$i]['username'] ?>
+                <a href="user.php?client-id=<?php echo $scoreboard[$i]['client_id2'] ?>"><?php echo $scoreboard[$i]['username'] ?></a>
                 <small><?php echo $scoreboard[$i]['score'] ?></small>
             </li>
         <?php } ?>
@@ -15,7 +15,7 @@
         <ol start="11">
             <?php for ($i = 10; $i < count($scoreboard); $i++) { ?>
                 <li>
-                    <?php echo $scoreboard[$i]['username'] ?>
+                    <a href="user.php?client-id=<?php echo $scoreboard[$i]['client_id2'] ?>"><?php echo $scoreboard[$i]['username'] ?></a>
                     <small><?php echo $scoreboard[$i]['score'] ?></small>
                 </li>
             <?php } ?>
