@@ -34,7 +34,7 @@ if ($username == null) {
             <small>The Entropics</small>
         </h1>
     </div>
-    <h2>Statistics of <small><?php echo $username ?></small></h2>
+    <h2>Statistiche di <small><?php echo $username ?></small></h2>
     <?php require __DIR__ . '/src/user/ranges.php' ?>
 </body>
 </html>
