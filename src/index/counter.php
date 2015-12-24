@@ -29,6 +29,13 @@
         <dt>File cancellati</dt>
         <dd><?php echo $counters['fileDeletedCount'] ?></dd>
     </dl>
+    <h4><a href="channels.php">Canali</a></h4>
+    <dl class="dl-horizontal">
+        <dt>Canali creati</dt>
+        <dd><?php echo $counters['channelCreated'] ?></dd>
+        <dt>Canali eliminati</dt>
+        <dd><?php echo $counters['channelDeleted'] ?></dd>
+    </dl>
     <h4>Picco utenti</h4>
     <dl class="dl-horizontal">
         <dt>Utenti massimi</dt>

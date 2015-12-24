@@ -34,7 +34,7 @@ class ChannelEvent extends Event {
 
         $query->bindParam("id", $this->id);
         $query->bindParam("date", $this->date->format("Y-m-d H:i:s.u"));
-        $query->bindParam("type", $this->type);
+        $query->bindParam("type", $this->channelType);
         $query->bindParam("name", $this->name);
         $query->bindParam("user_id", $this->user_id);
 
@@ -47,7 +47,7 @@ class ChannelEvent extends Event {
         $query = DB::$DB->prepare($sql);
 
         $query->bindParam("date", $this->date->format("Y-m-d H:i:s.u"));
-        $query->bindParam("type", $this->type);
+        $query->bindParam("type", $this->channelType);
         $query->bindParam("name", $this->name);
         $query->bindParam("user_id", $this->user_id);
 
@@ -59,6 +59,6 @@ class ChannelEvent extends Event {
         return "INSERT INTO channel_events (date, type, name, user_id) VALUES ";
     }
     protected static function getInsertString($event) {
-        return "('{$event->date->format("Y-m-d H:i:s.u")}', {$event->type}, '{$event->name}', {$event->user_id})";
+        return "('{$event->date->format("Y-m-d H:i:s.u")}', {$event->channelType}, '{$event->name}', {$event->user_id})";
     }
 }

@@ -6,6 +6,7 @@ class CounterVisualizer {
         $sql = "SELECT * FROM misc_results WHERE `key` IN (
                   'connectionLostCount', 'leavingCount', 'othersDisconnectCount', 'connectionCount',
                   'fileUploadCount', 'fileDownloadCount', 'fileDeletedCount',
+                  'channelCreated', 'channelDeleted',
                   'maxOnline', 'maxOnlineTime')";
         $query = DB::$DB->query($sql);
         $rows = $query->fetchAll();
