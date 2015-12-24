@@ -13,10 +13,11 @@ class UserRangeVisualizer {
                     WHERE user_collapser_results.client_id2 = :client_id
                     ORDER BY client_connected_events.date DESC ";
         if ($limit > 0)
-            $sql .= "LIMIT $limit";
+            $sql .= "LIMIT :limit";
 
         $query = DB::$DB->prepare($sql);
         $query->bindValue('client_id', $client_id);
+        if ($limit > 0) $query->bindValue('limit', $limit);
         $query->execute();
         return $query->fetchAll();
     }

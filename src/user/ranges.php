@@ -1,5 +1,8 @@
 <?php
-    $ranges = UserRangeVisualizer::getUserRanges($client_id, 10);
+    $limit = 10;
+    if (isset($_GET['limit']))
+        $limit = intval($_GET['limit']);
+    $ranges = UserRangeVisualizer::getUserRanges($client_id, $limit);
 ?>
 <h3>Last connections</h3>
 <table class="table table-responsive table-condensed">
