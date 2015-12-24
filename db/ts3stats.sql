@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Creato il: Dic 24, 2015 alle 13:54
+-- Creato il: Dic 24, 2015 alle 18:32
 -- Versione del server: 10.1.9-MariaDB-log
 -- Versione PHP: 5.6.16
 
@@ -62,6 +62,18 @@ CREATE TABLE `client_disconnected_events` (
 CREATE TABLE `daily_results` (
   `cell_id` int(11) NOT NULL,
   `average` float NOT NULL
+) ;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `daily_user_result`
+--
+
+CREATE TABLE `daily_user_result` (
+  `client_id` int(11) NOT NULL,
+  `date` date NOT NULL,
+  `time` int(11) NOT NULL
 ) ;
 
 -- --------------------------------------------------------
@@ -188,6 +200,12 @@ ADD KEY `user_id` (`user_id`);
 --
 ALTER TABLE `daily_results`
 ADD PRIMARY KEY (`cell_id`);
+
+--
+-- Indici per le tabelle `daily_user_result`
+--
+ALTER TABLE `daily_user_result`
+ADD PRIMARY KEY (`client_id`,`date`);
 
 --
 -- Indici per le tabelle `file_manager_events`
