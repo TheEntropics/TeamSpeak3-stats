@@ -25,4 +25,4 @@
     <?php } ?>
     </tbody>
 </table>
-<a href="user.php?client-id=<?php echo $client_id ?>&limit=<?php echo 50*(int)(($limit+50)/50); ?>">Show more...</a>
+<a href="user.php?client-id=<?php echo $client_id ?>&limit=<?php echo 50*(int)(($limit+50)/50); ?>">Mostra altri...</a>

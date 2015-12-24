@@ -83,6 +83,7 @@ class OnlineRange {
             $start_id = $rows[$i]['event_id'];
 
             // se non c'è il corrispondente 'disconnected' ignora tutto
+            if ($i+1 >= $count) break;
             if ($rows[$i+1]['type'] == 'c') continue;
             if ($rows[$i+1]['client_id'] != $currentClientId) continue;
 
@@ -100,6 +101,7 @@ class OnlineRange {
     }
 
     private static function getUser($user_id) {
+        // TODO cache all users once at the begginnig...
         if (isset(OnlineRange::$users_cache[$user_id]))
             return OnlineRange::$users_cache[$user_id];
         return OnlineRange::$users_cache[$user_id] = User::fromId($user_id);

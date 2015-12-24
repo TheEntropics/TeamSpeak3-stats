@@ -2,3 +2,14 @@
     color: black;
     text-decoration: none;
 }
+
+.google-visualization-tooltip {
+    width: 200px;
+    display: block;
+    padding: 10px !important;
+}
+.google-visualization-tooltip h4 {
+    margin: 0;
+}
+
+#user_calendar { margin-top: 20px; }
