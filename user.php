@@ -36,6 +36,7 @@ if ($username == null) {
     </div>
     <h2>Statistiche di <small><?php echo $username ?></small></h2>
     <?php require __DIR__ . '/src/user/ranges.php' ?>
+    <?php require __DIR__ . '/src/user/username.php' ?>
     <?php require __DIR__ . '/src/user/daily_graph.php' ?>
 </body>
 </html>

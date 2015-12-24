@@ -66,6 +66,7 @@ class DailyUserUptimeAnalyzer extends BaseAnalyzer {
                 foreach ($list as $date => $time)
                     $chunkes[] = "($user, '$date', $time)";
             $sql .= implode(', ', $chunkes);
+            $sql .= " ON DUPLICATE KEY UPDATE time=VALUES(time)";
             DB::$DB->query($sql);
         }
     }

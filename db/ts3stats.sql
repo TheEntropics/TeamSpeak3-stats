@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Creato il: Dic 24, 2015 alle 18:32
+-- Creato il: Dic 24, 2015 alle 19:26
 -- Versione del server: 10.1.9-MariaDB-log
 -- Versione PHP: 5.6.16
 
@@ -159,6 +159,17 @@ CREATE TABLE `users` (
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `users_uptime`
+--
+
+CREATE TABLE `users_uptime` (
+  `user_id` int(11) NOT NULL,
+  `time` int(11) NOT NULL
+) ;
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `user_collapser_results`
 --
 
@@ -253,6 +264,12 @@ ADD PRIMARY KEY (`id`),
 ADD UNIQUE KEY `username_2` (`username`,`client_id`),
 ADD KEY `client_id` (`client_id`),
 ADD KEY `username` (`username`);
+
+--
+-- Indici per le tabelle `users_uptime`
+--
+ALTER TABLE `users_uptime`
+ADD PRIMARY KEY (`user_id`);
 
 --
 -- Indici per le tabelle `user_collapser_results`

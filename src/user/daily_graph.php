@@ -1,3 +1,4 @@
+<h3>Uptime giornaliero</h3>
 <div id="user_calendar" style="width: 100%; height: 350px;"></div>
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -35,7 +36,6 @@
                 var chart = new google.visualization.Calendar(document.getElementById('user_calendar'));
 
                 var options = {
-                    title: "Uptime giornaliero",
                     height: 350,
                 };
 
