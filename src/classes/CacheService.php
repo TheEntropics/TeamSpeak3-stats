@@ -46,7 +46,14 @@ class CacheService {
     }
 
     private static function putEvents($newEvents) {
-        foreach ($newEvents as $event)
-            $event->saveEvent();
+        $pool = array();
+        foreach($newEvents as $event) {
+            $class = get_class($event);
+            if (!isset($pool[$class])) $pool[$class] = array();
+
+            $pool[$class][] = $event;
+        }
+        foreach ($pool as $class => $list)
+            $class::saveEvents($class, $list);
     }
 }

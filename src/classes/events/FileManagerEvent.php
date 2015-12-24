@@ -51,4 +51,12 @@ class FileManagerEvent extends Event {
         $query->execute();
         $this->id = DB::$DB->lastInsertId();
     }
+
+    protected static function getInsertHeader() {
+        return "INSERT INTO file_manager_events (date, type, user_id) VALUES ";
+    }
+
+    protected static function getInsertString($event) {
+        return "('{$event->date->format("Y-m-d H:i:s.u")}', {$event->type}, {$event->user_id})";
+    }
 }

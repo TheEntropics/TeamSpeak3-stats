@@ -50,4 +50,12 @@ class ClientDisconnectedEvent extends Event {
         $query->execute();
         $this->id = DB::$DB->lastInsertId();
     }
+
+    protected static function getInsertHeader() {
+        return "INSERT INTO client_disconnected_events (date, reason, user_id) VALUES ";
+    }
+
+    protected static function getInsertString($event) {
+        return "('{$event->date->format("Y-m-d H:i:s.u")}', '{$event->reason}', {$event->user_id})";
+    }
 }

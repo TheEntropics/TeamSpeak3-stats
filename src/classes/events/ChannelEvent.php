@@ -54,4 +54,11 @@ class ChannelEvent extends Event {
         $query->execute();
         $this->id = DB::$DB->lastInsertId();
     }
+
+    protected static function getInsertHeader() {
+        return "INSERT INTO channel_events (date, type, name, user_id) VALUES ";
+    }
+    protected static function getInsertString($event) {
+        return "('{$event->date->format("Y-m-d H:i:s.u")}', {$event->type}, '{$event->name}', {$event->user_id})";
+    }
 }
