@@ -4,7 +4,7 @@
 class UserRangeVisualizer {
     public static function getUserRanges($client_id, $limit = -1) {
         $sql = "SELECT client_connected_events.date as connect_date, client_disconnected_events.date as disconnect_date,
-                    users.username as username, client_disconnected_events.date - client_connected_events.date as duration
+                    users.username as username, TIMESTAMPDIFF(SECOND, client_connected_events.date, client_disconnected_events.date) as duration
                     FROM ranges
                     JOIN client_connected_events ON client_connected_events.id = ranges.connected_id
                     JOIN client_disconnected_events ON client_disconnected_events.id = ranges.disconnected_id
