@@ -1,0 +1,4 @@
+.page-header a, .page-header a:hover, .page-header a:focus, .page-header a:active {
+    color: black;
+    text-decoration: none;
+}
