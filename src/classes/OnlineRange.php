@@ -8,8 +8,14 @@ class OnlineRangePriorityQueue extends SplPriorityQueue {
 }
 
 class OnlineRange {
+
+    const MAX_RANGES_PER_INSERT = 500;
+
     public $start;
     public $end;
+
+    public $start_id;
+    public $end_id;
 
     public $user;
     public $ip;
@@ -42,11 +48,16 @@ class OnlineRange {
 
         Logger::log("      OnlineRange::getRanges() -> ", $endTime-$startTime);
 
+        $startTime = microtime(true);
+        OnlineRange::saveRanges($result);
+        $endTime = microtime(true);
+        Logger::log("      OnlineRange::saveRanges() -> ", $endTime-$startTime);
+
         return $result;
     }
 
     private static function fetchAllRows() {
-        $sql = "SELECT * FROM (
+        $sql = "SELECT *, x.id as event_id FROM (
                   SELECT *, 'c' as type FROM client_connected_events
                   UNION
                   SELECT *, 'd' as type FROM client_disconnected_events
@@ -69,6 +80,7 @@ class OnlineRange {
             $user = OnlineRange::getUser($rows[$i]['user_id']);
             $ip = $rows[$i]['ip'];
             $start = (new DateTime($rows[$i]['date']));
+            $start_id = $rows[$i]['event_id'];
 
             // se non c'è il corrispondente 'disconnected' ignora tutto
             if ($rows[$i+1]['type'] == 'c') continue;
@@ -76,8 +88,12 @@ class OnlineRange {
 
             $i++;
             $end = (new DateTime($rows[$i]['date']));
+            $end_id = $rows[$i]['event_id'];
 
-            $ranges[] = new OnlineRange($start, $end, $user, $ip);
+            $range = new OnlineRange($start, $end, $user, $ip);
+            $range->start_id = $start_id;
+            $range->end_id = $end_id;
+            $ranges[] = $range;
         }
 
         return $ranges;
@@ -87,5 +103,23 @@ class OnlineRange {
         if (isset(OnlineRange::$users_cache[$user_id]))
             return OnlineRange::$users_cache[$user_id];
         return OnlineRange::$users_cache[$user_id] = User::fromId($user_id);
+    }
+
+    private static function saveRanges($ranges) {
+        if (count($ranges) > OnlineRange::MAX_RANGES_PER_INSERT) {
+            $chunks = array_chunk($ranges, OnlineRange::MAX_RANGES_PER_INSERT);
+            foreach($chunks as $chunk)
+                OnlineRange::saveRanges($chunk);
+        } else {
+            $sql = "INSERT IGNORE INTO ranges (connected_id, disconnected_id) VALUES ";
+            $chunks = array_map("OnlineRange::getInsertString", $ranges);
+            $sql .= implode(', ', $chunks);
+
+            DB::$DB->query($sql);
+        }
+    }
+
+    private static function getInsertString($range) {
+        return "({$range->start_id}, {$range->end_id})";
     }
 }

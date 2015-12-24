@@ -13,7 +13,7 @@ class Controller {
         Logger::log("Controller avviato");
         $count = Controller::updateCache();
         Logger::log($count, "nuovi eventi nei log");
-        if ($count > 0)
+        if ($count > 0 || Config::DEBUG)
             Controller::runAnalysis();
         else
             Logger::log("Nessuna azione eseguita");

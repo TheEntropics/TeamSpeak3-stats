@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
+-- version 4.5.2
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Creato il: Nov 17, 2015 alle 19:40
--- Versione del server: 10.0.22-MariaDB-log
--- Versione PHP: 5.6.15
+-- Creato il: Dic 24, 2015 alle 13:54
+-- Versione del server: 10.1.9-MariaDB-log
+-- Versione PHP: 5.6.16
 
 SET time_zone = "+00:00";
 
@@ -113,6 +113,17 @@ CREATE TABLE `probable_username` (
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `ranges`
+--
+
+CREATE TABLE `ranges` (
+  `connected_id` int(11) NOT NULL,
+  `disconnected_id` int(11) NOT NULL
+) ;
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `uptime_results`
 --
 
@@ -203,6 +214,12 @@ ADD PRIMARY KEY (`num_users`);
 --
 ALTER TABLE `probable_username`
 ADD PRIMARY KEY (`client_id`);
+
+--
+-- Indici per le tabelle `ranges`
+--
+ALTER TABLE `ranges`
+ADD PRIMARY KEY (`connected_id`,`disconnected_id`);
 
 --
 -- Indici per le tabelle `uptime_results`
