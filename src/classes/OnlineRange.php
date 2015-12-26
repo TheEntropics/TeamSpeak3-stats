@@ -43,6 +43,7 @@ class OnlineRange {
 
         $startTime = microtime(true);
         $rows = OnlineRange::fetchAllRows();
+        OnlineRange::$users_cache = User::getAll();
         $result = OnlineRange::$ranges_cache = OnlineRange::buildRanges($rows);
         $endTime = microtime(true);
 
@@ -61,7 +62,7 @@ class OnlineRange {
                   SELECT *, 'c' as type FROM client_connected_events
                   UNION
                   SELECT *, 'd' as type FROM client_disconnected_events
-                ) as x JOIN users ON x.user_id = users.id ORDER BY client_id, date";
+                ) as x JOIN users ON x.user_id = users.id ORDER BY client_id, date, type";
         $query = DB::$DB->query($sql);
         return $query->fetchAll();
     }
@@ -70,41 +71,50 @@ class OnlineRange {
         $ranges = array();
 
         $currentClientId = -1;
+        // stack with the open connections of the client
+        $sessions = array();
         for ($i = 0, $count = count($rows); $i < $count; $i++) {
-            if ($currentClientId != $rows[$i]['client_id'])
-                $currentClientId = $rows[$i]['client_id'];
+            $row = $rows[$i];
+            if ($currentClientId != $row['client_id']) {
+                // maybe online?
+                if (count($sessions) > 0)
+                    Logger::log("      " . count($sessions) . " pending sessions of client_id = $currentClientId");
+                $sessions = array();
+                $currentClientId = $row['client_id'];
+            }
 
-            // salta tutti i disconnected fino al primo connected
-            while ($i < $count && $rows[$i]['type'] == 'd') $i++;
+            if ($row['type'] == 'c') {
+                $user = OnlineRange::getUser($row['user_id']);
+                $ip = $row['ip'];
+                $start = new DateTime($row['date']);
+                $start_id = $row['event_id'];
 
-            $user = OnlineRange::getUser($rows[$i]['user_id']);
-            $ip = $rows[$i]['ip'];
-            $start = (new DateTime($rows[$i]['date']));
-            $start_id = $rows[$i]['event_id'];
+                $range = new OnlineRange($start, null, $user, $ip);
+                $range->start_id = $start_id;
 
-            // se non c'è il corrispondente 'disconnected' ignora tutto
-            if ($i+1 >= $count) break;
-            if ($rows[$i+1]['type'] == 'c') continue;
-            if ($rows[$i+1]['client_id'] != $currentClientId) continue;
+                $sessions[] = $range;
+            } else {
+                if (count($sessions) == 0) {
+                    Logger::log("      No sessions found in stack for client_id = $currentClientId");
+                    continue;
+                }
 
-            $i++;
-            $end = (new DateTime($rows[$i]['date']));
-            $end_id = $rows[$i]['event_id'];
+                $end = new DateTime($row['date']);
+                $end_id = $rows[$i]['event_id'];
 
-            $range = new OnlineRange($start, $end, $user, $ip);
-            $range->start_id = $start_id;
-            $range->end_id = $end_id;
-            $ranges[] = $range;
+                $range = array_pop($sessions);
+                $range->end = $end;
+                $range->end_id = $end_id;
+
+                $ranges[] = $range;
+            }
         }
 
         return $ranges;
     }
 
     private static function getUser($user_id) {
-        // TODO cache all users once at the begginnig...
-        if (isset(OnlineRange::$users_cache[$user_id]))
-            return OnlineRange::$users_cache[$user_id];
-        return OnlineRange::$users_cache[$user_id] = User::fromId($user_id);
+        return OnlineRange::$users_cache[$user_id];
     }
 
     private static function saveRanges($ranges) {

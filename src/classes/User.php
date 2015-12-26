@@ -54,4 +54,14 @@ class User {
 
         return User::fromUsername($username, $client_id);
     }
+
+    public static function getAll() {
+        $sql = "SELECT * FROM users";
+        $res = DB::$DB->query($sql)->fetchAll();
+
+        $users = array();
+        foreach ($res as $user)
+            $users[$user['id']] = new User($user['id'], $user['username'], $user['client_id']);
+        return $users;
+    }
 }
