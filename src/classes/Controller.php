@@ -49,7 +49,7 @@ class Controller {
         Controller::loadFolder(__DIR__ . '/events');
     }
 
-    private static function loadFolder($folder) {
+    public static function loadFolder($folder) {
         $d = scandir($folder);
         foreach ($d as $file) {
             if ($file == "." || $file == "..") continue;

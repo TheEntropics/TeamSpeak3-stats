@@ -24,8 +24,9 @@ Controller::init(true);
     </div>
 
 
-    <?php include __DIR__ . "/src/index/scoreboard.php"; ?>
     <?php include __DIR__ . "/src/index/counter.php"; ?>
+    <?php include __DIR__ . "/src/index/scoreboard.php"; ?>
+    <?php if (Config::REALTIME_ENABLED) include __DIR__ . "/src/index/realtime.php"; ?>
     <div class="clearfix"></div>
     <?php include __DIR__ . "/src/index/dailyGrid.php"; ?>
 
