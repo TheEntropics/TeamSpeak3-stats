@@ -3,6 +3,8 @@
 
 class DailyAnalyzer extends BaseAnalyzer {
 
+    public static $enabled = false;
+
     private static $numOfWeeks;
 
     public static function runAnalysis() {
