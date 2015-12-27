@@ -11,9 +11,14 @@ class RealtimeChannels {
         $result = array();
         foreach ($channels as $raw_user) {
             $channel = Ts3ServerQuery::explodeProperties($raw_user);
+            $channel['channel_name'] = RealtimeChannels::formatName($channel['channel_name']);
             $result[] = $channel;
         }
 
         return $result;
+    }
+
+    private static function formatName($name) {
+        return str_replace('[cspacer]', '<div class="text-center">', $name);
     }
 }
