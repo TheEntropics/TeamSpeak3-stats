@@ -25,8 +25,11 @@
         tag.append('<h4>' + channels[id].name);
 
         var users = $('<ul>');
-        for (var i in channels[id].users)
-            users.append("<li>" + channels[id].users[i]);
+        for (var i in channels[id].users) {
+            var muted = channels[id].users[i].muted * 2 + channels[id].users[i].silenced;
+            var img = "<img src='img/muted/"+muted+".png' /> ";
+            users.append("<li>" + img + channels[id].users[i].name);
+        }
         tag.append(users);
 
         for (var i in channels[id].channels)

@@ -5,7 +5,7 @@ require_once __DIR__ . '/Ts3ServerQuery.php';
 
 class RealtimeUsers {
     public static function getOnlineUsers($ts3) {
-        $result = $ts3->sendCommand('clientlist');
+        $result = $ts3->sendCommand('clientlist -voice');
         if ($ts3->getLastError() != 0) throw new Exception('Cannot get online users');
 
         $users = explode('|', $result);

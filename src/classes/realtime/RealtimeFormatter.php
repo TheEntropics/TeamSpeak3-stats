@@ -40,10 +40,12 @@ class RealtimeFormatter {
     private static function processUsers($users) {
         foreach ($users as $user) {
             $channel = $user['cid'];
-            $name = $user['client_nickname'];
 
-
-            self::$channels[$channel]['users'][] = $name;
+            self::$channels[$channel]['users'][] = array(
+                "name" => $user['client_nickname'],
+                "muted" => intval($user['client_input_muted']),
+                "silenced" => intval($user['client_output_muted'])
+            );
         }
     }
 }

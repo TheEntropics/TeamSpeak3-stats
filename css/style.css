@@ -15,6 +15,7 @@
 #user_calendar { margin-top: 20px; }
 
 #realtime { max-width: 400px; }
+#realtime ul { list-style: none; }
 .channel { padding-left: 20px; }
 .channel h4 { margin: 0; }
 .channel ul { margin: 0; }
