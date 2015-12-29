@@ -10,7 +10,7 @@ class Ts3ServerQuery {
     private $lastError;
 
     public function __construct($host, $port, $username, $password, $virtualServer = 1) {
-        $this->telnet = new Telnet($host, $port, 1, '', self::CONNECTION_TIMEOUT);
+        $this->telnet = new Telnet($host, $port, 1, "error id=\\d+ msg=.*\n|specific command\\.\n", self::CONNECTION_TIMEOUT);
 
         $this->sendCommand("login $username $password");
         if ($this->getLastError() != 0) throw new Exception('Invalid login credentials');

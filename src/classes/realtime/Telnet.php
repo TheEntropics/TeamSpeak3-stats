@@ -59,7 +59,7 @@ class Telnet {
         $this->host = $host;
         $this->port = $port;
         $this->timeout = $timeout;
-        $this->setPrompt($prompt);
+        $this->setRegexPrompt($prompt);
         $this->setStreamTimeout($stream_timeout);
 
         // set some telnet special characters
@@ -280,7 +280,7 @@ class Telnet {
             $this->buffer .= $c;
 
             // we've encountered the prompt. Break out of the loop
-            if (!empty($prompt) && preg_match("/{$prompt}$/", $this->buffer)) {
+            if (!empty($prompt) && preg_match("/{$prompt}/", $this->buffer)) {
                 return self::TELNET_OK;
             }
 
