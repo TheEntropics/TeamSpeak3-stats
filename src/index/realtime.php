@@ -1,5 +1,7 @@
 <h2>Realtime <small id="realtime-delay">Caricamento...</small></h2>
-<div id="realtime"></div>
+<div id="realtime">
+    <div class="spinner"></div>
+</div>
 
 <script>
     var refreshTTL;
@@ -10,6 +12,7 @@
             url: 'realtime.php',
             dataType: 'JSON',
             success: function(channels) {
+                $('.spinner').slideUp();
                 $('#realtime').html(showChannel(channels, 0));
                 refreshTTL = 5;
                 updateRefresh();

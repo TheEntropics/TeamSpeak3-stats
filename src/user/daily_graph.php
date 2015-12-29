@@ -1,4 +1,6 @@
 <h3>Uptime giornaliero</h3>
+<div class="spinner"></div>
+
 <div id="user_calendar" style="width: 100%; height: 350px;"></div>
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -39,6 +41,7 @@
                     height: 350,
                 };
 
+                $('.spinner').slideUp(500);
                 chart.draw(dataTable, options);
             }
         });
