@@ -36,8 +36,8 @@ $channels = ChannelVisualizer::getChannels();
             <?php foreach ($channels as $channel) { ?>
                 <tr>
                     <td><?php echo $channel[0]['name'] ?></td>
-                    <td><?php echo (new DateTime($channel[0]['date']))->format('d/m/Y \a\l\l\e H:i:s') ?></td>
-                    <td><?php echo (new DateTime($channel[1]['date']))->format('d/m/Y \a\l\l\e H:i:s') ?></td>
+                    <td><?php echo Utils::formatDate($channel[0]['date']) ?></td>
+                    <td><?php echo Utils::formatDate($channel[1]['date']) ?></td>
                 </tr>
             <?php } ?>
         </tbody>

@@ -17,9 +17,9 @@
     <tbody>
     <?php foreach ($ranges as $range) { ?>
         <tr>
-            <td><?php echo (new DateTime($range['connect_date']))->format('d/m/Y \a\l\l\e H:i:s') ?></td>
-            <td><?php echo (new DateTime($range['disconnect_date']))->format('d/m/Y \a\l\l\e H:i:s') ?></td>
-            <td><?php echo UptimeVisualizer::formatTime($range['duration']) ?></td>
+            <td><?php echo Utils::formatDate($range['connect_date']) ?></td>
+            <td><?php echo Utils::formatDate($range['disconnect_date']) ?></td>
+            <td><?php echo Utils::formatTime($range['duration']) ?></td>
             <td><?php echo $range['username'] ?></td>
         </tr>
     <?php } ?>

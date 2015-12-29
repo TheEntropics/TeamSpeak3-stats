@@ -10,7 +10,7 @@ $client_id = $_GET['client-id'];
 $data = DailyUserUptimeVisualizer::getDailyUserUptime($client_id);
 foreach ($data as $i => $row) {
     $date = strftime('%d %B %Y', (new DateTime($row['date']))->getTimestamp());
-    $time = UptimeVisualizer::formatTime($row['day_time']);
+    $time = Utils::formatTime($row['day_time']);
     $data[$i]['tooltip'] = "<div><h4>$date</h4><p>$time</p></div>";
 }
 
