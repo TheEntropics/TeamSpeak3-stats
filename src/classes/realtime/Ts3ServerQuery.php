@@ -44,8 +44,8 @@ class Ts3ServerQuery {
         $raw_info = explode(' ', $entry);
         $info = array();
         foreach($raw_info as $inf) {
-            list($key, $value) = explode('=', $inf);
-            $info[$key] = str_replace('\s', ' ', $value);
+            $prop = explode('=', $inf);
+            $info[$prop[0]] = count($prop) > 1 ? str_replace('\s', ' ', $prop[1]) : "";
         }
         return $info;
     }

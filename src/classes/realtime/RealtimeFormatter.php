@@ -44,7 +44,9 @@ class RealtimeFormatter {
             self::$channels[$channel]['users'][] = array(
                 "name" => $user['client_nickname'],
                 "muted" => intval($user['client_input_muted']),
-                "silenced" => intval($user['client_output_muted'])
+                "silenced" => intval($user['client_output_muted']),
+                "away" => intval($user['client_away']),
+                "away_message" => $user['client_away_message']
             );
         }
     }

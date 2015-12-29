@@ -14,6 +14,7 @@ try {
     $users = RealtimeUsers::getOnlineUsers($ts3);
     $channels = RealtimeChannels::getChannels($ts3);
 } catch (Exception $e) {
+    print_r($e);
     die('Internal error... :(');
 }
 

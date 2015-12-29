@@ -26,9 +26,19 @@
 
         var users = $('<ul>');
         for (var i in channels[id].users) {
-            var muted = channels[id].users[i].muted * 2 + channels[id].users[i].silenced;
+            var user = channels[id].users[i];
+
+            var muted = 'normal';
+            if (user.silenced) muted = 'silenced';
+            if (user.muted) muted = 'muted';
+            if (user.away) muted = 'away';
+
+            var away_message = '';
+            if (user.away_message.length > 0)
+                away_message = ' <i>[' + user.away_message + ']</i>';
+
             var img = "<img src='img/muted/"+muted+".png' /> ";
-            users.append("<li>" + img + channels[id].users[i].name);
+            users.append("<li>" + img + user.name + away_message);
         }
         tag.append(users);
 
