@@ -42,6 +42,7 @@ class RealtimeFormatter {
             $channel = $user['cid'];
 
             self::$channels[$channel]['users'][] = array(
+                "client_id" => $user['client_database_id'],
                 "name" => $user['client_nickname'],
                 "muted" => intval($user['client_input_muted']),
                 "silenced" => intval($user['client_output_muted']),

@@ -64,4 +64,12 @@ class User {
             $users[$user['id']] = new User($user['id'], $user['username'], $user['client_id']);
         return $users;
     }
+
+    public static function getMasterClientId($client_id) {
+        $sql = "SELECT client_id2 FROM user_collapser_results WHERE client_id1 = :client_id";
+        $query = DB::$DB->prepare($sql);
+        $query->bindValue("client_id", $client_id);
+        $query->execute();
+        return $query->fetch()['client_id2'];
+    }
 }

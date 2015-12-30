@@ -8,7 +8,9 @@ if (!isset($_GET['client-id'])) {
 require_once __DIR__ . '/src/classes/Controller.php';
 Controller::init(true);
 
-$client_id = intval($_GET['client-id']);
+$client_id1 = intval($_GET['client-id']);
+$client_id = User::getMasterClientId($client_id1);
+
 $username = ProbableUsernameVisualizer::getProbableUsername($client_id);
 
 if ($username == null) {

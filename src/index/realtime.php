@@ -37,8 +37,10 @@
             if (user.away_message.length > 0)
                 away_message = ' <i>[' + user.away_message + ']</i>';
 
+            var user = '<a href="user.php?client-id=' + user.client_id + '">' + user.name + "</a>"
+
             var img = "<img src='img/muted/"+muted+".png' /> ";
-            users.append("<li>" + img + user.name + away_message);
+            users.append("<li>" + img + user + away_message);
         }
         tag.append(users);
 
