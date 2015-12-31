@@ -24,6 +24,7 @@ class Utils {
     public static function formatDate($date) {
         if (!is_a($date, 'DateTime'))
             $date = new DateTime($date);
+        $date->setTimezone(new DateTimeZone('Europe/Rome'));
         return $date->format('d/m/Y \a\l\l\e H:i:s');
     }
 

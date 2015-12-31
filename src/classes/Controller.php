@@ -27,7 +27,7 @@ class Controller {
             define("CONSOLE", true);
         define("QUIET", $quiet);
         Logger::init();
-        date_default_timezone_set("Europe/Rome");
+        date_default_timezone_set("UTC");
         Controller::initDB();
         Controller::loadClasses();
     }
