@@ -34,7 +34,7 @@ class CacheService {
 
     private static function getEvents($lastDate) {
         $events = array();
-        $fileReader = new FileReader();
+        $fileReader = new FileReader($lastDate);
 
         while (($line = $fileReader->getLine()) != null) {
             $event = Parser::parseLine($line);

@@ -7,7 +7,7 @@ class FileReader {
     private $currentFile;
     private $currentHandle;
 
-    public function __construct() {
+    public function __construct($lastDate = null) {
         $this->logFiles = array();
 
         foreach(Config::LOG_FOLDERS as $i)
@@ -15,8 +15,9 @@ class FileReader {
 
         sort($this->logFiles);
 
-        $this->currentFile = 0;
-        $this->currentHandle = fopen($this->logFiles[0], "r");
+        $this->currentFile = $lastDate ? $this->skipFiles($lastDate) : 0;
+        Logger::log("    Skipped {$this->currentFile} log files");
+        $this->currentHandle = fopen($this->logFiles[$this->currentFile], "r");
     }
 
     public function getLine() {
@@ -43,5 +44,19 @@ class FileReader {
             else if (Utils::endWith($file, ".log"))
                 $this->logFiles[] = "$folder/$file";
         }
+    }
+
+    private function skipFiles($lastDate) {
+        for ($i = 0; $i < count($this->logFiles); $i++) {
+            if ($this->getDateFromFilename($this->logFiles[$i]) > $lastDate)
+                break;
+        }
+        return max($i-1, 0);
+    }
+
+    private function getDateFromFilename($file) {
+        $matches = array();
+        preg_match('/ts3server_([^_]+)__(\d+)_(\d+)_(\d+)\.\d+_\d+\.log/', $file, $matches);
+        return new DateTime($matches[1] . "T" . $matches[2] . ":" . $matches[3] . ":" . $matches[4]);
     }
 }
