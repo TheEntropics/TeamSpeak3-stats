@@ -14,6 +14,7 @@ Controller::init(true);
     <link href="css/style.css" rel="stylesheet">
     <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body class="container-fluid">
     <div class="page-header">
