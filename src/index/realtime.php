@@ -29,8 +29,8 @@
             var user = channels[id].users[i];
 
             var muted = 'normal';
-            if (user.silenced) muted = 'silenced';
             if (user.muted) muted = 'muted';
+            if (user.silenced) muted = 'silenced';
             if (user.away) muted = 'away';
 
             var away_message = '';

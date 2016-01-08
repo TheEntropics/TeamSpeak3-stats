@@ -15,18 +15,27 @@ class OnlineAnalyzer extends BaseAnalyzer {
 
         $timeSlicer = new TimeSlicer();
 
+        $onlineUsers = array();
+
         foreach ($ranges as $range) {
             // disconnette gli utenti
             while ($queue->valid() && $queue->current()->end < $range->start) {
                 $timeSlicer->addTimePerNumUser($onlineCount, $queue->current()->end);
-                $onlineCount--;
+
+                $onlineUsers[$queue->current()->user->client_id]--;
+                if ($onlineUsers[$queue->current()->user->client_id] == 0)
+                    unset($onlineUsers[$queue->current()->user->client_id]);
+
                 $queue->extract();
             }
 
             // connette l'utente dell'intervallo
             $timeSlicer->addTimePerNumUser($onlineCount, $range->start);
             $queue->insert($range, $range->end);
-            $onlineCount++;
+            if (!isset($onlineUsers[$range->user->client_id]))
+                $onlineUsers[$range->user->client_id] = 0;
+            $onlineUsers[$range->user->client_id]++;
+            $onlineCount = max($onlineCount, count($onlineUsers));
 
             if ($onlineCount > $maxOnline) {
                 $maxOnline = $onlineCount;
@@ -36,7 +45,6 @@ class OnlineAnalyzer extends BaseAnalyzer {
         // svuota la coda
         while ($queue->valid()) {
             $timeSlicer->addTimePerNumUser($onlineCount, $queue->current()->end);
-            $onlineCount--;
             $queue->extract();
         }
 
