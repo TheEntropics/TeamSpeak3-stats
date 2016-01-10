@@ -8,18 +8,30 @@ require_once __DIR__ . '/Logger.php';
 
 class Controller {
 
-    public static function run() {
+    private static $alreadyInited = false;
+
+    public static function run($runAnalysis = true) {
         Controller::init();
         Logger::log("Controller avviato");
         $count = Controller::updateCache();
         Logger::log($count, "nuovi eventi nei log");
-        if ($count > 0 || Config::DEBUG)
-            Controller::runAnalysis();
-        else
-            Logger::log("Nessuna azione eseguita");
+        if ($runAnalysis) {
+            if ($count > 0 || Config::DEBUG || Utils::getMiscResult("pending_analyisis") == "yes")
+                Controller::runAnalysis();
+            else
+                Logger::log("Nessuna azione eseguita");
+        } else {
+            if ($count > 0 || Config::DEBUG) {
+                Utils::saveMiscResult("pending_analysis", "yes");
+                Logger::log("Analysis skipped...");
+            } else
+                Logger::log("Nessuna azione eseguita");
+        }
     }
 
     public static function init($quiet = false) {
+        if (Controller::$alreadyInited) return;
+
         global $argv;
         if (!isset($argv) || isset($_SERVER['REQUEST_METHOD']))
             define("CONSOLE", false);
@@ -30,17 +42,17 @@ class Controller {
         date_default_timezone_set("UTC");
         Controller::initDB();
         Controller::loadClasses();
+        Controller::$alreadyInited = true;
     }
 
-    private static function updateCache() {
+    public static function updateCache() {
         return CacheService::updateCache();
     }
 
     private static function runAnalysis() {
         MainAnalyzer::runAnalysis();
-        $sql = "INSERT INTO misc_results (`key`, `value`) VALUES ('lastDate', ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)";
-        $query = DB::$DB->prepare($sql);
-        $query->execute(array(date('Y-m-d H:i:s')));
+        Utils::saveMiscResult("lastDate", date('Y-m-d H:i:s'));
+        Utils::saveMiscResult("pending_analysis", "no");
     }
 
 

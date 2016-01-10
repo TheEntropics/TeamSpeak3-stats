@@ -21,6 +21,16 @@ class Utils {
         $qry->execute();
     }
 
+    public static function getMiscResult($key) {
+        $sql = "SELECT `value` FROM misc_results WHERE `key` = :key";
+
+        $qry = DB::$DB->prepare($sql);
+        $qry->bindValue("key", $key);
+        $qry->execute();
+        if ($qry->rowCount == 0) return null;
+        return $qry->fetch()['value'];
+    }
+
     public static function formatDate($date) {
         if (!is_a($date, 'DateTime'))
             $date = new DateTime($date);
