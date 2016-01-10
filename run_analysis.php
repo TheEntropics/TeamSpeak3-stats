@@ -2,18 +2,21 @@
 
 require_once __DIR__ . "/src/classes/Controller.php";
 
-function getPasscode() {
-    if (isset($_GET['passcode']))
-        return $_GET['passcode'];
+$options = getopt("hp:", array("passcode:"));
 
-    global $argv;
-    if (isset($argv[1]))
-        return $argv[1];
-
-    return null;
+if (isset($options['h'])) {
+    echo "Run the analysis of TeamSpeak-stats" . PHP_EOL;
+    echo "Written by Edoardo Morassutto <edoardo.morassutto@gmail.com>" . PHP_EOL;
+    echo "" . PHP_EOL;
+    echo "Usage: php run_analysis.php [-h] [-p passcode|--passcode passcode]" . PHP_EOL;
+    echo "" . PHP_EOL;
+    echo "Options:" . PHP_EOL;
+    echo "    -h           Display this help and exit" . PHP_EOL;
+    echo "    -p passcode  Use the specified passcode" . PHP_EOL;
+    exit;
 }
 
-$passcode = getPasscode();
+$passcode = isset($options['passcode']) ? $options['passcode'] : (isset($options['p']) ? $options['p'] : null);
 
 if ($passcode == null) {
     echo "Passcode non specificato...";
