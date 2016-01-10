@@ -2,10 +2,14 @@
 
 
 class MainAnalyzer {
-    public static function runAnalysis() {
-        $analyzers = MainAnalyzer::loadAnalyzers();
+    public static function runAnalysis($fastOnly = false) {
+        $analyzers = MainAnalyzer::loadAnalyzers($fastOnly);
 
         $analysisStart = microtime(true);
+
+        Logger::log("Preparing ranges:");
+        OnlineRange::getRanges();
+
         foreach ($analyzers as $analyzer) {
             Logger::log("Avviato $analyzer");
 
@@ -20,7 +24,7 @@ class MainAnalyzer {
         Logger::log("Fine analisi. Tempo impiegato:", $analysisEnd-$analysisStart);
     }
 
-    private static function loadAnalyzers() {
+    private static function loadAnalyzers($fastOnly = false) {
         $analyzers = MainAnalyzer::getAnalyzers(__DIR__ . '/analyzers');
         $classes = array();
         foreach ($analyzers as $analyzer) {
@@ -28,7 +32,8 @@ class MainAnalyzer {
             $analyzerName = substr($analyzer[1], 0, -4);
 
             if (class_exists($analyzerName) || !in_array("BaseAnalyzer", class_parents($analyzerName)))
-                if ($analyzerName::$enabled)
+                // skip disabled analyzers and slow analyzers (if $fastOnly is true)
+                if ($analyzerName::$enabled && (!$fastOnly || $analyzerName::$fast))
                     $classes[] = $analyzerName;
         }
         usort($classes, "MainAnalyzer::analyzerCmp");

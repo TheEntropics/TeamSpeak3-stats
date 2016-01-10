@@ -4,6 +4,8 @@ require_once __DIR__ . '/../FenwikTree.php';
 
 class DailyAnalyzer2 extends BaseAnalyzer {
 
+    public static $fast = false;
+
     const NUM_SEC = 60*60*24*7+10;
     const NUM_CELLS = 24*7;
 

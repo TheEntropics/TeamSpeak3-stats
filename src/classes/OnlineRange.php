@@ -47,12 +47,12 @@ class OnlineRange {
         $result = OnlineRange::$ranges_cache = OnlineRange::buildRanges($rows);
         $endTime = microtime(true);
 
-        Logger::log("      OnlineRange::getRanges() -> ", $endTime-$startTime);
+        Logger::log("    OnlineRange::getRanges() -> ", $endTime-$startTime);
 
         $startTime = microtime(true);
         OnlineRange::saveRanges($result);
         $endTime = microtime(true);
-        Logger::log("      OnlineRange::saveRanges() -> ", $endTime-$startTime);
+        Logger::log("    OnlineRange::saveRanges() -> ", $endTime-$startTime);
 
         return $result;
     }
@@ -78,7 +78,7 @@ class OnlineRange {
             if ($currentClientId != $row['client_id']) {
                 // maybe online?
                 if (count($sessions) > 0)
-                    Logger::log("      " . count($sessions) . " pending sessions of client_id = $currentClientId");
+                    Logger::log("    " . count($sessions) . " pending sessions of client_id = $currentClientId");
                 $sessions = array();
                 $currentClientId = $row['client_id'];
             }
@@ -95,7 +95,7 @@ class OnlineRange {
                 $sessions[] = $range;
             } else {
                 if (count($sessions) == 0) {
-                    Logger::log("      No sessions found in stack for client_id = $currentClientId");
+                    Logger::log("    No sessions found in stack for client_id = $currentClientId");
                     continue;
                 }
 

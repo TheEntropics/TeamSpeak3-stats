@@ -10,20 +10,24 @@ class Controller {
 
     private static $alreadyInited = false;
 
-    public static function run($runAnalysis = true) {
+    public static function run($runAnalysis = true, $fastOnly = false) {
         Controller::init();
         Logger::log("Controller avviato");
         $count = Controller::updateCache();
         Logger::log($count, "nuovi eventi nei log");
         if ($runAnalysis) {
             if ($count > 0 || Config::DEBUG || Utils::getMiscResult("pending_analyisis") == "yes")
-                Controller::runAnalysis();
+                Controller::runAnalysis($fastOnly);
             else
                 Logger::log("Nessuna azione eseguita");
         } else {
             if ($count > 0 || Config::DEBUG) {
                 Utils::saveMiscResult("pending_analysis", "yes");
-                Logger::log("Analysis skipped...");
+                if ($fastOnly) {
+                    Logger::log("Running fast-only analysis even if \$runAnalysis is false");
+                    Controller::runAnalysis($fastOnly);
+                } else
+                    Logger::log("Analysis skipped...");
             } else
                 Logger::log("Nessuna azione eseguita");
         }
@@ -49,10 +53,12 @@ class Controller {
         return CacheService::updateCache();
     }
 
-    private static function runAnalysis() {
-        MainAnalyzer::runAnalysis();
-        Utils::saveMiscResult("lastDate", date('Y-m-d H:i:s'));
-        Utils::saveMiscResult("pending_analysis", "no");
+    private static function runAnalysis($fastOnly = false) {
+        MainAnalyzer::runAnalysis($fastOnly);
+        if ($fastOnly == false) {
+            Utils::saveMiscResult("lastDate", date('Y-m-d H:i:s'));
+            Utils::saveMiscResult("pending_analysis", "no");
+        }
     }
 
 
