@@ -27,8 +27,9 @@ class Utils {
         $qry = DB::$DB->prepare($sql);
         $qry->bindValue("key", $key);
         $qry->execute();
-        if ($qry->rowCount == 0) return null;
-        return $qry->fetch()['value'];
+        $res = $qry->fetchAll();
+        if (count($res) == 0) return null;
+        return $res[0]['value'];
     }
 
     public static function formatDate($date) {
