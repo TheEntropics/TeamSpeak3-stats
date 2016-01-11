@@ -32,11 +32,11 @@ class Utils {
         return $res[0]['value'];
     }
 
-    public static function formatDate($date) {
+    public static function formatDate($date, $format = 'd/m/Y \a\l\l\e H:i:s') {
         if (!is_a($date, 'DateTime'))
             $date = new DateTime($date);
         $date->setTimezone(new DateTimeZone('Europe/Rome'));
-        return $date->format('d/m/Y \a\l\l\e H:i:s');
+        return $date->format($format);
     }
 
     public static function formatTime($time) {

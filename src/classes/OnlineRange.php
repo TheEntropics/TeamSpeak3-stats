@@ -10,6 +10,7 @@ class OnlineRangePriorityQueue extends SplPriorityQueue {
 class OnlineRange {
 
     const MAX_RANGES_PER_INSERT = 500;
+    const MAX_ONLINE_TIME = 60*60*24;
 
     public $start;
     public $end;
@@ -27,6 +28,12 @@ class OnlineRange {
         $this->ip = $ip;
     }
 
+    public function getTimeFromStart($now = null) {
+        if ($now == null) $now = new DateTime();
+
+        return $now->getTimestamp() - $this->start->getTimestamp();
+    }
+
     public static function cmpByStart($a, $b) {
         if ($a->start == $b->start)
             if ($a->end == $b->end) return 0;
@@ -36,6 +43,8 @@ class OnlineRange {
 
     private static $users_cache = array();
     private static $ranges_cache = null;
+    private static $online_ranges = array();
+    private static $last_online = array();
 
     public static function getRanges() {
         if (OnlineRange::$ranges_cache)
@@ -55,6 +64,16 @@ class OnlineRange {
         Logger::log("    OnlineRange::saveRanges() -> ", $endTime-$startTime);
 
         return $result;
+    }
+
+    public static function getOnlineRanges() {
+        OnlineRange::getRanges();
+        return OnlineRange::$online_ranges;
+    }
+
+    public static function getLastOnline() {
+        OnlineRange::getRanges();
+        return OnlineRange::$last_online;
     }
 
     private static function fetchAllRows() {
@@ -77,8 +96,17 @@ class OnlineRange {
             $row = $rows[$i];
             if ($currentClientId != $row['client_id']) {
                 // maybe online?
-                if (count($sessions) > 0)
-                    Logger::log("    " . count($sessions) . " pending sessions of client_id = $currentClientId");
+                if (count($sessions) > 0) {
+                    foreach ($sessions as $range) {
+                        $onlineTime = $range->getTimeFromStart();
+                        if ($onlineTime < OnlineRange::MAX_ONLINE_TIME) {
+                            // FIXME if a user is connected multiple times what happens?
+                            OnlineRange::$online_ranges[$range->user->master_client_id] = $range;
+                            Logger::log("    online user $currentClientId [{$range->user->master_client_id}] for $onlineTime seconds");
+                        } else
+                            Logger::log("    " . count($sessions) . " pending sessions of client_id = $currentClientId");
+                    }
+                }
                 $sessions = array();
                 $currentClientId = $row['client_id'];
             }
@@ -105,6 +133,9 @@ class OnlineRange {
                 $range = array_pop($sessions);
                 $range->end = $end;
                 $range->end_id = $end_id;
+
+                if (!isset(OnlineRange::$last_online[$range->user->master_client_id]) || $end->getTimestamp() > OnlineRange::$last_online[$range->user->master_client_id]->getTimestamp())
+                    OnlineRange::$last_online[$range->user->master_client_id] = $end;
 
                 $ranges[] = $range;
             }

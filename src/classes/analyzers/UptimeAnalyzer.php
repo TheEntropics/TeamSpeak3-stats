@@ -4,37 +4,35 @@
 class UptimeAnalyzer extends BaseAnalyzer {
 
     public static function runAnalysis() {
-        $startTime = microtime(true);
-        $times = UptimeAnalyzer::buildTimes();
-        $endTime = microtime(true);
-
-        Logger::log("    UptimeAnalyzer::buildTimes() ->", $endTime-$startTime);
-
+        $ranges = OnlineRange::getRanges();
+        $times = UptimeAnalyzer::computeTimes($ranges);
         UptimeAnalyzer::saveTimes($times);
     }
 
-    private static function buildTimes() {
+    private static function computeTimes($ranges) {
         $times = array();
-        $ranges = OnlineRange::getRanges();
-
         foreach ($ranges as $range) {
-            if (!isset($times[$range->user->client_id]))
-                $times[$range->user->client_id] = 0;
-            $times[$range->user->client_id] += $range->end->getTimestamp() - $range->start->getTimestamp();
-        }
+            $client_id = $range->user->client_id;
+            if (!isset($times[$client_id])) $times[$client_id] = 0;
 
+            $times[$client_id] += $range->end->getTimestamp() - $range->start->getTimestamp();
+        }
         return $times;
     }
 
     private static function saveTimes($times) {
-        foreach ($times as $client_id => $uptime) {
-            $sql = "INSERT INTO uptime_results (client_id, uptime) VALUES (:client_id, :uptime) ON DUPLICATE KEY UPDATE uptime = VALUES(uptime)";
-            $query = DB::$DB->prepare($sql);
-
-            $query->bindValue("client_id", $client_id);
-            $query->bindValue("uptime", $uptime);
-
-            $query->execute();
+        if (count($times) > 500) {
+            $chunkes = array_chunk($times, 500);
+            foreach ($chunkes as $chunk)
+                UptimeAnalyzer::saveTimes($chunk);
+        } else {
+            $sql = "INSERT INTO uptime_results (client_id, uptime) VALUES ";
+            $chunkes = array();
+            foreach ($times as $client_id => $time)
+                $chunkes[] = "($client_id, $time)";
+            $sql .= implode(', ', $chunkes);
+            $sql .= " ON DUPLICATE KEY UPDATE uptime=VALUES(uptime)";
+            DB::$DB->query($sql);
         }
     }
 }

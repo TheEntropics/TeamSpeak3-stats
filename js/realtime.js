@@ -45,6 +45,33 @@ $(function() {
         return tag;
     }
 
+    function formatTime(time) {
+        seconds = time % 60;
+        minutes = (time / 60 | 0) % 60;
+        hours = (time / 60 / 60 | 0) % 24;
+        days = time / 60 / 60 / 24 | 0;
+
+        str = "";
+
+        if (days > 0)
+            if (days == 1) str += "1 giorno";
+            else           str += days + " giorni";
+
+        if (hours > 0)
+            if (hours == 1) str += " 1 ora";
+            else            str += " " + hours + " ore";
+
+        if (minutes > 0)
+            if (minutes == 1) str += " 1 minuto";
+            else              str += " " + minutes + " minuti";
+
+        if (seconds > 0)
+            if (seconds == 1) str += " 1 secondo";
+            else              str += " " + seconds + " secondi";
+
+        return str;
+    }
+    
     function updateRefresh() {
         $('#realtime-delay').text('Refresh in ' + refreshTTL + ' sec');
         --refreshTTL;
@@ -52,6 +79,18 @@ $(function() {
             setTimeout(updateRefresh, 1000);
     }
 
+    function updateUptime() {
+        $('li[data-online=true]').each(function() {
+            var $this = $(this);
+            var prev_uptime = $this.attr('data-uptime') | 0;
+            var online_since = new Date($this.attr('data-online-since'));
+            var current_session = (new Date() - online_since)/1000 | 0;
+            var new_uptime = formatTime(prev_uptime+current_session);
+            $this.find('.uptime').text(new_uptime);
+        });
+    }
+
     loadRealtime();
+    setInterval(updateUptime, 1000);
     setInterval(loadRealtime, 5000);
 })
