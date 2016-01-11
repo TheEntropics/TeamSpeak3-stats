@@ -28,6 +28,7 @@ if ($username == null) {
     <link href="css/style.css" rel="stylesheet">
     <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/utils.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body class="container">
@@ -37,6 +38,7 @@ if ($username == null) {
             <small>The Entropics</small>
         </h1>
     </div>
+    <?php require __DIR__ . '/src/user/online.php' ?>
     <h2>Statistiche di <small><?php echo $username ?></small></h2>
     <?php require __DIR__ . '/src/user/ranges.php' ?>
     <?php require __DIR__ . '/src/user/username.php' ?>

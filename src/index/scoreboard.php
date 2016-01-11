@@ -21,7 +21,7 @@ $scoreboard = UptimeVisualizer::getUptimeScoreboard();
                 data-online-since="<?php echo $scoreboard[$i]['online'] ? Utils::formatDate($scoreboard[$i]['onlineSince'], 'r') : "" ?>"
                 data-uptime="<?php echo $scoreboard[$i]['total_uptime'] ?>">
                 <a href="user.php?client-id=<?php echo $scoreboard[$i]['client_id2'] ?>"><?php echo $scoreboard[$i]['username'] ?></a>
-                <small><?php echo $scoreboard[$i]['score'] ?></small>
+                <small class="uptime"><?php echo $scoreboard[$i]['score'] ?></small>
             </li>
         <?php } ?>
     </ol>

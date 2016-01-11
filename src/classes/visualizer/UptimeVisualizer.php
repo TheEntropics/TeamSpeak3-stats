@@ -12,13 +12,20 @@ class UptimeVisualizer {
                 LIMIT 50";
         $online = OnlineRange::getOnlineRanges();
         $scores = DB::$DB->query($sql)->fetchAll();
+        $now = (new DateTime())->getTimestamp();
         foreach ($scores as $i => $score) {
             $client_id = $score['client_id2'];
-            $scores[$i]['uptime'] = $score['total_uptime'];
-            $scores[$i]['score'] = Utils::formatTime($score['total_uptime']);
             $scores[$i]['online'] = isset($online[$client_id]);
-            if ($scores[$i]['online']) $scores[$i]['onlineSince'] = $online[$client_id]->start;
-            else                       $scores[$i]['onlineSince'] = "";
+            if ($scores[$i]['online']) {
+                $scores[$i]['onlineSince'] = $online[$client_id]->start;
+                $scores[$i]['onlineFor'] = $now - $online[$client_id]->start->getTimestamp();
+            }
+            else {
+                $scores[$i]['onlineSince'] = "";
+                $scores[$i]['onlineFor'] = 0;
+            }
+            $scores[$i]['uptime'] = $score['total_uptime'] + $scores[$i]['onlineFor'];
+            $scores[$i]['score'] = Utils::formatTime($scores[$i]['uptime']);
         }
 
         return $scores;
