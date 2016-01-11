@@ -1,18 +1,40 @@
 $(function() {
     var refreshTTL;
 
+    var onlineUsers = null;
+
     function loadRealtime() {
         console.log("Realtime update");
         $.ajax({
             url: 'realtime.php',
             dataType: 'JSON',
             success: function(channels) {
+                checkForOnlineUsers(channels);
                 $('.spinner').slideUp();
                 $('#realtime').html(showChannel(channels, 0));
                 refreshTTL = 5;
                 updateRefresh();
             }
         });
+    }
+
+    function checkForOnlineUsers(channels) {
+        var users = getOnlineUsers(channels, 0);
+
+        if (onlineUsers == null || onlineUsers.sort().join('|') == users.sort().join('|')) {
+            onlineUsers = users;
+            return;
+        }
+        setTimeout(window.location.reload, 2000);
+    }
+
+    function getOnlineUsers(channels, id) {
+        var users = [];
+        for (var i in channels[id].users)
+            users.push(channels[id].users[i].client_id);
+        for (var i in channels[id].channels)
+            users = users.concat(getOnlineUsers(channels, channels[id].channels[i]));
+        return users;
     }
 
     function showChannel(channels, id) {
