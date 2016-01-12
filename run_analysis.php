@@ -36,7 +36,7 @@ if (md5($passcode) != Config::PASSCODE) {
 
 $locked = Atomic::isLocked();
 if ($locked) echo "Analysis is locked... waiting up to 60 seconds" . PHP_EOL;
-var_dump(Atomic::waitForLock(60.0));
+Atomic::waitForLock(60.0);
 
 Controller::run($runAnalysis, $fastOnly);
 

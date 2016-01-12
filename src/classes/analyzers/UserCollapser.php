@@ -155,7 +155,12 @@ class UserCollapser extends BaseAnalyzer {
             foreach ($user2['usernames'] as $username2 => $time2) {
                 $username1_stripped = UserCollapser::preprocessUsername($username1);
                 $username2_stripped = UserCollapser::preprocessUsername($username2);
-                if (levenshtein($username1_stripped, $username2_stripped) < min(strlen($username1_stripped), strlen($username2_stripped)) * UserCollapser::K2)
+                $l1 = strlen($username1_stripped);
+                $l2 = strlen($username2_stripped);
+                    // firstly use the levenshtein method
+                if (levenshtein($username1_stripped, $username2_stripped) < min($l1, $l2) * UserCollapser::K2 ||
+                    // if it failed try using similar_text only on usernames longer than 8
+                    (min($l1, $l2) >= 8 && similar_text($username1_stripped, $username2_stripped, $perc) > 0 && $perc/100 > UserCollapser::K2))
                     $value += $user1['usernames'][$username1]/$user1['time'] + $user2['usernames'][$username2]/$user2['time'];
             }
 
@@ -202,5 +207,18 @@ class UserCollapser extends BaseAnalyzer {
     private static function preprocessUsername($username) {
         $newUsername = preg_replace("/#\d+;/", "", $username);
         return $newUsername;
+    }
+
+    public static function debugClientsIds($groupA, $groupB, $merges = array()) {
+        UserCollapser::$users = UserCollapser::prepare();
+        foreach ($merges as $merge)
+            UserCollapser::UFMerge($merge[0], $merge[1]);
+        foreach(array_merge($groupA, $groupB) as $client)
+            print_r(UserCollapser::$users[$client]);
+
+        foreach ($groupA as $client1)
+            foreach ($groupB as $client2) {
+                echo "$client1 $client2 -> IP:" . UserCollapser::testIP($client1, $client2) . " Username:" . UserCollapser::testUsername($client1, $client2) . " Mergable: " . (UserCollapser::mergable($client1, $client2) ? 'true' : 'false') . PHP_EOL;
+            }
     }
 }
