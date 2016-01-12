@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . "/src/classes/Atomic.php";
 require_once __DIR__ . "/src/classes/Controller.php";
 
 $options = getopt("hufp:", array("passcode:", "update", "fast"));
@@ -32,4 +33,12 @@ if (md5($passcode) != Config::PASSCODE) {
     exit(2);
 }
 
+
+$locked = Atomic::isLocked();
+if ($locked) echo "Analysis is locked... waiting up to 60 seconds" . PHP_EOL;
+var_dump(Atomic::waitForLock(60.0));
+
 Controller::run($runAnalysis, $fastOnly);
+
+Atomic::unlock();
+
