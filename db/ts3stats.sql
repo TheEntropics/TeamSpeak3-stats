@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.2
+-- version 4.5.3.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Creato il: Dic 24, 2015 alle 19:26
--- Versione del server: 10.1.9-MariaDB-log
--- Versione PHP: 5.6.16
+-- Creato il: Gen 13, 2016 alle 16:31
+-- Versione del server: 10.1.10-MariaDB-log
+-- Versione PHP: 7.0.2
 
 SET time_zone = "+00:00";
 
@@ -136,6 +136,20 @@ CREATE TABLE `ranges` (
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `streak_results`
+--
+
+CREATE TABLE `streak_results` (
+  `client_id` int(11) NOT NULL,
+  `longest` int(11) NOT NULL,
+  `startLongest` date NOT NULL,
+  `current` int(11) NOT NULL,
+  `startCurrent` date NOT NULL
+) ;
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `uptime_results`
 --
 
@@ -249,6 +263,12 @@ ADD PRIMARY KEY (`client_id`);
 --
 ALTER TABLE `ranges`
 ADD PRIMARY KEY (`connected_id`,`disconnected_id`);
+
+--
+-- Indici per le tabelle `streak_results`
+--
+ALTER TABLE `streak_results`
+ADD PRIMARY KEY (`client_id`);
 
 --
 -- Indici per le tabelle `uptime_results`
