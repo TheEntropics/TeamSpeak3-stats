@@ -25,7 +25,7 @@ $(function() {
             onlineUsers = users;
             return;
         }
-        setTimeout(window.location.reload, 2000);
+        setTimeout(function() { location.reload(); }, 2000);
     }
 
     function getOnlineUsers(channels, id) {
