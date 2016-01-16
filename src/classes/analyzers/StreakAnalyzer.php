@@ -81,6 +81,8 @@ class StreakAnalyzer extends BaseAnalyzer {
             $streak = 0;
             $startDate = new DateTime();
         }
+        if ($startDate == $longestStartDate)
+            $longestStreak = $streak;
 
         return array("longest" => $longestStreak, "startLongest" => $longestStartDate, "current" => $streak, "startCurrent" => $startDate);
     }
