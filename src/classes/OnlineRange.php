@@ -137,7 +137,8 @@ class OnlineRange {
                 if (!isset(OnlineRange::$last_online[$range->user->master_client_id]) || $end->getTimestamp() > OnlineRange::$last_online[$range->user->master_client_id]->getTimestamp())
                     OnlineRange::$last_online[$range->user->master_client_id] = $end;
 
-                $ranges[] = $range;
+                if ($range->end->getTimestamp() - $range->start->getTimestamp() <= OnlineRange::MAX_ONLINE_TIME)
+                    $ranges[] = $range;
             }
         }
 
