@@ -1,0 +1,21 @@
+{
+  "name": "TeamSpeak3-stats",
+  "homepage": "https://github.com/TheEntropics/TeamSpeak3-stats",
+  "authors": [
+    "Edoardo Morassutto <edoardo.morassutto@gmail.com>"
+  ],
+  "description": "TeamSpeak3 realtime statistics!",
+  "main": "",
+  "moduleType": [],
+  "license": "GPLv2",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "jquery": "~2.2.0",
+    "bootstrap": "~3.3.6"
+  }
+}
