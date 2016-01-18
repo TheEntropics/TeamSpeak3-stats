@@ -12,13 +12,31 @@ class OnlineRange {
     const MAX_RANGES_PER_INSERT = 500;
     const MAX_ONLINE_TIME = 60*60*24;
 
+    /**
+     * @var DateTime
+     */
     public $start;
+    /**
+     * @var DateTime
+     */
     public $end;
 
+    /**
+     * @var int
+     */
     public $start_id;
+    /**
+     * @var int
+     */
     public $end_id;
 
+    /**
+     * @var User
+     */
     public $user;
+    /**
+     * @var string
+     */
     public $ip;
 
     public function __construct($start, $end, $user, $ip) {

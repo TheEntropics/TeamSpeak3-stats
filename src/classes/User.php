@@ -2,9 +2,21 @@
 
 
 class User {
+    /**
+     * @var int
+     */
     public $id;
+    /**
+     * @var string
+     */
     public $username;
+    /**
+     * @var int
+     */
     public $client_id;
+    /**
+     * @var int|null
+     */
     public $master_client_id;
 
     public function __construct($id, $username, $client_id, $client_id2 = null) {
