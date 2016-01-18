@@ -1,12 +1,10 @@
 <?php
 
-require_once __DIR__ . '/src/classes/Controller.php';
-Controller::init(true);
+require_once __DIR__ . '/../API.php';
+API::init();
 
 if (!Config::REALTIME_ENABLED)
     die('Realtime not enabled');
-
-Controller::loadFolder(__DIR__ . '/src/classes/realtime');
 
 try {
     $ts3 = new Ts3ServerQuery(Config::REALTIME_HOST, Config::REALTIME_PORT, Config::REALTIME_USER, Config::REALTIME_PASS);
@@ -14,12 +12,7 @@ try {
     $users = RealtimeUsers::getOnlineUsers($ts3);
     $channels = RealtimeChannels::getChannels($ts3);
 } catch (Exception $e) {
-    if (Config::DEBUG) {
-        echo "<pre>";
-        print_r($e);
-    }
     die('Internal error... :(');
 }
 
-header('Content-Type: application/json');
-echo RealtimeFormatter::getJSON($users, $channels);
+API::printJSON(RealtimeFormatter::getRealtime($users, $channels));

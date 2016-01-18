@@ -9,8 +9,8 @@ $scoreboard = UptimeVisualizer::getUptimeScoreboard();
         <li data-online="<?php echo $scoreboard[$i]['online'] ? "true" : "false" ?>"
             data-online-since="<?php echo $scoreboard[$i]['online'] ? Utils::formatDate($scoreboard[$i]['onlineSince'], 'r') : "" ?>"
             data-uptime="<?php echo $scoreboard[$i]['total_uptime'] ?>">
-            <a href="user.php?client-id=<?php echo $scoreboard[$i]['client_id2'] ?>"><?php echo $scoreboard[$i]['username'] ?></a>
-            <small class="uptime"><?php echo $scoreboard[$i]['score'] ?></small>
+            <a href="user.php?client-id=<?php echo $scoreboard[$i]['client_id'] ?>"><?php echo $scoreboard[$i]['username'] ?></a>
+            <small class="uptime"><?php echo Utils::formatTime($scoreboard[$i]['uptime']) ?></small>
         </li>
     <?php } ?>
 </ol>
@@ -20,8 +20,8 @@ $scoreboard = UptimeVisualizer::getUptimeScoreboard();
             <li data-online="<?php echo $scoreboard[$i]['online'] ? "true" : "false" ?>"
                 data-online-since="<?php echo $scoreboard[$i]['online'] ? Utils::formatDate($scoreboard[$i]['onlineSince'], 'r') : "" ?>"
                 data-uptime="<?php echo $scoreboard[$i]['total_uptime'] ?>">
-                <a href="user.php?client-id=<?php echo $scoreboard[$i]['client_id2'] ?>"><?php echo $scoreboard[$i]['username'] ?></a>
-                <small class="uptime"><?php echo $scoreboard[$i]['score'] ?></small>
+                <a href="user.php?client-id=<?php echo $scoreboard[$i]['client_id'] ?>"><?php echo $scoreboard[$i]['username'] ?></a>
+                <small class="uptime"><?php echo Utils::formatTime($scoreboard[$i]['uptime']) ?></small>
             </li>
         <?php } ?>
     </ol>

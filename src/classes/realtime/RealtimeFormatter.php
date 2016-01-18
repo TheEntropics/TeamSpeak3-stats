@@ -11,6 +11,12 @@ class RealtimeFormatter {
         return json_encode(self::$channels);
     }
 
+    public static function getRealtime($users, $channels) {
+        self::processChannels($channels);
+        self::processUsers($users);
+        return self::$channels;
+    }
+
     private static function processChannels($channels) {
         self::$channels[0] = array(
             "id" => 0,

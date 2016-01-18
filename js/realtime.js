@@ -6,7 +6,7 @@ $(function() {
     function loadRealtime() {
         console.log("Realtime update");
         $.ajax({
-            url: 'realtime.php',
+            url: 'api/index/realtime.php',
             dataType: 'JSON',
             success: function(channels) {
                 checkForOnlineUsers(channels);

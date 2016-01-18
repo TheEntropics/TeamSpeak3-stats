@@ -19,6 +19,6 @@ class RealtimeChannels {
     }
 
     private static function formatName($name) {
-        return str_replace('[cspacer]', '<div class="text-center">', $name);
+        return str_replace('[cspacer]', '', $name);
     }
 }
