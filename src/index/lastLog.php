@@ -15,7 +15,7 @@ $logs = LogVisualizer::getLastLog();
     <?php foreach ($logs as $log) { ?>
         <tr>
             <td><?php echo Utils::formatDate($log['date']) ?></td>
-            <td><a href="user.php?client-id=<?php echo $log['client_id2'] ?>"><?php echo $log['username'] ?></a></td>
+            <td><a href="user.php?client-id=<?php echo $log['client_id'] ?>"><?php echo $log['username'] ?></a></td>
             <td><?php echo $log['type'] ?></td>
         </tr>
     <?php } ?>
