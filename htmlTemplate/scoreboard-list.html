@@ -30,10 +30,8 @@
                         data: {offset: offset, limit: 5},
                         dataType: 'json',
                         success: function (data) {
-                            setTimeout(function() {
-                                $('paper-spinner').hide();
-                                scope.scoreboard = scope.scoreboard.concat(data);
-                            }, 1000);
+                            $('paper-spinner').hide();
+                            scope.scoreboard = scope.scoreboard.concat(data);
                         },
                         error: function (data) {
                             alert("Error!");
