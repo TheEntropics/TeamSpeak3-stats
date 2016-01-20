@@ -14,7 +14,17 @@ Controller::init(true);
     <link href="css/style.css" rel="stylesheet">
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <script src="js/utils.js"></script>
+    <link rel="import" href="bower_components/polymer/polymer.html">
+    <link rel="import" href="bower_components/paper-elements/paper-elements.html">
+    <link rel="import" href="bower_components/paper-item/paper-icon-item.html">
+    <link rel="import" href="bower_components/paper-item/paper-item-body.html">
+    <link rel="import" href="bower_components/iron-icon/iron-icon.html">
+    <link rel="import" href="bower_components/iron-icons/iron-icons.html">
+    <link rel="import" href="bower_components/iron-icons/communication-icons.html">
+    <link rel="import" href="htmlTemplate/scoreboard-item.html">
+    <link rel="import" href="htmlTemplate/scoreboard-list.html">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body class="container-fluid">

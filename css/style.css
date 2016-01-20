@@ -49,3 +49,6 @@
         -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
     }
 }
+
+.counter h2, .counter h5, .counter p { margin: 0; }
+.counter { vertical-align: top; }

@@ -75,7 +75,7 @@ $(function() {
     }
 
     function updateUptime() {
-        $('li[data-online="true"]').each(function() {
+        $('*[data-online="true"]').each(function() {
             var $this = $(this);
             var prev_uptime = $this.attr('data-uptime') | 0;
             var online_since = new Date($this.attr('data-online-since'));

@@ -1,0 +1,55 @@
+<dom-module id="scoreboard-item">
+
+    <template>
+        <paper-icon-item data-online$="{{user.online}}"
+                         data-online-since$="{{user.onlineSince.date}}"
+                         data-uptime$="{{user.data-uptime}}"
+                         on-click="openClient">
+            <div item-icon class="avatar scoreboard-icon" data-position$="{{getIndex1Based(index)}}">{{getIndex1Based(index)}}</div>
+            <paper-item-body two-line>
+                <div id="username">{{user.username}}</div>
+                <div secondary class="uptime">{{format(user.uptime)}}</div>
+            </paper-item-body>
+        </paper-icon-item>
+    </template>
+
+    <style is="custom-style">
+        paper-icon-item:hover { background-color: #e5e5e5; }
+        paper-card { width: 100%; }
+        paper-icon-item { cursor: pointer; }
+
+        .scoreboard-icon {
+            background-color: #eee;
+            width: 40px;
+            height: 40px;
+            border-radius: 40px;
+            line-height: 40px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .scoreboard-icon[data-position="1"] { background-color: gold; }
+        .scoreboard-icon[data-position="2"] { background-color: silver; }
+        .scoreboard-icon[data-position="3"] { background-color: #CD7F32; }
+    </style>
+
+    <script>
+        Polymer({
+            is: 'scoreboard-item',
+            ready: function() {
+                $(this.$.username).html(this.user.username);
+            },
+            format: function(uptime) {
+                return formatTime(uptime);
+            },
+            getIndex1Based: function(index) {
+                return index+1;
+            },
+            openClient: function() {
+                console.log(this.user);
+                window.location.href = 'user.php?client-id=' + this.user.client_id;
+            }
+        });
+    </script>
+
+</dom-module>

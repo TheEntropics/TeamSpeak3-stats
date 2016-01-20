@@ -1,43 +1,27 @@
 <?php
     $counters = CounterVisualizer::getCounters();
 ?>
-<h2>Statistiche</h2>
-<h4>Connessioni</h4>
-<dl class="dl-horizontal">
-    <dt>Totali</dt>
-    <dd><?php echo $counters['connectionCount'] ?></dd>
-</dl>
-<h4>Disconnessioni</h4>
-<dl class="dl-horizontal">
-    <dt>Normali</dt>
-    <dd><?php echo $counters['leavingCount'] ?></dd>
-    <dt>Connessione persa</dt>
-    <dd><?php echo $counters['connectionLostCount'] ?></dd>
-    <dt><i>Altro</i></dt>
-    <dd><?php echo $counters['othersDisconnectCount'] ?></dd>
-    <dt></dt>
-    <dd><?php echo $counters['total'] ?></dd>
-</dl>
-<h4>File manager</h4>
-<dl class="dl-horizontal">
-    <dt>File caricati</dt>
-    <dd><?php echo $counters['fileUploadCount'] ?></dd>
-    <dt>File scaricati</dt>
-    <dd><?php echo $counters['fileDownloadCount'] ?></dd>
-    <dt>File cancellati</dt>
-    <dd><?php echo $counters['fileDeletedCount'] ?></dd>
-</dl>
-<h4><a href="channels.php">Canali</a></h4>
-<dl class="dl-horizontal">
-    <dt>Canali creati</dt>
-    <dd><?php echo $counters['channelCreated'] ?></dd>
-    <dt>Canali eliminati</dt>
-    <dd><?php echo $counters['channelDeleted'] ?></dd>
-</dl>
-<h4>Picco utenti</h4>
-<dl class="dl-horizontal">
-    <dt>Utenti massimi</dt>
-    <dd><?php echo $counters['maxOnline'] ?></dd>
-    <dt>il</dt>
-    <dd><?php echo Utils::formatDate($counters['maxOnlineTime']) ?></dd>
-</dl>
+<paper-card class="counter">
+    <div class="card-content">
+        <h5>Connessioni</h5>
+        <h2><?php echo $counters['connectionCount'] ?></h2>
+    </div>
+</paper-card>
+
+<paper-card class="counter">
+    <div class="card-content">
+        <h5>Disconnessioni</h5>
+        <h2><?php echo $counters['total'] ?></h2>
+        <p>Normali: <?php echo $counters['leavingCount'] ?></p>
+        <p>Connessione persa: <?php echo $counters['connectionLostCount'] ?></p>
+        <p>Altro: <?php echo $counters['othersDisconnectCount'] ?></p>
+    </div>
+</paper-card>
+
+<paper-card class="counter">
+    <div class="card-content">
+        <h5>Utenti massimi</h5>
+        <h2><?php echo $counters['maxOnline'] ?></h2>
+        <p><?php echo Utils::formatDate($counters['maxOnlineTime']) ?></p>
+    </div>
+</paper-card>

@@ -1,0 +1,56 @@
+<dom-module id="scoreboard-list">
+
+    <template>
+        <template is="dom-repeat" items="{{scoreboard}}" sort="cmp">
+            <scoreboard-item user="{{item}}" index="{{index}}"></scoreboard-item>
+        </template>
+        <paper-item on-click="loadOther">
+            Carica altri
+            <paper-spinner id="other-spinner" style="margin-left: 20px" alt="Loading scoreboard" active></paper-spinner>
+        </paper-item>
+    </template>
+
+    <style is="custom-style">
+        paper-item:hover { background-color: #e5e5e5; }
+        paper-card { width: 100%; }
+        paper-item { cursor: pointer; }
+    </style>
+
+    <script>
+        Polymer({
+            is: 'scoreboard-list',
+            ready: function() {
+                this.scoreboard = [];
+                var scope = this;
+
+                this.loadScoreboard = function(offset) {
+                    $.ajax({
+                        url: 'api/index/scoreboard.php',
+                        method: 'GET',
+                        data: {offset: offset, limit: 5},
+                        dataType: 'json',
+                        success: function (data) {
+                            setTimeout(function() {
+                                $('paper-spinner').hide();
+                                scope.scoreboard = scope.scoreboard.concat(data);
+                            }, 1000);
+                        },
+                        error: function (data) {
+                            alert("Error!");
+                        }
+                    });
+                };
+
+                this.loadScoreboard(0);
+            },
+            cmp: function(a, b) {
+                return b.uptime - a.uptime;
+            },
+            loadOther: function() {
+                $('#other-spinner').show();
+                this.loadScoreboard(this.scoreboard.length);
+            }
+        });
+    </script>
+
+</dom-module>
