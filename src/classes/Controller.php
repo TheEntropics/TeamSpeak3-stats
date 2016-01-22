@@ -16,7 +16,7 @@ class Controller {
         $count = Controller::updateCache();
         Logger::log($count, "nuovi eventi nei log");
         if ($runAnalysis) {
-            if ($count > 0 || Config::DEBUG || Utils::getMiscResult("pending_analyisis") == "yes")
+            if ($count > 0 || Config::DEBUG || Utils::getMiscResult("pending_analysis") == "yes")
                 Controller::runAnalysis($fastOnly);
             else
                 Logger::log("Nessuna azione eseguita");
