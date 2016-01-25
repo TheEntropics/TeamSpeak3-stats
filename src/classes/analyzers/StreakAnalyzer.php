@@ -22,7 +22,7 @@ class StreakAnalyzer extends BaseAnalyzer {
     }
 
     private static function getDays() {
-        $sql = "SELECT client_id2,date FROM daily_user_result " .
+        $sql = "SELECT client_id2, DATE_FORMAT(date, '%Y-%m-%d %H:%i:%s.%f') as date FROM daily_user_result " .
                     "JOIN user_collapser_results ON daily_user_result.client_id = user_collapser_results.client_id1 " .
                     "WHERE time > 0 GROUP BY client_id2,date ORDER BY client_id2, date";
         $query = DB::$DB->query($sql);

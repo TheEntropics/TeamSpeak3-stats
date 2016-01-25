@@ -54,7 +54,7 @@ class OnlineRange {
     public function getTimeFromStart($now = null) {
         if ($now == null) $now = new DateTime();
 
-        return $now->getTimestamp() - $this->start->getTimestamp();
+        return Utils::getTimestamp($now) - Utils::getTimestamp($this->start);
     }
 
     public static function cmpByStart($a, $b) {
@@ -113,9 +113,9 @@ class OnlineRange {
 
     private static function fetchAllRows() {
         $sql = "SELECT *, x.id as event_id FROM (
-                  SELECT *, 'c' as type FROM client_connected_events
+                  SELECT id, ip, user_id, DATE_FORMAT(date, '%Y-%m-%d %H:%i:%s.%f') as date, 'c' as type FROM client_connected_events
                   UNION
-                  SELECT *, 'd' as type FROM client_disconnected_events
+                  SELECT id, reason, user_id, DATE_FORMAT(date, '%Y-%m-%d %H:%i:%s.%f') as date, 'd' as type FROM client_disconnected_events
                 ) as x JOIN users ON x.user_id = users.id ORDER BY client_id, date, type";
         $query = DB::$DB->query($sql);
         return $query->fetchAll();
@@ -169,10 +169,10 @@ class OnlineRange {
                 $range->end = $end;
                 $range->end_id = $end_id;
 
-                if (!isset(OnlineRange::$last_online[$range->user->master_client_id]) || $end->getTimestamp() > OnlineRange::$last_online[$range->user->master_client_id]->getTimestamp())
+                if (!isset(OnlineRange::$last_online[$range->user->master_client_id]) || Utils::getTimestamp($end) > Utils::getTimestamp(OnlineRange::$last_online[$range->user->master_client_id]))
                     OnlineRange::$last_online[$range->user->master_client_id] = $end;
 
-                if ($range->end->getTimestamp() - $range->start->getTimestamp() <= OnlineRange::MAX_ONLINE_TIME)
+                if (Utils::getTimestamp($range->end) - Utils::getTimestamp($range->start) <= OnlineRange::MAX_ONLINE_TIME)
                     $ranges[] = $range;
             }
         }

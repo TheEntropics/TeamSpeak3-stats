@@ -29,7 +29,7 @@ class Logger {
         if (!QUIET)
             if (CONSOLE) echo $string . "\n";
             else         echo $string . "<br>";
-        if (Logger::$logFile)
+        if (!QUIET && Logger::$logFile)
             fputs(Logger::$logFile, $string . "\n");
     }
 }

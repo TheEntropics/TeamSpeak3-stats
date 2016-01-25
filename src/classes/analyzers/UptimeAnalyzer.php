@@ -15,7 +15,7 @@ class UptimeAnalyzer extends BaseAnalyzer {
             $client_id = $range->user->client_id;
             if (!isset($times[$client_id])) $times[$client_id] = 0;
 
-            $times[$client_id] += $range->end->getTimestamp() - $range->start->getTimestamp();
+            $times[$client_id] += Utils::getTimestamp($range->end) - Utils::getTimestamp($range->start);
         }
         return $times;
     }

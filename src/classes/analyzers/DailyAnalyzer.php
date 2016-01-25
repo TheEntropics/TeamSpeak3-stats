@@ -28,7 +28,7 @@ class DailyAnalyzer extends BaseAnalyzer {
     }
 
     private static function expandRanges($ranges) {
-        // TODO optimize this!
+        // TODO optimize this!.. SCIUAR!
         $result = array();
         foreach ($ranges as $range)
             DailyAnalyzer::expandRange($range, $result);

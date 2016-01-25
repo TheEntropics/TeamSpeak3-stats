@@ -21,7 +21,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `channel_events` (
   `id` int(11) NOT NULL,
-  `date` timestamp NOT NULL,
+  `date` timestamp(6) NOT NULL,
   `type` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
   `user_id` int(11) NOT NULL
@@ -35,7 +35,7 @@ CREATE TABLE `channel_events` (
 
 CREATE TABLE `client_connected_events` (
   `id` int(11) NOT NULL,
-  `date` timestamp NOT NULL,
+  `date` timestamp(6) NOT NULL,
   `ip` varchar(15) NOT NULL,
   `user_id` int(11) NOT NULL
 ) ;
@@ -48,7 +48,7 @@ CREATE TABLE `client_connected_events` (
 
 CREATE TABLE `client_disconnected_events` (
   `id` int(11) NOT NULL,
-  `date` timestamp NOT NULL,
+  `date` timestamp(6) NOT NULL,
   `reason` varchar(200) NOT NULL,
   `user_id` int(11) NOT NULL
 ) ;
@@ -84,7 +84,7 @@ CREATE TABLE `daily_user_result` (
 
 CREATE TABLE `file_manager_events` (
   `id` int(11) NOT NULL,
-  `date` timestamp NULL,
+  `date` timestamp(6) NULL,
   `type` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
 ) ;

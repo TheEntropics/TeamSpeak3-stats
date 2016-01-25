@@ -15,7 +15,7 @@ class TimeSlicer {
             $this->timePerNumUser[$numUser] = 0;
         if ($this->lastEventTime == null)
             $this->lastEventTime = $time;
-        $this->timePerNumUser[$numUser] += $time->getTimestamp() - $this->lastEventTime->getTimestamp();
+        $this->timePerNumUser[$numUser] += Utils::getTimestamp($time) - Utils::getTimestamp($this->lastEventTime);
         $this->lastEventTime = $time;
     }
 

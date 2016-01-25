@@ -96,4 +96,13 @@ class Utils {
 
         return $str;
     }
+
+    /**
+     * Return the number of seconds from time epoch with microseconds precision
+     * @param DateTime $date
+     * @return float
+     */
+    public static function getTimestamp($date) {
+        return $date->getTimestamp() + (intval($date->format('u')) / 1000000);
+    }
 }

@@ -38,7 +38,7 @@ class DailyUserUptimeAnalyzer extends BaseAnalyzer {
             $next = new DateTime($start_date);
             $next->add(new DateInterval("P1D"));
 
-            $time = $next->getTimestamp() - $start->getTimestamp();
+            $time = Utils::getTimestamp($next) - Utils::getTimestamp($start);
 
             if (!isset(DailyUserUptimeAnalyzer::$times[$client_id][$start_date]))
                 DailyUserUptimeAnalyzer::$times[$client_id][$start_date] = 0;
@@ -48,7 +48,7 @@ class DailyUserUptimeAnalyzer extends BaseAnalyzer {
             $start_date = $next->format('Y-m-d');
         }
 
-        $time = $end->getTimestamp() - $start->getTimestamp();
+        $time = Utils::getTimestamp($end) - Utils::getTimestamp($start);
         if (!isset(DailyUserUptimeAnalyzer::$times[$client_id][$start_date]))
             DailyUserUptimeAnalyzer::$times[$client_id][$start_date] = 0;
         DailyUserUptimeAnalyzer::$times[$client_id][$start_date] += $time;

@@ -14,7 +14,7 @@ class UsernameUptimeAnalyzer extends BaseAnalyzer {
             $user_id = $range->user->id;
             if (!isset($times[$user_id])) $times[$user_id] = 0;
 
-            $times[$user_id] += $range->end->getTimestamp() - $range->start->getTimestamp();
+            $times[$user_id] += Utils::getTimestamp($range->end) - Utils::getTimestamp($range->start);
         }
         return $times;
     }

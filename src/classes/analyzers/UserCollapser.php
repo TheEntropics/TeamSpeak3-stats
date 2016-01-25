@@ -38,7 +38,7 @@ class UserCollapser extends BaseAnalyzer {
             $client_id = $range->user->client_id;
             $username = $range->user->username;
             $ip = UserCollapser::preprocessIP($range->ip);
-            $time = $range->end->getTimestamp() - $range->start->getTimestamp();
+            $time = Utils::getTimestamp($range->end) - Utils::getTimestamp($range->start);
 
             if (!isset($users[$client_id]))
                 $users[$client_id] = array(

@@ -44,13 +44,15 @@ class DailyAnalyzer2 extends BaseAnalyzer {
         $startHour = intval($start->format("G"));
         $startMin = intval($start->format("i"));
         $startSec = intval($start->format("s"));
-        $startTime = $startSec + $startMin * 60 + $startHour * 60*60 + $startWeek * 60*60*24;
+        $startMicro = intval($start->format("u"));
+        $startTime = $startSec + $startMin * 60 + $startHour * 60*60 + $startWeek * 60*60*24 + $startMicro/1000000;
 
         $endWeek = intval($end->format("N"))-1;
         $endHour = intval($end->format("G"));
         $endMin = intval($end->format("i"));
         $endSec = intval($end->format("s"));
-        $endTime = $endSec + $endMin * 60 + $endHour * 60*60 + $endWeek * 60*60*24;
+        $endMicro = intval($end->format("u"));
+        $endTime = $endSec + $endMin * 60 + $endHour * 60*60 + $endWeek * 60*60*24 + $endMicro / 1000000;
 
         if ($startWeek <= $endWeek) {
             DailyAnalyzer2::$fenwickTree->rangeUpdate($startTime, $endTime, 1);
@@ -86,7 +88,9 @@ class DailyAnalyzer2 extends BaseAnalyzer {
 
     private static function saveAverages($averages) {
         foreach ($averages as $cell_id => $average) {
-            $sql = "INSERT INTO daily_results (cell_id, average) VALUES (:cell_id, :average) ON DUPLICATE KEY UPDATE average = VALUES(average)";
+            $sql = "INSERT INTO daily_results (cell_id, average)
+                      VALUES (:cell_id, :average)
+                      ON DUPLICATE KEY UPDATE average = VALUES(average)";
             $query = DB::$DB->prepare($sql);
 
             $query->bindParam("cell_id", $cell_id);
