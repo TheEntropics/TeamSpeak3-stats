@@ -62,7 +62,7 @@ class FileReader {
 
     private function getDateFromFilename($file) {
         $matches = array();
-        preg_match('/ts3server_([^_]+)__(\d+)_(\d+)_(\d+)\.\d+_\d+\.log/', $file, $matches);
-        return new DateTime($matches[1] . "T" . $matches[2] . ":" . $matches[3] . ":" . $matches[4]);
+        preg_match('/ts3server_([^_]+)__(\d+)_(\d+)_(\d+)\.(\d+)_\d+\.log/', $file, $matches);
+        return new DateTime($matches[1] . "T" . $matches[2] . ":" . $matches[3] . ":" . $matches[4] . "." . $matches[5]);
     }
 }

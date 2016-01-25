@@ -19,7 +19,7 @@ class CacheService {
     }
 
     private static function fetchLastDate() {
-        $sql = "SELECT MAX(max_date) FROM (
+        $sql = "SELECT DATE_FORMAT(MAX(max_date), '%Y-%m-%d %H:%i:%s.%f') FROM (
                     SELECT MAX(date) as max_date FROM client_connected_events
                     UNION ALL
                     SELECT MAX(date) as max_date FROM client_disconnected_events
@@ -42,7 +42,7 @@ class CacheService {
 
         while (($line = $fileReader->getLine()) != null) {
             $event = Parser::parseLine($line);
-            if ($event && $event->date > $lastDate)
+            if ($event && Utils::getTimestamp($event->date) > Utils::getTimestamp($lastDate))
                 $events[] = $event;
         }
 
