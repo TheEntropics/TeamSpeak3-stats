@@ -10,6 +10,12 @@ class Controller {
 
     private static $alreadyInited = false;
 
+    /**
+     * Run the analysis
+     * @param bool $runAnalysis If it's set to false the analysis won't be started. If $fastOnly is true and $runAnalysis
+     * if false only the fast analyzer are executed. The pending_analysis flag is set to true
+     * @param bool $fastOnly If it set to true the slow analyzer are not started
+     */
     public static function run($runAnalysis = true, $fastOnly = false) {
         Controller::init();
         Logger::log("Controller avviato");
@@ -33,6 +39,10 @@ class Controller {
         }
     }
 
+    /**
+     * Initialize the environment loading the php files
+     * @param bool $quiet Set the quiet flag to $quiet
+     */
     public static function init($quiet = false) {
         if (Controller::$alreadyInited) return;
 
@@ -49,6 +59,10 @@ class Controller {
         Controller::$alreadyInited = true;
     }
 
+    /**
+     * Update the cache
+     * @return int Return the number of new events
+     */
     public static function updateCache() {
         return CacheService::updateCache();
     }
@@ -67,6 +81,9 @@ class Controller {
         Controller::loadFolder(__DIR__ . '/events');
     }
 
+    /**
+     * Load a folder recursively
+     */
     public static function loadFolder($folder) {
         $d = scandir($folder);
         foreach ($d as $file) {

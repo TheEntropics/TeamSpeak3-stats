@@ -28,8 +28,17 @@ class User {
         $this->master_client_id = $client_id2;
     }
 
+    /**
+     * Return a user from its username
+     * @param $username The username to search to
+     * @param int $client_id Manually specify the client_id, -1 to select the first
+     * @return User|null
+     */
     public static function fromUsername($username, $client_id=-1) {
-        $sql = "SELECT * FROM users LEFT JOIN user_collapser_results ON users.client_id = user_collapser_results.client_id1 WHERE username = :username";
+        $sql = "SELECT *
+                  FROM users
+                  LEFT JOIN user_collapser_results ON users.client_id = user_collapser_results.client_id1
+                  WHERE username = :username";
         if ($client_id != -1) $sql .= " AND client_id = :client_id";
 
         $query = DB::$DB->prepare($sql);
@@ -44,8 +53,16 @@ class User {
         return new User($result[0]['id'], $result[0]['username'], $result[0]['client_id']);
     }
 
+    /**
+     * Return a User instance from its id
+     * @param $id The id of the user
+     * @return null|User
+     */
     public static function fromId($id) {
-        $sql = "SELECT * FROM users LEFT JOIN user_collapser_results ON users.client_id = user_collapser_results.client_id1 WHERE id = :id";
+        $sql = "SELECT *
+                  FROM users
+                  LEFT JOIN user_collapser_results ON users.client_id = user_collapser_results.client_id1
+                  WHERE id = :id";
 
         $query = DB::$DB->prepare($sql);
         $query->bindParam('id', $id);
@@ -58,6 +75,12 @@ class User {
         return new User($result[0]['id'], $result[0]['username'], $result[0]['client_id'], $result[0]['client_id2']);
     }
 
+    /**
+     * Find or create the user from the username and the client_id
+     * @param $username Username of the user
+     * @param $client_id Client id of the user
+     * @return User|null
+     */
     public static function findOrCreate($username, $client_id) {
         $user = User::fromUsername($username, $client_id);
         if ($user) return $user;
@@ -71,6 +94,10 @@ class User {
         return User::fromUsername($username, $client_id);
     }
 
+    /**
+     * Return a list of all users
+     * @return array
+     */
     public static function getAll() {
         $sql = "SELECT * FROM users LEFT JOIN user_collapser_results ON users.client_id = user_collapser_results.client_id1";
         $res = DB::$DB->query($sql)->fetchAll();
@@ -81,6 +108,9 @@ class User {
         return $users;
     }
 
+    /**
+     * Return the master_client_id of a user
+     */
     public static function getMasterClientId($client_id) {
         $sql = "SELECT client_id2 FROM user_collapser_results WHERE client_id1 = :client_id";
         $query = DB::$DB->prepare($sql);

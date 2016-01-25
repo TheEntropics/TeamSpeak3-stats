@@ -4,11 +4,22 @@ require_once __DIR__ . '/Telnet.php';
 
 class Ts3ServerQuery {
 
+    /**
+     * The connection timeout for the telnet
+     */
     const CONNECTION_TIMEOUT = 0.1;
 
     private $telnet;
     private $lastError;
 
+    /**
+     * @param string $host Hostname of the teamspeak server
+     * @param int $port Port of ts3 server (usually 10011)
+     * @param string $username Username of admin profile (usually serveradmin)
+     * @param string $password Password of admin profile
+     * @param int $virtualServer The visrtual server to use
+     * @throws Exception
+     */
     public function __construct($host, $port, $username, $password, $virtualServer = 1) {
         $this->telnet = new Telnet($host, $port, 1, "error id=\\d+ msg=.*\n|specific command\\.\n", self::CONNECTION_TIMEOUT);
 
@@ -18,6 +29,11 @@ class Ts3ServerQuery {
         if ($this->getLastError() != 0) throw new Exception('Cannot select virtual server');
     }
 
+    /**
+     * Send a command to teamspeak server
+     * @param string $command Command to send
+     * @return string Response of the server
+     */
     public function sendCommand($command) {
         $result = $this->telnet->exec($command);
         $pieces = explode(PHP_EOL, $result);
@@ -30,6 +46,10 @@ class Ts3ServerQuery {
         }
     }
 
+    /**
+     * Get the last error, if any
+     * @return int
+     */
     public function getLastError() {
         return $this->lastError;
     }
@@ -40,6 +60,11 @@ class Ts3ServerQuery {
         $this->lastError = $matches[1];
     }
 
+    /**
+     * Explode the result string of the command into an array
+     * @param string $entry The response of the server
+     * @return array
+     */
     public static function explodeProperties($entry) {
         $raw_info = explode(' ', $entry);
         $info = array();

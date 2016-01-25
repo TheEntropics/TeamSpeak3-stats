@@ -8,6 +8,9 @@ require_once __DIR__ . '/../User.php';
 class FileManagerEvent extends Event {
     public $type = EventType::FileManager;
 
+    /**
+     * @var int
+     */
     public $fileManagerType;
 
     public function __construct($matches) {
@@ -22,12 +25,7 @@ class FileManagerEvent extends Event {
         }
     }
 
-    public function saveEvent() {
-        if ($this->id) $this->updateEvent();
-        else $this->createEvent();
-    }
-
-    private function updateEvent() {
+    protected function updateEvent() {
         $sql = "UPDATE file_manager_events SET date = :date, type = :type, user_id = :user_id WHERE id = :id";
         $query = DB::$DB->prepare($sql);
 
@@ -39,7 +37,7 @@ class FileManagerEvent extends Event {
         $query->execute();
     }
 
-    private function createEvent() {
+    protected function createEvent() {
         $sql = "INSERT INTO file_manager_events (date, type, user_id)
                 VALUE (:date, :type, :user_id)";
         $query = DB::$DB->prepare($sql);

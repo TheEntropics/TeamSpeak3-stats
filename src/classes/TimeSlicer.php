@@ -5,6 +5,11 @@ class TimeSlicer {
     private $timePerNumUser = array();
     private $lastEventTime = null;
 
+    /**
+     * Add some time to a user key
+     * @param $numUser The number of online users
+     * @param $time The time to add
+     */
     public function addTimePerNumUser($numUser, $time) {
         if (!isset($this->timePerNumUser[$numUser]))
             $this->timePerNumUser[$numUser] = 0;
@@ -14,10 +19,19 @@ class TimeSlicer {
         $this->lastEventTime = $time;
     }
 
+    /**
+     * Returns the raw information
+     * @return array
+     */
     public function getTimePerNumUser() {
         return $this->timePerNumUser;
     }
 
+    /**
+     * Compute the average number of users
+     * @param int $denominator The denominator of the fraction. If it is less than zero it use an automatic value
+     * @return float|int
+     */
     public function getAverageUsers($denominator = -1) {
         $sum = 0;
         $numerator = 0;

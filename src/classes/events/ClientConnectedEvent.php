@@ -7,6 +7,9 @@ require_once __DIR__ . '/../User.php';
 class ClientConnectedEvent extends Event {
     public $type = EventType::ClientConnected;
 
+    /**
+     * @var string
+     */
     public $ip;
 
     public function __construct($matches) {
@@ -17,12 +20,7 @@ class ClientConnectedEvent extends Event {
         $this->user_id = User::findOrCreate($username, $client_id)->id;
     }
 
-    public function saveEvent() {
-        if ($this->id) $this->updateEvent();
-        else $this->createEvent();
-    }
-
-    private function updateEvent() {
+    protected function updateEvent() {
         $sql = "UPDATE client_connected_events SET date = :date, ip = :ip, user_id = :user_id WHERE id = :id";
         $query = DB::$DB->prepare($sql);
 
@@ -34,7 +32,7 @@ class ClientConnectedEvent extends Event {
         $query->execute();
     }
 
-    private function createEvent() {
+    protected function createEvent() {
         $sql = "INSERT INTO client_connected_events (date, ip, user_id)
                 VALUE (:date, :ip, :user_id)";
         $query = DB::$DB->prepare($sql);

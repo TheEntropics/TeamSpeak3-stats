@@ -7,6 +7,9 @@ require_once __DIR__ . '/../User.php';
 class ClientDisconnectedEvent extends Event {
     public $type = EventType::ClientDisconnected;
 
+    /**
+     * @var string
+     */
     public $reason;
 
     public function __construct($matches) {
@@ -21,12 +24,7 @@ class ClientDisconnectedEvent extends Event {
             $this->reason = $matches[4];
     }
 
-    public function saveEvent() {
-        if ($this->id) $this->updateEvent();
-        else $this->createEvent();
-    }
-
-    private function updateEvent() {
+    protected function updateEvent() {
         $sql = "UPDATE client_disconnected_events SET date = :date, reason = :reason, user_id = :user_id WHERE id = :id";
         $query = DB::$DB->prepare($sql);
 
@@ -38,7 +36,7 @@ class ClientDisconnectedEvent extends Event {
         $query->execute();
     }
 
-    private function createEvent() {
+    protected function createEvent() {
         $sql = "INSERT INTO client_disconnected_events (date, reason, user_id)
                 VALUE (:date, :reason, :user_id)";
         $query = DB::$DB->prepare($sql);

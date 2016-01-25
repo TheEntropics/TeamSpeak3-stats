@@ -2,6 +2,10 @@
 
 
 class MainAnalyzer {
+    /**
+     * Run all the analyzers
+     * @param bool|false $fastOnly If it is set to true only the fast analyzers are runned
+     */
     public static function runAnalysis($fastOnly = false) {
         $analyzers = MainAnalyzer::loadAnalyzers($fastOnly);
 

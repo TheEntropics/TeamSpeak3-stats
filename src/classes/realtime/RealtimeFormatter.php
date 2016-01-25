@@ -5,12 +5,24 @@ class RealtimeFormatter {
 
     private static $channels = array();
 
+    /**
+     * Return a json with all the information about the channels and the online users
+     * @param $users The users in the server
+     * @param $channels The channels in the server
+     * @return string
+     */
     public static function getJSON($users, $channels) {
         self::processChannels($channels);
         self::processUsers($users);
         return json_encode(self::$channels);
     }
 
+    /**
+     * Like getJSON return the online status of users and channels as an array
+     * @param $users The users in the server
+     * @param $channels The channels in the server
+     * @return array
+     */
     public static function getRealtime($users, $channels) {
         self::processChannels($channels);
         self::processUsers($users);

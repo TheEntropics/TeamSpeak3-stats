@@ -2,6 +2,10 @@
 
 
 class CacheService {
+    /**
+     * Update the cache on the database
+     * @return int The number of new event saved
+     */
     public static function updateCache() {
         $startTime = microtime(true);
         $lastDate = CacheService::fetchLastDate();

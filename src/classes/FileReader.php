@@ -7,6 +7,9 @@ class FileReader {
     private $currentFile;
     private $currentHandle;
 
+    /**
+     * @param null|DateTime $lastDate Skip all the files before the specified date
+     */
     public function __construct($lastDate = null) {
         $this->logFiles = array();
 
@@ -20,6 +23,9 @@ class FileReader {
         $this->currentHandle = fopen($this->logFiles[$this->currentFile], "r");
     }
 
+    /**
+     * @return null|string The next line to read, null on end
+     */
     public function getLine() {
         $line = fgets($this->currentHandle);
 

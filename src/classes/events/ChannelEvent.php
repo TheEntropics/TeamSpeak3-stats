@@ -8,7 +8,13 @@ require_once __DIR__ . '/../User.php';
 class ChannelEvent extends Event {
     public $type = EventType::Channel;
 
+    /**
+     * @var string
+     */
     public $name;
+    /**
+     * @var int|ChannelEventType
+     */
     public $channelType;
 
     public function __construct($matches) {
@@ -23,12 +29,7 @@ class ChannelEvent extends Event {
         }
     }
 
-    public function saveEvent() {
-        if ($this->id) $this->updateEvent();
-        else $this->createEvent();
-    }
-
-    private function updateEvent() {
+    protected function updateEvent() {
         $sql = "UPDATE channel_events SET date = :date, type = :type, name = :name, user_id = :user_id WHERE id = :id";
         $query = DB::$DB->prepare($sql);
 
@@ -41,7 +42,7 @@ class ChannelEvent extends Event {
         $query->execute();
     }
 
-    private function createEvent() {
+    protected function createEvent() {
         $sql = "INSERT INTO channel_events (date, type, name, user_id)
                 VALUE (:date, :type, :name, :user_id)";
         $query = DB::$DB->prepare($sql);

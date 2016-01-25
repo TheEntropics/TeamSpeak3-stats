@@ -3,6 +3,12 @@
 require_once __DIR__ . '/Ts3ServerQuery.php';
 
 class RealtimeChannels {
+    /**
+     * Return the list of the channels in the server
+     * @param $ts3 Ts3ServerQuery
+     * @return array
+     * @throws Exception
+     */
     public static function getChannels($ts3) {
         $result = $ts3->sendCommand('channellist');
         if ($ts3->getLastError() != 0) throw new Exception('Cannot get channels');

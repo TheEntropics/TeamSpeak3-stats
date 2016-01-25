@@ -46,6 +46,11 @@ class OnlineRange {
         $this->ip = $ip;
     }
 
+    /**
+     * Return the number of seconds from the start to now
+     * @param null|DateTime $now It is possible to "change" the now DateTime
+     * @return int
+     */
     public function getTimeFromStart($now = null) {
         if ($now == null) $now = new DateTime();
 
@@ -64,6 +69,10 @@ class OnlineRange {
     private static $online_ranges = array();
     private static $last_online = array();
 
+    /**
+     * Get from the database a list of the ranges of online users
+     * @return array
+     */
     public static function getRanges() {
         if (OnlineRange::$ranges_cache)
             return OnlineRange::$ranges_cache;
@@ -84,11 +93,19 @@ class OnlineRange {
         return $result;
     }
 
+    /**
+     * The list of online users
+     * @return array
+     */
     public static function getOnlineRanges() {
         OnlineRange::getRanges();
         return OnlineRange::$online_ranges;
     }
 
+    /**
+     * The last connect time of the users
+     * @return array
+     */
     public static function getLastOnline() {
         OnlineRange::getRanges();
         return OnlineRange::$last_online;

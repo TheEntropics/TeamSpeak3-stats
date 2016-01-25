@@ -1,11 +1,15 @@
 <?php
 
 
-class FenwikTree {
+class FenwickTree {
     private $ft1;
     private $ft2;
     private $size;
 
+    /**
+     * Prepare the Fenwick tree structure
+     * @param $size The size of the fenwick tree
+     */
     public function __construct($size) {
         $this->size = $size;
         $this->ft1 = new SplFixedArray($size);
@@ -14,6 +18,9 @@ class FenwikTree {
             $this->ft1[$i] = $this->ft2[$i] = 0;
     }
 
+    /**
+     * Add $delta to the 0-based range [ $from, $to ]
+     */
     public function rangeUpdate($from, $to, $delta) {
         // convert to 1-based
         $from++; $to++;
@@ -24,6 +31,9 @@ class FenwikTree {
         $this->pointUpdate($this->ft2, $to+1, -$delta*$to);
     }
 
+    /**
+     * Return the sum of the range [ $from, $to ]
+     */
     public function rangeQuery($from, $to) {
         return $this->prefixQuery($to+1) - $this->prefixQuery($from+1-1);
     }

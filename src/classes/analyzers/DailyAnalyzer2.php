@@ -1,18 +1,24 @@
 <?php
 
-require_once __DIR__ . '/../FenwikTree.php';
+require_once __DIR__ . '/../FenwickTree.php';
 
 class DailyAnalyzer2 extends BaseAnalyzer {
 
     public static $fast = false;
 
+    /**
+     * Number of seconds in a week (or a bit more)
+     */
     const NUM_SEC = 60*60*24*7+10;
+    /**
+     * Number of cells in the table
+     */
     const NUM_CELLS = 24*7;
 
-    private static $fenwikTree;
+    private static $fenwickTree;
 
     public static function runAnalysis() {
-        DailyAnalyzer2::$fenwikTree = new FenwikTree(DailyAnalyzer2::NUM_SEC);
+        DailyAnalyzer2::$fenwickTree = new FenwickTree(DailyAnalyzer2::NUM_SEC);
 
         $ranges = OnlineRange::getRanges();
 
@@ -47,12 +53,12 @@ class DailyAnalyzer2 extends BaseAnalyzer {
         $endTime = $endSec + $endMin * 60 + $endHour * 60*60 + $endWeek * 60*60*24;
 
         if ($startWeek <= $endWeek) {
-            DailyAnalyzer2::$fenwikTree->rangeUpdate($startTime, $endTime, 1);
+            DailyAnalyzer2::$fenwickTree->rangeUpdate($startTime, $endTime, 1);
         } else {
             // if the range ends in a day before the start (starts in Sunday and ends in Monday)
             // ranges longer than a week are not supported
-            DailyAnalyzer2::$fenwikTree->rangeUpdate($startTime, DailyAnalyzer2::NUM_SEC-1, 1);
-            DailyAnalyzer2::$fenwikTree->rangeUpdate(0, $endTime, 1);
+            DailyAnalyzer2::$fenwickTree->rangeUpdate($startTime, DailyAnalyzer2::NUM_SEC-1, 1);
+            DailyAnalyzer2::$fenwickTree->rangeUpdate(0, $endTime, 1);
         }
     }
 
@@ -61,7 +67,7 @@ class DailyAnalyzer2 extends BaseAnalyzer {
         $numWeeks = DailyAnalyzer2::getNumOfWeek();
 
         for ($i = 0; $i < DailyAnalyzer2::NUM_CELLS; $i++) {
-            $sum = DailyAnalyzer2::$fenwikTree->rangeQuery($i*60*60, ($i+1)*60*60 - 1);
+            $sum = DailyAnalyzer2::$fenwickTree->rangeQuery($i*60*60, ($i+1)*60*60 - 1);
             $averages[$i] = $sum / $numWeeks / 3600;
         }
 

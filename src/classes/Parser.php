@@ -10,6 +10,9 @@ class Parser {
         "ChannelEvent" =>            "/^([^|]*)\\|[^|]*\\|[^|]*\\|[^|]*\\| channel '([^']+)'\\(id:\\d+\\) (created|deleted)(?: as sub channel of '[^']+'\\(id:\\d+\\))? by '([^']+)'\\(id:(\\d+)\\)$/"
     );
 
+    /**
+     * Parse a log line into an instance of Event
+     */
     public static function parseLine($line) {
         $matches = array();
         foreach (Parser::Matchers as $eventName => $regex)

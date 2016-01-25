@@ -5,6 +5,9 @@ class Logger {
 
     private static $logFile;
 
+    /**
+     * Initialize the log file
+     */
     public static function init() {
         Logger::$logFile = fopen(__DIR__ . "/../../" . Config::APP_LOG_FILE, "a");
         if (!QUIET)
@@ -13,6 +16,10 @@ class Logger {
             echo "<pre>";
     }
 
+    /**
+     * Log a new line of information
+     * @param ...$string A list of "things" to save in the log. The items will be space separated
+     */
     public static function log(...$string) {
         $line = date("Y-m-d H:i:s") . " | " . implode(" ", $string);
         Logger::write($line);

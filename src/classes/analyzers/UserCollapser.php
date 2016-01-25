@@ -209,6 +209,9 @@ class UserCollapser extends BaseAnalyzer {
         return $newUsername;
     }
 
+    /**
+     * Print some information about a couple of groups of ids
+     */
     public static function debugClientsIds($groupA, $groupB, $merges = array()) {
         UserCollapser::$users = UserCollapser::prepare();
         foreach ($merges as $merge)
