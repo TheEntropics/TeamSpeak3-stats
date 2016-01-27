@@ -122,7 +122,7 @@
         $scope.tree = [];
         $scope.expandedNodes = [];
 
-        var onlineUsers = {};
+        var onlineUsers = null;
 
         $scope.refresh = function() {
             $.ajax({
