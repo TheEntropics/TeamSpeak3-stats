@@ -24,3 +24,19 @@ function formatTime(time) {
 
     return str;
 }
+
+function formatDate(date) {
+    var d = new Date(date + " UTC");
+    var YYYY = padLeft(d.getFullYear(), 4);
+    var MM = padLeft(d.getMonth()+1, 2);
+    var DD = padLeft(d.getDay(), 2);
+    var hh = padLeft(d.getHours(), 2);
+    var mm = padLeft(d.getMinutes(), 2);
+    var ss = padLeft(d.getSeconds(), 2);
+
+    return DD + "/" + MM + "/" + YYYY + " alle " + hh + ":" + mm + ":" + ss;
+}
+
+function padLeft(nr, n, str){
+    return Array(n-String(nr).length+1).join(str||'0')+nr;
+}
