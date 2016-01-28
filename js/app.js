@@ -190,6 +190,7 @@
                 return;
             }
 
+            onlineUsers = users;
             $rootScope.reloadScoreboard();
             $rootScope.reloadLog();
         };
