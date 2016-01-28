@@ -47,7 +47,7 @@ class FileReader {
             if ($file == "." || $file == "..") continue;
             if (is_dir("$folder/$file"))
                 loadFolder("$folder/$file");
-            else if (Utils::endWith($file, ".log"))
+            else if (Utils::endWith($file, "_" . Config::VIRTUAL_SERVER . ".log"))
                 $this->logFiles[] = "$folder/$file";
         }
     }
