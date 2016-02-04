@@ -4,7 +4,7 @@ class Atomic {
     /**
      * The file to lock
      */
-    const LOCK_FILE_NAME = Config::APP_LOG_FILE;
+    const LOCK_FILE_NAME = Logger::LOG_FULL_FILE_NAME;
     private static $handle = null;
 
     /**
