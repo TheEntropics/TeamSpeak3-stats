@@ -37,7 +37,7 @@ class ClientDisconnectedEvent extends Event {
     }
 
     protected function createEvent() {
-        $sql = "INSERT INTO client_disconnected_events (date, reason, user_id)
+        $sql = "INSERT IGNORE INTO client_disconnected_events (date, reason, user_id)
                 VALUE (:date, :reason, :user_id)";
         $query = DB::$DB->prepare($sql);
 
@@ -50,7 +50,7 @@ class ClientDisconnectedEvent extends Event {
     }
 
     protected static function getInsertHeader() {
-        return "INSERT INTO client_disconnected_events (date, reason, user_id) VALUES ";
+        return "INSERT IGNORE INTO client_disconnected_events (date, reason, user_id) VALUES ";
     }
 
     protected static function getInsertString($event) {

@@ -38,7 +38,7 @@ class FileManagerEvent extends Event {
     }
 
     protected function createEvent() {
-        $sql = "INSERT INTO file_manager_events (date, type, user_id)
+        $sql = "INSERT IGNORE INTO file_manager_events (date, type, user_id)
                 VALUE (:date, :type, :user_id)";
         $query = DB::$DB->prepare($sql);
 
@@ -51,7 +51,7 @@ class FileManagerEvent extends Event {
     }
 
     protected static function getInsertHeader() {
-        return "INSERT INTO file_manager_events (date, type, user_id) VALUES ";
+        return "INSERT IGNORE INTO file_manager_events (date, type, user_id) VALUES ";
     }
 
     protected static function getInsertString($event) {

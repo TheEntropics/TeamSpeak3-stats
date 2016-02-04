@@ -43,7 +43,7 @@ class ChannelEvent extends Event {
     }
 
     protected function createEvent() {
-        $sql = "INSERT INTO channel_events (date, type, name, user_id)
+        $sql = "INSERT IGNORE INTO channel_events (date, type, name, user_id)
                 VALUE (:date, :type, :name, :user_id)";
         $query = DB::$DB->prepare($sql);
 
@@ -57,7 +57,7 @@ class ChannelEvent extends Event {
     }
 
     protected static function getInsertHeader() {
-        return "INSERT INTO channel_events (date, type, name, user_id) VALUES ";
+        return "INSERT IGNORE INTO channel_events (date, type, name, user_id) VALUES ";
     }
     protected static function getInsertString($event) {
         return "('{$event->date->format("Y-m-d H:i:s.u")}', {$event->channelType}, '{$event->name}', {$event->user_id})";
