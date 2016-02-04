@@ -1,5 +1,6 @@
 <div ng-controller="ScoreboardCtrl">
-    <h2>Classifica per uptime</h2>
+    <h2>Classifica per uptime <small><a href="" ng-click="reloadScoreboard()"><span class="glyphicon glyphicon-refresh"></span></a></small></h2>
+    <div ng-show="loading" class="spinner" ng-style="{'background-color': spinnerColors[spinnerIndex]}"></div>
     <ol>
         <li ng-repeat="user in users | orderBy:'-uptime'"
             ng-data-online="{{user.username}}"
@@ -10,5 +11,5 @@
             <small class="uptime">{{Utils.formatTime(user.uptime)}}</small>
         </li>
     </ol>
-    <a href="" ng-click="loadOthers()">Carica altri...</a>
+    <a href="" ng-click="loadOthers()" ng-hide="loading">Carica altri...</a>
 </div>

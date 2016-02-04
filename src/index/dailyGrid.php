@@ -1,26 +1,19 @@
-<?php
-    $grid = DailyVisualizer::getGrid();
+<div ng-controller="DailyGridCtrl">
+    <h2>Utenti connessi per fascia oraria <small><a href="" ng-click="reload()"><span class="glyphicon glyphicon-refresh"></span></a></small></h2>
+    <div ng-show="loading" class="spinner" ng-style="{'background-color': spinnerColors[spinnerIndex]}"></div>
 
-    $days = array(
-        'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'
-    );
-?>
-<h2>Utenti connessi per fascia oraria</h2>
-<table class="table text-center">
-    <tr>
-        <th></th>
-        <?php for ($i = 0; $i < 24; $i++) { ?>
-            <th><?php echo "$i:00"; ?></th>
-        <?php } ?>
-    </tr>
-    <?php for ($day = 0; $day < 7; $day++) { ?>
+    <table class="table text-center">
         <tr>
-            <td><?php echo $days[$day]; ?></td>
-            <?php for ($i = 0; $i < 24; $i++) { ?>
-                <td style="background-color: <?php echo $grid[$day][$i]['color'] ?>">
-                    <?php echo $grid[$day][$i]['value'] ?>
-                </td>
-            <?php } ?>
+            <th></th>
+            <th ng-repeat="hh in hours">
+                {{hh}}:00
+            </th>
         </tr>
-    <?php } ?>
-</table>
+        <tr ng-repeat="row in rows">
+            <td>{{row.day}}</td>
+            <td ng-repeat="cell in row.cells" ng-style="{'background-color': cell.color}">
+                {{cell.value}}
+            </td>
+        </tr>
+    </table>
+</div>

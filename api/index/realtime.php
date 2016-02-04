@@ -12,7 +12,8 @@ try {
     $users = RealtimeUsers::getOnlineUsers($ts3);
     $channels = RealtimeChannels::getChannels($ts3);
 } catch (Exception $e) {
-    die('Internal error... :(');
+    http_response_code(500);
+    API::printJSON(array('error' => 'Boh...'));
 }
 
 API::printJSON(RealtimeFormatter::getRealtime($users, $channels));

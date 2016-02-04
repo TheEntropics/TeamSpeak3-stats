@@ -1,5 +1,7 @@
 <div ng-controller="LogCtrl">
-    <h2>Ultimi eventi</h2>
+    <h2>Ultimi eventi <small><a href="" ng-click="reloadLog()"><span class="glyphicon glyphicon-refresh"></span></a></small></h2>
+    <div ng-show="loading" class="spinner" ng-style="{'background-color': spinnerColors[spinnerIndex]}"></div>
+
     <table class="table table-responsive table-condensed">
         <thead>
             <tr>

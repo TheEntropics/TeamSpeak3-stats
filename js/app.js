@@ -2,16 +2,27 @@
 
     var app = angular.module('ts3stats', ['ngSanitize', 'treeControl']);
 
+    app.controller('MainCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
+        $rootScope.spinnerColors = ['#2196F3', '#1DD2AF', '#E74C3C', '#34495E', '#F39C12'];
+        $rootScope.spinnerIndex = 0;
+    }]);
+
     app.controller('ScoreboardCtrl', ['$scope', '$rootScope', 'Utils', function($scope, $rootScope, Utils) {
         $scope.Utils = Utils;
         $scope.users = [];
+        $scope.loading = false;
+        $scope.spinnerIndex = 0;
 
         var offset = 0;
         var limitPerRequest = 10;
 
         $scope.loadOthers = function(off, lim) {
+            $scope.loading = true;
+            $scope.spinnerIndex = ($scope.spinnerIndex + 1) % $rootScope.spinnerColors.length;
+
             if (off === undefined) off = offset;
             if (lim === undefined) lim = limitPerRequest;
+
             $.ajax({
                 url: 'api/index/scoreboard.php',
                 method: 'GET',
@@ -20,11 +31,15 @@
                 success: function (data) {
                     $scope.$apply(function() {
                         $scope.users = $scope.users.concat(data);
+                        $scope.loading = false;
                     });
                     offset += limitPerRequest;
                 },
                 error: function () {
                     alert("Error!");
+                    $scope.$apply(function() {
+                        $scope.loading = false;
+                    });
                 }
             });
         };
@@ -58,11 +73,16 @@
     app.controller('LogCtrl', ['$scope', '$rootScope', 'Utils', function($scope, $rootScope, Utils) {
         $scope.Utils = Utils;
         $scope.logs = [];
+        $scope.loading = false;
+        $scope.spinnerIndex = 0;
 
         var offset = 0;
         var limitPerRequest = 10;
 
         $scope.loadOthers = function(off, lim) {
+            $scope.loading = true;
+            $scope.spinnerIndex = ($scope.spinnerIndex + 1) % $rootScope.spinnerColors.length;
+
             if (off === undefined) off = offset;
             if (lim === undefined) lim = limitPerRequest;
             $.ajax({
@@ -73,11 +93,15 @@
                 success: function (data) {
                     $scope.$apply(function() {
                         $scope.logs = $scope.logs.concat(data);
+                        $scope.loading = false;
                     });
                     offset += limitPerRequest;
                 },
                 error: function () {
                     alert("Error!");
+                    $scope.$apply(function() {
+                        $scope.loading = false;
+                    });
                 }
             });
         };
@@ -91,11 +115,15 @@
         $scope.loadOthers();
     }]);
 
-    app.controller('CounterCtrl', ['$scope', 'Utils', function($scope, Utils) {
+    app.controller('CounterCtrl', ['$scope', '$rootScope', 'Utils', function($scope, $rootScope, Utils) {
         $scope.Utils = Utils;
         $scope.counter = {};
+        $scope.loading = false;
+        $scope.spinnerIndex = 0;
 
         $scope.reload = function() {
+            $scope.loading = true;
+            $scope.spinnerIndex = ($scope.spinnerIndex + 1) % $rootScope.spinnerColors.length;
             $.ajax({
                 url: 'api/index/count.php',
                 method: 'GET',
@@ -103,10 +131,14 @@
                 success: function (data) {
                     $scope.$apply(function() {
                         $scope.counter = data;
+                        $scope.loading = false;
                     });
                 },
                 error: function (err) {
-                    alert("Error!", err);
+                    alert("Error!");
+                    $scope.$apply(function() {
+                        $scope.loading = false;
+                    });
                 }
             });
         };
@@ -121,10 +153,27 @@
         };
         $scope.tree = [];
         $scope.expandedNodes = [];
+        $scope.errored = false;
+        $scope.loading = true;
+        $scope.spinnerIndex = 0;
 
         var onlineUsers = null;
 
-        $scope.refresh = function() {
+        $scope.refresh = function(x) {
+            // when refresh is called for loading the page for the first time
+            // the $scope.$apply call is impossible because an other $apply
+            // call was done in the constructor of the controller
+            if (!x) {
+                $scope.$apply(function() {
+                    $scope.loading = true;
+                    $scope.errored = false;
+                    $scope.spinnerIndex = ($scope.spinnerIndex + 1) % $rootScope.spinnerColors.length;
+                });
+            } else {
+                $scope.loading = true;
+                $scope.errored = false;
+                $scope.spinnerIndex = ($scope.spinnerIndex + 1) % $rootScope.spinnerColors.length;
+            }
             $.ajax({
                 url: 'api/index/realtime.php',
                 dataType: 'JSON',
@@ -136,14 +185,20 @@
                     $scope.$apply(function() {
                         $scope.tree = tree;
                         $scope.expandedNodes = tree.slice();
+                        $scope.errored = false;
+                        $scope.loading = false;
                     });
                 }, error: function (err) {
                     console.error("Error in realtime", err);
+                    $scope.$apply(function() {
+                        $scope.errored = true;
+                        $scope.loading = false;
+                    });
                 }
             });
         };
 
-        $scope.refresh();
+        $scope.refresh(true);
 
         setInterval($scope.refresh, 5000);
 
@@ -204,6 +259,49 @@
             return users;
         };
 
+    }]);
+
+    app.controller('DailyGridCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
+        $scope.hours = []; for (var i = 0; i < 24; i++) $scope.hours.push(i);
+        $scope.rows = [];
+        $scope.loading = true;
+        $scope.spinnerIndex = 0;
+
+        var days = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'];
+
+        $scope.reload = function() {
+            $scope.loading = true;
+            $scope.spinnerIndex = ($scope.spinnerIndex + 1) % $rootScope.spinnerColors.length;
+            $.ajax({
+                url: 'api/index/daily.php',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    $scope.$apply(function() {
+                        applyGrid(data);
+                        $scope.loading = false;
+                    });
+                },
+                error: function () {
+                    alert("Error!");
+                    $scope.$apply(function() {
+                        $scope.loading = false;
+                    });
+                }
+            });
+        };
+
+        var applyGrid = function(data) {
+            $scope.rows = [];
+            for (d in data) {
+                var cells = data[d];
+                var day = days[d];
+
+                $scope.rows[d] = { day: day, cells: cells };
+            }
+        };
+
+        $scope.reload();
     }]);
 
     app.factory('Utils', function() {

@@ -23,7 +23,7 @@ Controller::init(true);
     <script src="js/app.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-<body class="container-fluid">
+<body class="container-fluid" ng-controller="MainCtrl">
     <div class="page-header">
         <h1 class="text-center">
             <a href=".">TeamSpeak3</a> <br>

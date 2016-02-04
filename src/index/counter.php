@@ -1,5 +1,6 @@
 <div ng-controller="CounterCtrl">
-    <h2>Statistiche <small><a href="" ng-click="reload()">(Reload)</a></small></h2>
+    <h2>Statistiche <small><a href="" ng-click="reload()"><span class="glyphicon glyphicon-refresh"></span></a></small></h2>
+    <div ng-show="loading" class="spinner" ng-style="{'background-color': spinnerColors[spinnerIndex]}"></div>
 
     <h4>Connessioni</h4>
     <dl class="dl-horizontal">
