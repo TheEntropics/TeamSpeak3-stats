@@ -14,6 +14,8 @@ class Logger {
             fputs(Logger::$logFile, "--------------------------------------\n");
         if (!CONSOLE && !QUIET)
             echo "<pre>";
+        set_error_handler("Logger::error_handler", E_ALL);
+        set_exception_handler("Logger::exception_handler");
     }
 
     /**
@@ -31,5 +33,15 @@ class Logger {
             else         echo $string . "<br>";
         if (!QUIET && Logger::$logFile)
             fputs(Logger::$logFile, $string . "\n");
+    }
+
+    public static function error_handler($errno, $errstr, $errfile, $errline) {
+        Logger::log("AN ERROR OCCURRED: ", $errno, "[", $errfile, ":", $errline, "]");
+        Logger::log($errstr);
+    }
+
+    public static function exception_handler($ex) {
+        Logger::log("AN EXCEPTION OCCURRED:");
+        Logger::log($ex);
     }
 }

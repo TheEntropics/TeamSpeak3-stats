@@ -1,16 +1,16 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.3.1
+-- version 4.5.4.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Creato il: Gen 13, 2016 alle 16:31
--- Versione del server: 10.1.10-MariaDB-log
+-- Creato il: Feb 04, 2016 alle 17:59
+-- Versione del server: 10.1.11-MariaDB-log
 -- Versione PHP: 7.0.2
 
 SET time_zone = "+00:00";
 
 --
--- Database: `ts3stats`
+-- Database: `ts3stats_debug`
 --
 
 -- --------------------------------------------------------
@@ -84,7 +84,7 @@ CREATE TABLE `daily_user_result` (
 
 CREATE TABLE `file_manager_events` (
   `id` int(11) NOT NULL,
-  `date` timestamp(6) NULL,
+  `date` timestamp(6) NULL DEFAULT NULL,
   `type` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
 ) ;
@@ -201,6 +201,7 @@ CREATE TABLE `user_collapser_results` (
 --
 ALTER TABLE `channel_events`
 ADD PRIMARY KEY (`id`),
+ADD UNIQUE KEY `date_2` (`date`,`type`,`name`,`user_id`),
 ADD KEY `date` (`date`),
 ADD KEY `user_id` (`user_id`);
 
@@ -209,6 +210,7 @@ ADD KEY `user_id` (`user_id`);
 --
 ALTER TABLE `client_connected_events`
 ADD PRIMARY KEY (`id`),
+ADD UNIQUE KEY `date_2` (`date`,`ip`,`user_id`),
 ADD KEY `user_id` (`user_id`),
 ADD KEY `date` (`date`);
 
@@ -217,6 +219,7 @@ ADD KEY `date` (`date`);
 --
 ALTER TABLE `client_disconnected_events`
 ADD PRIMARY KEY (`id`),
+ADD UNIQUE KEY `date_2` (`date`,`reason`,`user_id`),
 ADD KEY `date` (`date`),
 ADD KEY `user_id` (`user_id`);
 
@@ -237,6 +240,7 @@ ADD PRIMARY KEY (`client_id`,`date`);
 --
 ALTER TABLE `file_manager_events`
 ADD PRIMARY KEY (`id`),
+ADD UNIQUE KEY `date_2` (`date`,`type`,`user_id`),
 ADD KEY `user_id` (`user_id`),
 ADD KEY `date` (`date`);
 
