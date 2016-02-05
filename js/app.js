@@ -2,7 +2,24 @@
 
     var app = angular.module('ts3stats', ['ngSanitize', 'treeControl']);
 
-    app.controller('MainCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
+    app.controller('MainCtrl', ['$scope', '$rootScope', '$http', 'Utils', function($scope, $rootScope, $http, Utils) {
+        $rootScope.Utils = Utils;
+        $rootScope.lastUpdate = false;
+        $rootScope.lastUpdateErrored = false;
+
+        $rootScope.reloadLastUpdate = function() {
+            $http({
+                method: 'GET',
+                url: 'api/index/lastUpdate.php'
+            }).then(function(response) {
+                $rootScope.lastUpdate = response.data.date;
+                $rootScope.lastUpdateErrored = false;
+            }, function() {
+                $rootScope.lastUpdateErrored = true;
+            });
+        };
+
+        $rootScope.reloadLastUpdate();
     }]);
 
     app.controller('ScoreboardCtrl', ['$scope', '$rootScope', '$http', 'Utils', function($scope, $rootScope, $http, Utils) {
@@ -59,6 +76,7 @@
 
         $rootScope.reloadScoreboard = function() {
             $scope.loadOthers(true);
+            $rootScope.reloadLastUpdate();
         };
 
         $scope.loadOthers();
@@ -107,6 +125,7 @@
 
         $rootScope.reloadLog = function() {
             $scope.loadOthers(true);
+            $rootScope.reloadLastUpdate();
         };
 
         $scope.loadOthers();

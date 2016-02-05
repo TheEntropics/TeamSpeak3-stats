@@ -26,6 +26,9 @@ function formatTime(time) {
 }
 
 function formatDate(date) {
+    if (typeof(date) !== 'string')
+        return "";
+
     var d = getUTCDate(date);
 
     var YYYY = padLeft(d.getFullYear(), 4);

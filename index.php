@@ -1,8 +1,6 @@
 <?php
 
-require_once __DIR__ . '/src/classes/Controller.php';
-
-Controller::init(true);
+require_once __DIR__ . '/config/config.php';
 
 ?>
 <!DOCTYPE html>
