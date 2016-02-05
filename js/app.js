@@ -3,44 +3,43 @@
     var app = angular.module('ts3stats', ['ngSanitize', 'treeControl']);
 
     app.controller('MainCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
-        $rootScope.spinnerColors = ['#2196F3', '#1DD2AF', '#E74C3C', '#34495E', '#F39C12'];
-        $rootScope.spinnerIndex = 0;
     }]);
 
-    app.controller('ScoreboardCtrl', ['$scope', '$rootScope', 'Utils', function($scope, $rootScope, Utils) {
+    app.controller('ScoreboardCtrl', ['$scope', '$rootScope', '$http', 'Utils', function($scope, $rootScope, $http, Utils) {
         $scope.Utils = Utils;
         $scope.users = [];
         $scope.loading = false;
-        $scope.spinnerIndex = 0;
+        $scope.errored = false;
 
         var offset = 0;
         var limitPerRequest = 10;
 
-        $scope.loadOthers = function(off, lim) {
+        $scope.loadOthers = function(refresh) {
             $scope.loading = true;
-            $scope.spinnerIndex = ($scope.spinnerIndex + 1) % $rootScope.spinnerColors.length;
 
-            if (off === undefined) off = offset;
-            if (lim === undefined) lim = limitPerRequest;
+            var off = offset;
+            var lim = limitPerRequest;
+            if (refresh) {
+                off = 0;
+                lim = offset;
+            }
 
-            $.ajax({
-                url: 'api/index/scoreboard.php',
+            $http({
                 method: 'GET',
-                data: {offset: off, limit: lim},
-                dataType: 'json',
-                success: function (data) {
-                    $scope.$apply(function() {
-                        $scope.users = $scope.users.concat(data);
-                        $scope.loading = false;
-                    });
+                url: 'api/index/scoreboard.php',
+                params: {offset: off, limit: lim}
+            }).then(function(response) {
+                $scope.loading = false;
+                $scope.errored = false;
+                if (refresh)
+                    $scope.users = response.data;
+                else {
+                    $scope.users = $scope.users.concat(response.data);
                     offset += limitPerRequest;
-                },
-                error: function () {
-                    alert("Error!");
-                    $scope.$apply(function() {
-                        $scope.loading = false;
-                    });
                 }
+            }, function() {
+                $scope.loading = false;
+                $scope.errored = true;
             });
         };
 
@@ -60,93 +59,90 @@
         };
 
         $rootScope.reloadScoreboard = function() {
-            $scope.users = [];
-            $scope.loadOthers(0, offset);
-            offset -= limitPerRequest;
+            $scope.loadOthers(true);
         };
 
         $scope.loadOthers();
 
         setInterval(updateTimes, 1000);
+        setInterval($rootScope.reloadScoreboard, 10000);
     }]);
 
-    app.controller('LogCtrl', ['$scope', '$rootScope', 'Utils', function($scope, $rootScope, Utils) {
+    app.controller('LogCtrl', ['$scope', '$rootScope', '$http', 'Utils', function($scope, $rootScope, $http, Utils) {
         $scope.Utils = Utils;
         $scope.logs = [];
         $scope.loading = false;
-        $scope.spinnerIndex = 0;
+        $scope.errored = false;
 
         var offset = 0;
         var limitPerRequest = 10;
 
-        $scope.loadOthers = function(off, lim) {
+        $scope.loadOthers = function(refresh) {
             $scope.loading = true;
-            $scope.spinnerIndex = ($scope.spinnerIndex + 1) % $rootScope.spinnerColors.length;
 
-            if (off === undefined) off = offset;
-            if (lim === undefined) lim = limitPerRequest;
-            $.ajax({
-                url: 'api/index/log.php',
+            var off = offset;
+            var lim = limitPerRequest;
+            if (refresh) {
+                off = 0;
+                lim = offset;
+            }
+
+            $http({
                 method: 'GET',
-                data: {offset: off, limit: lim},
-                dataType: 'json',
-                success: function (data) {
-                    $scope.$apply(function() {
-                        $scope.logs = $scope.logs.concat(data);
-                        $scope.loading = false;
-                    });
+                url: 'api/index/log.php',
+                params: {offset: off, limit: lim}
+            }).then(function(response) {
+                $scope.loading = false;
+                $scope.errored = false;
+                if (refresh)
+                    $scope.logs = response.data;
+                else {
+                    $scope.logs = $scope.logs.concat(response.data);
                     offset += limitPerRequest;
-                },
-                error: function () {
-                    alert("Error!");
-                    $scope.$apply(function() {
-                        $scope.loading = false;
-                    });
                 }
+            }, function() {
+                $scope.loading = false;
+                $scope.errored = true;
             });
         };
 
         $rootScope.reloadLog = function() {
-            $scope.logs = [];
-            $scope.loadOthers(0, offset);
-            offset -= limitPerRequest;
+            $scope.loadOthers(true);
         };
 
         $scope.loadOthers();
+
+        setInterval($rootScope.reloadLog, 10000);
     }]);
 
-    app.controller('CounterCtrl', ['$scope', '$rootScope', 'Utils', function($scope, $rootScope, Utils) {
+    app.controller('CounterCtrl', ['$scope', '$http', 'Utils', function($scope, $http, Utils) {
         $scope.Utils = Utils;
         $scope.counter = {};
         $scope.loading = false;
-        $scope.spinnerIndex = 0;
+        $scope.errored = false;
 
         $scope.reload = function() {
             $scope.loading = true;
-            $scope.spinnerIndex = ($scope.spinnerIndex + 1) % $rootScope.spinnerColors.length;
-            $.ajax({
-                url: 'api/index/count.php',
+
+            $http({
                 method: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                    $scope.$apply(function() {
-                        $scope.counter = data;
-                        $scope.loading = false;
-                    });
-                },
-                error: function (err) {
-                    alert("Error!");
-                    $scope.$apply(function() {
-                        $scope.loading = false;
-                    });
-                }
+                url: 'api/index/count.php'
+            }).then(function(response) {
+                $scope.loading = false;
+                $scope.errored = false;
+                $scope.counter = response.data;
+            }, function() {
+                $scope.loading = false;
+                $scope.errored = true;
             });
         };
 
         $scope.reload();
+
+        setTimeout($scope.reload, 10000);
     }]);
 
-    app.controller('RealtimeCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
+    app.controller('RealtimeCtrl', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
         $scope.treeOptions = {
             nodeChildren: "channels",
             dirSelectable: false
@@ -154,8 +150,7 @@
         $scope.tree = [];
         $scope.expandedNodes = [];
         $scope.errored = false;
-        $scope.loading = true;
-        $scope.spinnerIndex = 0;
+        $scope.loading = false;
 
         var onlineUsers = null;
 
@@ -163,38 +158,25 @@
             // when refresh is called for loading the page for the first time
             // the $scope.$apply call is impossible because an other $apply
             // call was done in the constructor of the controller
-            if (!x) {
-                $scope.$apply(function() {
-                    $scope.loading = true;
-                    $scope.errored = false;
-                    $scope.spinnerIndex = ($scope.spinnerIndex + 1) % $rootScope.spinnerColors.length;
-                });
-            } else {
-                $scope.loading = true;
-                $scope.errored = false;
-                $scope.spinnerIndex = ($scope.spinnerIndex + 1) % $rootScope.spinnerColors.length;
-            }
-            $.ajax({
-                url: 'api/index/realtime.php',
-                dataType: 'JSON',
-                success: function (channels) {
-                    $('.spinner').remove();
+            $scope.loading = true;
+            if (!x) $scope.$apply();
 
-                    var tree = buildTree("0", channels);
-                    checkForOnlineUsers(channels);
-                    $scope.$apply(function() {
-                        $scope.tree = tree;
-                        $scope.expandedNodes = tree.slice();
-                        $scope.errored = false;
-                        $scope.loading = false;
-                    });
-                }, error: function (err) {
-                    console.error("Error in realtime", err);
-                    $scope.$apply(function() {
-                        $scope.errored = true;
-                        $scope.loading = false;
-                    });
-                }
+            $http({
+                method: 'GET',
+                url: 'api/index/realtime.php'
+            }).then(function(response) {
+                $scope.loading = false;
+                $scope.errored = false;
+                var channels = response.data;
+                var tree = buildTree("0", channels);
+                checkForOnlineUsers(channels);
+                $scope.tree = tree;
+                $scope.expandedNodes = tree.slice();
+                $scope.errored = false;
+                $scope.loading = false;
+            }, function() {
+                $scope.loading = false;
+                $scope.errored = true;
             });
         };
 
@@ -246,8 +228,11 @@
             }
 
             onlineUsers = users;
-            $rootScope.reloadScoreboard();
-            $rootScope.reloadLog();
+            setTimeout(function() {
+                $rootScope.reloadScoreboard();
+                $rootScope.reloadLog();
+                $scope.$apply();
+            }, 2000);
         };
 
         var getOnlineUsers = function(channels, id) {
@@ -261,7 +246,7 @@
 
     }]);
 
-    app.controller('DailyGridCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
+    app.controller('DailyGridCtrl', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
         $scope.hours = []; for (var i = 0; i < 24; i++) $scope.hours.push(i);
         $scope.rows = [];
         $scope.loading = true;
@@ -271,23 +256,17 @@
 
         $scope.reload = function() {
             $scope.loading = true;
-            $scope.spinnerIndex = ($scope.spinnerIndex + 1) % $rootScope.spinnerColors.length;
-            $.ajax({
-                url: 'api/index/daily.php',
+
+            $http({
                 method: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                    $scope.$apply(function() {
-                        applyGrid(data);
-                        $scope.loading = false;
-                    });
-                },
-                error: function () {
-                    alert("Error!");
-                    $scope.$apply(function() {
-                        $scope.loading = false;
-                    });
-                }
+                url: 'api/index/daily.php'
+            }).then(function(response) {
+                $scope.loading = false;
+                $scope.errored = false;
+                applyGrid(response.data);
+            }, function() {
+                $scope.loading = false;
+                $scope.errored = true;
             });
         };
 
@@ -302,6 +281,8 @@
         };
 
         $scope.reload();
+
+        setTimeout($scope.reload, 10000);
     }]);
 
     app.factory('Utils', function() {

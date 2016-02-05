@@ -1,10 +1,18 @@
 <div ng-controller="RealtimeCtrl">
-    <h2>Realtime <small><a href="" ng-click="refresh(true)"><span class="glyphicon glyphicon-refresh"></span></a></small></h2>
+    <h2>
+        Realtime
+        <small><a href="" ng-click="refresh(true)"><span class="glyphicon glyphicon-refresh"></span></a></small>
+        <span ng-show="loading" class="la-ball-grid-beat la-dark la-sm">
+            <div></div><div></div><div></div>
+            <div></div><div></div><div></div>
+            <div></div><div></div><div></div>
+        </span>
+    </h2>
 
     <div ng-show="errored">
         <span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></span> Error... Retrying in 5 seconds..
     </div>
-    <div ng-show="loading" class="spinner" ng-style="{'background-color': spinnerColors[spinnerIndex]}"></div>
+
     <div ng-hide="errored">
         <div treecontrol class="tree-classic"
              tree-model="tree"

@@ -1,8 +1,20 @@
 <div ng-controller="LogCtrl">
-    <h2>Ultimi eventi <small><a href="" ng-click="reloadLog()"><span class="glyphicon glyphicon-refresh"></span></a></small></h2>
-    <div ng-show="loading" class="spinner" ng-style="{'background-color': spinnerColors[spinnerIndex]}"></div>
+    <h2>
+        Ultimi eventi
+        <small><a href="" ng-click="reloadLog()"><span class="glyphicon glyphicon-refresh"></span></a></small>
 
-    <table class="table table-responsive table-condensed">
+        <span ng-show="loading" class="la-ball-grid-beat la-dark la-sm">
+            <div></div><div></div><div></div>
+            <div></div><div></div><div></div>
+            <div></div><div></div><div></div>
+        </span>
+    </h2>
+
+    <div ng-show="errored">
+        <span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></span> Error
+    </div>
+
+    <table class="table table-responsive table-condensed" ng-hide="errored">
         <thead>
             <tr>
                 <th>Data</th>
@@ -18,5 +30,5 @@
             </tr>
         </tbody>
     </table>
-    <a href="" ng-click="loadOthers()">Carica altri...</a>
+    <a href="" ng-click="loadOthers()" ng-hide="errored">Carica altri...</a>
 </div>
