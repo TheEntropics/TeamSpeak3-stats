@@ -44,18 +44,17 @@
         };
 
         var updateTimes = function() {
-            $scope.$apply(function() {
-                for (var i in $scope.users) {
-                    var user = $scope.users[i];
-                    if (!user.online) continue;
+            for (var i in $scope.users) {
+                var user = $scope.users[i];
+                if (!user.online) continue;
 
-                    var prev_uptime = user.total_uptime | 0;
-                    var online_since = new Date(user.onlineSince.date + " UTC");
-                    var current_session = Math.floor((new Date() - online_since)/1000);
-                    var new_uptime = prev_uptime + current_session;
-                    user.uptime = new_uptime;
-                }
-            });
+                var prev_uptime = user.total_uptime | 0;
+                var online_since = Utils.getUTCDate(user.onlineSince.date);
+                var current_session = Math.floor((new Date() - online_since) / 1000);
+                var new_uptime = prev_uptime + current_session;
+                user.uptime = new_uptime;
+            }
+            $scope.$apply();
         };
 
         $rootScope.reloadScoreboard = function() {
@@ -288,7 +287,8 @@
     app.factory('Utils', function() {
         return {
             formatTime: formatTime,
-            formatDate: formatDate
+            formatDate: formatDate,
+            getUTCDate: getUTCDate
         };
     });
 

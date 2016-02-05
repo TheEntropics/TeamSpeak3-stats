@@ -26,13 +26,7 @@ function formatTime(time) {
 }
 
 function formatDate(date) {
-    var d = new Date(Date.UTC(
-        parseInt(date.substr(0, 4)),
-        parseInt(date.substr(5, 2))-1,
-        parseInt(date.substr(8, 2)),
-        parseInt(date.substr(11, 2)),
-        parseInt(date.substr(14, 2)),
-        parseInt(date.substr(17, 2))));
+    var d = getUTCDate(date);
 
     var YYYY = padLeft(d.getFullYear(), 4);
     var MM = padLeft(d.getMonth()+1, 2);
@@ -46,4 +40,14 @@ function formatDate(date) {
 
 function padLeft(nr, n, str){
     return Array(n-String(nr).length+1).join(str||'0')+nr;
+}
+
+function getUTCDate(date) {
+    return new Date(Date.UTC(
+        parseInt(date.substr(0, 4)),
+        parseInt(date.substr(5, 2))-1,
+        parseInt(date.substr(8, 2)),
+        parseInt(date.substr(11, 2)),
+        parseInt(date.substr(14, 2)),
+        parseInt(date.substr(17, 2))));
 }
