@@ -24,7 +24,7 @@
         <tr ng-repeat="row in rows">
             <td>{{row.day}}</td>
             <td ng-repeat="cell in row.cells" ng-style="{'background-color': cell.color}">
-                {{cell.value}}
+                {{cell.value.toFixed(2)}}
             </td>
         </tr>
     </table>
