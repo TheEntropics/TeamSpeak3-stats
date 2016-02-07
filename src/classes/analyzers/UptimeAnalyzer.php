@@ -22,7 +22,7 @@ class UptimeAnalyzer extends BaseAnalyzer {
 
     private static function saveTimes($times) {
         if (count($times) > 500) {
-            $chunkes = array_chunk($times, 500);
+            $chunkes = array_chunk($times, 500, true);
             foreach ($chunkes as $chunk)
                 UptimeAnalyzer::saveTimes($chunk);
         } else {

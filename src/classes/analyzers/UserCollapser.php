@@ -30,6 +30,10 @@ class UserCollapser extends BaseAnalyzer {
         UserCollapser::saveResults();
     }
 
+    /**
+     * Prepare the analyzer
+     * @return array An array with all users with the usernames and the ips set
+     */
     private static function prepare() {
         $users = array();
         $ranges = OnlineRange::getRanges();
@@ -64,6 +68,9 @@ class UserCollapser extends BaseAnalyzer {
         return $users;
     }
 
+    /**
+     * Main loop of the analyzer. Repeat the merge process until the process is stable
+     */
     private static function loop() {
         do {
             $changes = false;
@@ -71,7 +78,7 @@ class UserCollapser extends BaseAnalyzer {
                 $client_id1 = $user1['client_id'];
                 $client_id2 = $user2['client_id'];
                 if (!UserCollapser::inSameSet($client_id1, $client_id2))
-                    if (UserCollapser::mergable($client_id1, $client_id2)) {
+                    if (UserCollapser::mergeable($client_id1, $client_id2)) {
                         UserCollapser::UFMerge($client_id1, $client_id2);
                         $changes = true;
                     }
@@ -79,28 +86,36 @@ class UserCollapser extends BaseAnalyzer {
         } while ($changes);
     }
 
-    private static function saveResults() {
-        DB::$DB->query("DELETE FROM user_collapser_results");
-        $sql = "INSERT INTO user_collapser_results (client_id1, client_id2) VALUES (?, ?)";
-        $query = DB::$DB->prepare($sql);
+    private static function saveResults($data = null) {
+        if ($data == null) {
+            DB::$DB->query("DELETE FROM user_collapser_results");
 
-        foreach (UserCollapser::$unionFind as $client_id => $parent) {
-            $query->execute(array($client_id, $parent));
-            if ($client_id == $parent)
-                UserCollapser::saveUsername($parent);
+            $data = array();
+            foreach (UserCollapser::$unionFind as $client_id => $parent)
+                $data[] = array($client_id, $parent);
+
+            UserCollapser::saveResults($data);
+        } elseif (count($data) > 500) {
+            $chunks = array_chunk($data, 500);
+            foreach ($chunks as $chunk)
+                UserCollapser::saveResults($chunk);
+        } else {
+            $sql = "INSERT INTO user_collapser_results (client_id1, client_id2) VALUES ";
+            $chunks = array();
+            foreach ($data as $row)
+                $chunks[] = "($row[0], $row[1])";
+            $sql .= implode(', ', $chunks);
+            DB::$DB->query($sql);
         }
     }
 
-    private static function saveUsername($client_id) {
-        $usernames = UserCollapser::$users[$client_id]['usernames'];
-        $username = array_keys($usernames, max($usernames))[0];
-
-        $sql = "INSERT INTO probable_username (client_id, username) VALUES (?, ?) ON DUPLICATE KEY UPDATE username = VALUES(username)";
-        $query = DB::$DB->prepare($sql);
-        $query->execute(array($client_id, $username));
-    }
-
-    private static function mergable($client_id1, $client_id2) {
+    /**
+     * Check if two client_id can be merged and to be considered as the same user
+     * @param $client_id1
+     * @param $client_id2
+     * @return bool
+     */
+    private static function mergeable($client_id1, $client_id2) {
         $parent1 = UserCollapser::UFFind($client_id1);
         $parent2 = UserCollapser::UFFind($client_id2);
 
@@ -121,6 +136,12 @@ class UserCollapser extends BaseAnalyzer {
         return $value >= UserCollapser::MERGE_THRESHOLD;
     }
 
+    /**
+     * Test how similar are two client id based on the IPs
+     * @param $client_id1
+     * @param $client_id2
+     * @return float The value is in range [0.0, 1.0]
+     */
     private static function testIP($client_id1, $client_id2) {
         $user1 = UserCollapser::$users[$client_id1];
         $user2 = UserCollapser::$users[$client_id2];
@@ -143,6 +164,12 @@ class UserCollapser extends BaseAnalyzer {
         return min($value / 2, 1.0);
     }
 
+    /**
+     * Test how similar are two client id based on the username
+     * @param $client_id1
+     * @param $client_id2
+     * @return float The value is in range [0.0, 1.0]
+     */
     private static function testUsername($client_id1, $client_id2) {
         $user1 = UserCollapser::$users[$client_id1];
         $user2 = UserCollapser::$users[$client_id2];
@@ -167,10 +194,21 @@ class UserCollapser extends BaseAnalyzer {
         return min($value / 2, 1.0);
     }
 
+    /**
+     * Check if two client_id have been merged
+     * @param $client_id1
+     * @param $client_id2
+     * @return bool True is they have been merged
+     */
     private static function inSameSet($client_id1, $client_id2) {
         return UserCollapser::UFFind($client_id1) == UserCollapser::UFFind($client_id2);
     }
 
+    /**
+     * Merge client_id1 into client_id2
+     * @param $client_id1
+     * @param $client_id2
+     */
     private static function UFMerge($client_id1, $client_id2) {
         $parent1 = UserCollapser::UFFind($client_id1);
         $parent2 = UserCollapser::UFFind($client_id2);
@@ -193,19 +231,34 @@ class UserCollapser extends BaseAnalyzer {
         UserCollapser::$unionFind[$parent1] = $parent2;
     }
 
+    /**
+     * Return the client_id of the representative of the client_id
+     * @param $client_id
+     * @return int The master client id
+     */
     private static function UFFind($client_id) {
         if (UserCollapser::$unionFind[$client_id] == $client_id) return $client_id;
         return UserCollapser::$unionFind[$client_id] = UserCollapser::UFFind(UserCollapser::$unionFind[$client_id]);
     }
 
+    /**
+     * Preprocess an ip applying the subnet mask
+     * @param $ip string The ip to process
+     * @return int
+     */
     private static function preprocessIP($ip) {
         $num = ip2long($ip);
         $mask = (-1 << (32 - UserCollapser::IP_SUBNET)) & ip2long('255.255.255.255');
         return $num & $mask;
     }
 
+    /**
+     * Preprocess the username removing useless chars (unicode chats in form &#XXXX; => &)
+     * @param $username string The username to process
+     * @return mixed
+     */
     private static function preprocessUsername($username) {
-        $newUsername = preg_replace("/#\d+;/", "", $username);
+        $newUsername = preg_replace("/&#\d+;/", "&", $username);
         return $newUsername;
     }
 
@@ -221,7 +274,7 @@ class UserCollapser extends BaseAnalyzer {
 
         foreach ($groupA as $client1)
             foreach ($groupB as $client2) {
-                echo "$client1 $client2 -> IP:" . UserCollapser::testIP($client1, $client2) . " Username:" . UserCollapser::testUsername($client1, $client2) . " Mergable: " . (UserCollapser::mergable($client1, $client2) ? 'true' : 'false') . PHP_EOL;
+                echo "$client1 $client2 -> IP:" . UserCollapser::testIP($client1, $client2) . " Username:" . UserCollapser::testUsername($client1, $client2) . " Mergable: " . (UserCollapser::mergeable($client1, $client2) ? 'true' : 'false') . PHP_EOL;
             }
     }
 }
