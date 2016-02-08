@@ -58,8 +58,6 @@ class User {
         $user = User::fromUsername($username, $client_id);
         if ($user) return $user;
 
-        Logger::log("create ", $username, $client_id);
-
         User::create(new User(-1, $username, $client_id));
 
         return User::fromUsername($username, $client_id);
@@ -93,7 +91,9 @@ class User {
     /**
      * Prepare the cache of the users..
      */
-    private static function buildCache() {
+    public static function buildCache() {
+        User::$cache = array();
+        User::$createCache = array();
         User::$autoIncrement = 1 + DB::$DB->query("SELECT MAX(id) FROM users")->fetch()[0];
 
         $users = User::getAll();

@@ -28,6 +28,7 @@ class UserCollapser extends BaseAnalyzer {
         Logger::log("    loop() ->", $endTime-$startTime);
 
         UserCollapser::saveResults();
+        User::buildCache();
     }
 
     /**
