@@ -25,9 +25,7 @@
             <img ng-switch-when="silenced" src="img/muted/silenced.png">
             <img ng-switch-when="normal" src="img/muted/normal.png">
         </span>
-            <a ng-href="#/user/{{node.client_id}}" ng-if="node.client_id != -1">
-                {{node.name}}
-            </a>
+            <a ng-href="#/user/{{node.client_id}}" ng-if="node.client_id != -1" ng-bind-html="node.name"></a>
             <span ng-if="node.client_id == -1">{{node.name}}</span>
         </div>
     </div>

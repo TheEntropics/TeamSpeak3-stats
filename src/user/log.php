@@ -27,7 +27,7 @@
                 <td>{{Utils.formatDate(log.connect_date)}}</td>
                 <td>{{Utils.formatDate(log.disconnect_date)}}</td>
                 <td>{{Utils.formatTime(log.duration)}}</td>
-                <td>{{log.username}}</td>
+                <td ng-bind-html="log.username"></td>
             </tr>
         </tbody>
     </table>

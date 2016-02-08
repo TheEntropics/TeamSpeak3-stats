@@ -6,7 +6,7 @@
         </div>
         <h2>
             Statistiche di
-            <small ng-hide="loading">{{info.username}}</small>
+            <small ng-hide="loading" ng-bind-html="info.username"></small>
             <span ng-show="loading" class="la-ball-grid-beat la-dark la-sm">
                 <div></div><div></div><div></div>
                 <div></div><div></div><div></div>
