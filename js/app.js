@@ -1,11 +1,40 @@
 (function() {
 
-    var app = angular.module('ts3stats', ['ngSanitize', 'treeControl']);
+    var app = angular.module('ts3stats', ['ngRoute', 'ngSanitize', 'treeControl', 'googlechart']);
 
-    app.controller('MainCtrl', ['$scope', '$rootScope', '$http', 'Utils', function($scope, $rootScope, $http, Utils) {
+    app.config(['$routeProvider', function($routeProvider) {
+        $routeProvider
+            .when('/', {
+                templateUrl: 'partials/index.php'
+            })
+            .when('/user/:userId', {
+                templateUrl: 'partials/user.php'
+            })
+            .otherwise({
+                redirectTo: '/'
+            })
+    }]);
+
+    app.factory('Utils', function() {
+        return {
+            formatTime: formatTime,
+            formatDate: formatDate,
+            formatShortDate: formatShortDate,
+            formatLongDate: formatLongDate,
+            getUTCDate: getUTCDate
+        };
+    });
+
+    //
+    // INDEX CONTROLLERS
+    //
+
+    app.controller('IndexCtrl', ['$scope', '$rootScope', '$http', 'Utils', function($scope, $rootScope, $http, Utils) {
         $rootScope.Utils = Utils;
         $rootScope.lastUpdate = false;
         $rootScope.lastUpdateErrored = false;
+
+        $('body').removeClass('container').addClass('container-fluid');
 
         $rootScope.reloadLastUpdate = function() {
             $http({
@@ -303,12 +332,165 @@
         setTimeout($scope.reload, 10000);
     }]);
 
-    app.factory('Utils', function() {
-        return {
-            formatTime: formatTime,
-            formatDate: formatDate,
-            getUTCDate: getUTCDate
+    //
+    // USER CONTROLLERS
+    //
+
+    app.controller('UserCtrl', [function() {
+        $('body').removeClass('container-fluid').addClass('container');
+    }]);
+
+    app.controller('UserInfoCtrl', ['$scope', '$routeParams', '$location', '$http', 'Utils', function($scope, $routeParams, $location, $http, Utils) {
+        $scope.Utils = Utils;
+        $scope.info = {};
+        $scope.loading = true;
+
+        $http({
+            method: 'GET',
+            url: 'api/user/info.php',
+            params: { 'client_id': $routeParams.userId }
+        }).then(function(response) {
+            $scope.info = response.data;
+            if ($scope.info.online)
+                setInterval(updateTime, 1000);
+            $scope.loading = false;
+        }, function() {
+            $location.path('/');
+        });
+
+        var updateTime = function() {
+            if (!$scope.info.online) return;
+
+            var online_since = Utils.getUTCDate($scope.info.online_since.date);
+            var current_session = Math.floor((new Date() - online_since) / 1000);
+            $scope.info.uptime = current_session;
+            $scope.$apply();
         };
-    });
+
+    }]);
+
+    app.controller('UserLogCtrl', ['$scope', '$http', '$routeParams', 'Utils', function($scope, $http, $routeParams, Utils) {
+        $scope.Utils = Utils;
+        $scope.logs = [];
+        $scope.loading = false;
+        $scope.errored = false;
+
+        var offset = 0;
+        var limitPerRequest = 10;
+
+        $scope.loadOthers = function(refresh) {
+            $scope.loading = true;
+
+            var off = offset;
+            var lim = limitPerRequest;
+            if (refresh) {
+                off = 0;
+                lim = offset;
+            }
+
+            $http({
+                method: 'GET',
+                url: 'api/user/log.php',
+                params: { offset: off, limit: lim, client_id: $routeParams.userId }
+            }).then(function(response) {
+                $scope.loading = false;
+                $scope.errored = false;
+                if (refresh)
+                    $scope.logs = response.data;
+                else {
+                    $scope.logs = $scope.logs.concat(response.data);
+                    offset += limitPerRequest;
+                }
+            }, function() {
+                $scope.loading = false;
+                $scope.errored = true;
+            });
+        };
+
+        $scope.loadOthers();
+    }]);
+
+    app.controller('UserUsernameCtrl', ['$scope', '$http', '$routeParams', 'Utils', function($scope, $http, $routeParams, Utils) {
+        $scope.Utils = Utils;
+        $scope.usernames = [];
+
+        $http({
+            method: 'GET',
+            url: 'api/user/usernames.php',
+            // no limit in number of usernames...
+            params: { limit: 100000, client_id: $routeParams.userId }
+        }).then(function(response) {
+            $scope.usernames = response.data;
+        });
+    }]);
+
+    app.controller('UserStreakCtrl', ['$scope', '$http', '$routeParams', 'Utils', function($scope, $http, $routeParams, Utils) {
+        $scope.Utils = Utils;
+        $scope.streak = {};
+        $scope.errored = false;
+        $scope.loading = true;
+
+        $http({
+            method: 'GET',
+            url: 'api/user/streak.php',
+            params: { client_id: $routeParams.userId }
+        }).then(function(response) {
+            $scope.streak = response.data;
+            $scope.errored = false;
+            $scope.loading = false;
+        }, function() {
+            $scope.errored = true;
+            $scope.loading = false;
+        });
+    }]);
+
+    app.controller('UserDailyGraphCtrl', ['$scope', '$http', '$routeParams', 'Utils', 'googleChartApiConfig', function($scope, $http, $routeParams, Utils, googleChartApiConfig) {
+        googleChartApiConfig.optionalSettings = { packages: ['corechart', 'calendar'] };
+        googleChartApiConfig.version = '1.1';
+
+        $scope.errored = false;
+        $scope.loading = true;
+
+        $scope.chartObject = {
+            type: 'Calendar',
+            options: {
+                height: 350
+            },
+            data: {
+                cols: [
+                    { id: 'Date', type: 'date' },
+                    { id: 'Seconds', type: 'number' },
+                    { id: 'Text', type: 'string', role: 'tooltip', p: {html: true} }
+                ],
+                rows: []
+            }
+        };
+
+        $http({
+            method: 'GET',
+            url: 'api/user/daily.php',
+            params: { client_id: $routeParams.userId }
+        }).then(function(response) {
+            var rows = $scope.chartObject.data.rows;
+            for (var i in response.data) {
+                var date = new Date(response.data[i].date);
+                var time = response.data[i].day_time;
+
+                rows.push({
+                    c: [
+                        { v: date },
+                        { v: time },
+                        { v: "<div><h4>" + Utils.formatLongDate(date) + "</h4><p>" + Utils.formatTime(time) + "</p></div>" }
+                    ]
+                })
+            }
+
+            $scope.loading = false;
+            $scope.errored = false;
+        }, function() {
+            $scope.loading = false;
+            $scope.errored = true;
+        });
+    }]);
 
 })();

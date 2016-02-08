@@ -41,6 +41,32 @@ function formatDate(date) {
     return DD + "/" + MM + "/" + YYYY + " alle " + hh + ":" + mm + ":" + ss;
 }
 
+function formatShortDate(date) {
+    if (typeof(date) !== 'string')
+        return "";
+
+    var d = new Date(date);
+
+    var YYYY = padLeft(d.getFullYear(), 4);
+    var MM = padLeft(d.getMonth()+1, 2);
+    var DD = padLeft(d.getDate(), 2);
+
+    return DD + "/" + MM + "/" + YYYY;
+}
+
+function formatLongDate(date) {
+    var MONTHS = ['gennaio', 'febbraio', 'marzo',
+        'aprile', 'maggio', 'giugno',
+        'luglio', 'agosto', 'settembre',
+        'ottobre', 'novembre', 'dicembre'];
+
+    var YYYY = padLeft(date.getFullYear(), 4);
+    var MM = MONTHS[date.getMonth()];
+    var DD = padLeft(date.getDate(), 2);
+
+    return DD + " " + MM + " " + YYYY;
+}
+
 function padLeft(nr, n, str){
     return Array(n-String(nr).length+1).join(str||'0')+nr;
 }

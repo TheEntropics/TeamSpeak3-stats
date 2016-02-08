@@ -3,7 +3,7 @@
 
 class UsernameUptimeVisualizer {
     public static function getUsernameUptime($client_id, $limit = 100000, $offset = 0) {
-        $sql = "SELECT client_id2 as client_is, username, SUM(time) as total_time
+        $sql = "SELECT client_id2 as client_id, username, SUM(time) as total_time
                     FROM user_collapser_results
                     JOIN users ON users.client_id = user_collapser_results.client_id1
                     JOIN users_uptime ON users.id = users_uptime.user_id

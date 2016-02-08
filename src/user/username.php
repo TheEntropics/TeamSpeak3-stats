@@ -1,11 +1,9 @@
-<?php
-
-$usernames = UsernameUptimeVisualizer::getUsernameUptime($client_id);
-
-?>
-<h3>Username utilizzati</h3>
-<ol>
-    <?php foreach($usernames as $row) { ?>
-        <li><?php echo $row['username'] ?> <small><?php echo Utils::formatTime($row['total_time']) ?></small></li>
-    <?php } ?>
-</ol>
+<div ng-controller="UserUsernameCtrl">
+    <h3>Username utilizzati</h3>
+    <ol>
+        <li ng-repeat="user in usernames">
+            {{user.username}}
+            <small>{{Utils.formatTime(user.total_time)}}</small>
+        </li>
+    </ol>
+</div>

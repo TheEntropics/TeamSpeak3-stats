@@ -19,7 +19,7 @@
             ng-data-online="{{user.username}}"
             ng-data-online-since="{{user.username}}"
             ng-data-uptime="{{user.username}}">
-            <a href="user.php?client-id={{user.client_id}}"><span ng-bind-html="user.username"></span></a>
+            <a ng-href="#/user/{{user.client_id}}"><span ng-bind-html="user.username"></span></a>
             <span ng-show="user.online" class="text-success">(online)</span>
             <small class="uptime">{{Utils.formatTime(user.uptime)}}</small>
         </li>
