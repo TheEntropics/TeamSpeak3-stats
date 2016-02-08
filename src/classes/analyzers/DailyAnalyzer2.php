@@ -87,16 +87,13 @@ class DailyAnalyzer2 extends BaseAnalyzer {
     }
 
     private static function saveAverages($averages) {
-        foreach ($averages as $cell_id => $average) {
-            $sql = "INSERT INTO daily_results (cell_id, average)
-                      VALUES (:cell_id, :average)
-                      ON DUPLICATE KEY UPDATE average = VALUES(average)";
-            $query = DB::$DB->prepare($sql);
+        $sql = "INSERT INTO daily_results (cell_id, average) VALUES ";
+        $chunks = array();
+        foreach ($averages as $cell_id => $average)
+            $chunks[] = "($cell_id, $average)";
+        $sql .= implode(", ", $chunks);
+        $sql .= " ON DUPLICATE KEY UPDATE average = VALUES(average)";
 
-            $query->bindParam("cell_id", $cell_id);
-            $query->bindParam("average", $average);
-
-            $query->execute();
-        }
+        DB::$DB->query($sql);
     }
 }

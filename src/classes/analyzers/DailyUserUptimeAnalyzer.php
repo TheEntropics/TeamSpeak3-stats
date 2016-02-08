@@ -54,18 +54,20 @@ class DailyUserUptimeAnalyzer extends BaseAnalyzer {
         DailyUserUptimeAnalyzer::$times[$client_id][$start_date] += $time;
     }
 
-    private static function saveTimes($times) {
-        if (count($times) > 500) {
-            $chunkes = array_chunk($times, 500);
-            foreach ($chunkes as $chunk)
-                DailyUserUptimeAnalyzer::saveTimes($chunk);
-        } else {
-            $sql = "INSERT INTO daily_user_result (client_id, date, time) VALUES ";
-            $chunkes = array();
+    private static function saveTimes($times, $splitYet = false) {
+        if (!$splitYet) {
+            $chunks = array();
             foreach ($times as $user => $list)
                 foreach ($list as $date => $time)
-                    $chunkes[] = "($user, '$date', $time)";
-            $sql .= implode(', ', $chunkes);
+                    $chunks[] = "($user, '$date', $time)";
+            DailyUserUptimeAnalyzer::saveTimes($chunks, true);
+        } else if (count($times) > 500) {
+            $chunks = array_chunk($times, 500);
+            foreach ($chunks as $chunk)
+                DailyUserUptimeAnalyzer::saveTimes($chunk, true);
+        } else {
+            $sql = "INSERT INTO daily_user_result (client_id, date, time) VALUES ";
+            $sql .= implode(', ', $times);
             $sql .= " ON DUPLICATE KEY UPDATE time=VALUES(time)";
             DB::$DB->query($sql);
         }

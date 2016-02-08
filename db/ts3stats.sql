@@ -23,7 +23,7 @@ CREATE TABLE `channel_events` (
   `id` int(11) NOT NULL,
   `date` timestamp(6) NOT NULL,
   `type` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL,
+  `name` varchar(50) NOT NULL COLLATE utf8_bin,
   `user_id` int(11) NOT NULL
 ) ;
 
@@ -36,7 +36,7 @@ CREATE TABLE `channel_events` (
 CREATE TABLE `client_connected_events` (
   `id` int(11) NOT NULL,
   `date` timestamp(6) NOT NULL,
-  `ip` varchar(15) NOT NULL,
+  `ip` varchar(15) NOT NULL COLLATE utf8_bin,
   `user_id` int(11) NOT NULL
 ) ;
 
@@ -49,7 +49,7 @@ CREATE TABLE `client_connected_events` (
 CREATE TABLE `client_disconnected_events` (
   `id` int(11) NOT NULL,
   `date` timestamp(6) NOT NULL,
-  `reason` varchar(200) NOT NULL,
+  `reason` varchar(200) NOT NULL COLLATE utf8_bin,
   `user_id` int(11) NOT NULL
 ) ;
 
@@ -96,8 +96,8 @@ CREATE TABLE `file_manager_events` (
 --
 
 CREATE TABLE `misc_results` (
-  `key` varchar(50) NOT NULL,
-  `value` varchar(100) NOT NULL
+  `key` varchar(50) NOT NULL COLLATE utf8_bin,
+  `value` varchar(100) NOT NULL COLLATE utf8_bin
 ) ;
 
 -- --------------------------------------------------------
@@ -119,7 +119,7 @@ CREATE TABLE `online_results` (
 
 CREATE TABLE `probable_username` (
   `client_id` int(11) NOT NULL,
-  `username` varchar(50) NOT NULL
+  `username` varchar(50) NOT NULL COLLATE utf8_bin
 ) ;
 
 -- --------------------------------------------------------
@@ -166,7 +166,7 @@ CREATE TABLE `uptime_results` (
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `username` varchar(100) NOT NULL,
+  `username` varchar(100) NOT NULL COLLATE utf8_bin,
   `client_id` int(11) NOT NULL
 ) ;
 

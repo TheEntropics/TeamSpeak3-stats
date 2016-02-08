@@ -59,5 +59,7 @@ class CacheService {
         }
         foreach ($pool as $class => $list)
             $class::saveEvents($class, $list);
+
+        User::flushCreateCache();
     }
 }

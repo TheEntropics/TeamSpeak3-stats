@@ -19,8 +19,12 @@ class User {
      */
     public $master_client_id;
 
+    private static $autoIncrement = null;
+    private static $cache = array();
+    private static $createCache = array();
+
     public function __construct($id, $username, $client_id, $client_id2 = null) {
-        $this->id = $id;
+        $this->id = $id == -1 ? User::$autoIncrement++ : $id;
         $this->username = $username;
         $this->client_id = $client_id;
         if ($client_id2 == null)
@@ -35,44 +39,13 @@ class User {
      * @return User|null
      */
     public static function fromUsername($username, $client_id=-1) {
-        $sql = "SELECT *
-                  FROM users
-                  LEFT JOIN user_collapser_results ON users.client_id = user_collapser_results.client_id1
-                  WHERE username = :username";
-        if ($client_id != -1) $sql .= " AND client_id = :client_id";
+        if (User::$autoIncrement == null)
+            User::buildCache();
 
-        $query = DB::$DB->prepare($sql);
-        $query->bindParam('username', $username);
-        if ($client_id != -1) $query->bindParam('client_id', $client_id);
-
-        $query->execute();
-
-        $result = $query->fetchAll();
-        if (count($result) == 0) return null;
-
-        return new User($result[0]['id'], $result[0]['username'], $result[0]['client_id']);
-    }
-
-    /**
-     * Return a User instance from its id
-     * @param $id The id of the user
-     * @return null|User
-     */
-    public static function fromId($id) {
-        $sql = "SELECT *
-                  FROM users
-                  LEFT JOIN user_collapser_results ON users.client_id = user_collapser_results.client_id1
-                  WHERE id = :id";
-
-        $query = DB::$DB->prepare($sql);
-        $query->bindParam('id', $id);
-
-        $query->execute();
-
-        $result = $query->fetchAll();
-        if (count($result) == 0) return null;
-
-        return new User($result[0]['id'], $result[0]['username'], $result[0]['client_id'], $result[0]['client_id2']);
+        if ($client_id == -1)
+            return count(User::$cache[$username]) > 0 ? array_values(User::$cache[$username])[0] : null;
+        else
+            return isset(User::$cache[$username][$client_id]) ? User::$cache[$username][$client_id] : null;
     }
 
     /**
@@ -85,11 +58,9 @@ class User {
         $user = User::fromUsername($username, $client_id);
         if ($user) return $user;
 
-        $sql = "INSERT INTO users (username, client_id) VALUE (?, ?)";
-        $query = DB::$DB->prepare($sql);
+        Logger::log("create ", $username, $client_id);
 
-        $result = $query->execute(array($username, $client_id));
-        if (!$result) return null;
+        User::create(new User(-1, $username, $client_id));
 
         return User::fromUsername($username, $client_id);
     }
@@ -117,5 +88,54 @@ class User {
         $query->bindValue("client_id", $client_id);
         $query->execute();
         return $query->fetch()['client_id2'];
+    }
+
+    /**
+     * Prepare the cache of the users..
+     */
+    private static function buildCache() {
+        User::$autoIncrement = 1 + DB::$DB->query("SELECT MAX(id) FROM users")->fetch()[0];
+
+        $users = User::getAll();
+
+        foreach ($users as $user) {
+            $username = $user->username;
+            $client_id = $user->client_id;
+
+            if (!isset(User::$cache[$username]))
+                User::$cache[$username] = array();
+            User::$cache[$username][$client_id] = $user;
+        }
+    }
+
+    /**
+     * Create a new user using the internal cache. It's important to flush the user cache after creating all the users
+     * @param $user User The user to create
+     */
+    private static function create($user) {
+        User::$createCache[] = $user;
+        User::$cache[$user->username][$user->client_id] = $user;
+    }
+
+    /**
+     * Flush the user create cache inserting the users into the database
+     * @param null|array $users A list of the users to insert into the db. If null the internal cache is flushed
+     */
+    public static function flushCreateCache($users = null) {
+        if (is_null($users))
+            User::flushCreateCache(User::$createCache);
+        else if (count($users) > 500) {
+            $chunks = array_chunk($users, 500);
+            foreach ($chunks as $chunk)
+                User::flushCreateCache($chunk);
+        } else if (count($users) > 0) {
+            $sql = "INSERT INTO users (id, username, client_id) VALUES ";
+            $chunks = array();
+            foreach ($users as $user)
+                $chunks[] = "(" . $user->id . ", " . DB::$DB->quote($user->username) . ", " . $user->client_id . ")";
+            $sql .= implode(", ", $chunks);
+
+            DB::$DB->query($sql);
+        }
     }
 }
