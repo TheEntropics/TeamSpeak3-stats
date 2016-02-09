@@ -1,0 +1,28 @@
+{
+  "name": "TeamSpeak3-stats",
+  "homepage": "https://github.com/TheEntropics/TeamSpeak3-stats",
+  "authors": [
+    "Edoardo Morassutto <gianluigi988@gmail.com>",
+    "Marco Civettini <marco.cive.civettini@gmail.com>",
+    "Fabio Luccon <fabio.luccon@hotmail.it>"
+  ],
+  "description": "TeamSpeak 3 statistics!",
+  "main": "",
+  "moduleType": [],
+  "license": "GPLv2",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "bower_components"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "angularjs-slider": "^2.8.0",
+    "jquery": "^2.2.0",
+    "angular": "^1.5.0",
+    "angular-route": "^1.5.0",
+    "angular-sanitize": "^1.5.0",
+    "angular-tree-control": "^0.2.23",
+    "angular-google-chart": "^0.1.0"
+  }
+}
