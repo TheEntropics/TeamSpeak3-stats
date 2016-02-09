@@ -7,7 +7,7 @@ class Ts3ServerQuery {
     /**
      * The connection timeout for the telnet
      */
-    const CONNECTION_TIMEOUT = 0.1;
+    const CONNECTION_TIMEOUT = 10.1;
 
     private $telnet;
     private $lastError;

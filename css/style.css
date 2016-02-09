@@ -50,6 +50,14 @@
     }
 }
 
+[treecontrol].tree-classic li.tree-expanded i.tree-branch-head,
+[treecontrol].tree-classic li.tree-collapsed i.tree-branch-head,
+[treecontrol].tree-classic li.tree-leaf i.tree-leaf-head,
+[treecontrol].tree-classic li .tree-selected {
+    background: #fff !important;
+    font-weight: normal !important;
+}
+
 /*!
  * Load Awesome v1.1.0 (http://github.danielcardoso.net/load-awesome/)
  * Copyright 2015 Daniel Cardoso <@DanielCardoso>
