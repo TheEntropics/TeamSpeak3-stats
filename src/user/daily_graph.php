@@ -12,5 +12,5 @@
     <div ng-show="errored">
         <span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></span> Error
     </div>
-    <div google-chart ng-hide="loading || errored" chart="chartObject" style="height:350px; width:100%;"></div>
+    <div ng-hide="errored" google-chart chart="chartObject" style="height:350px; width:100%;"></div>
 </div>
