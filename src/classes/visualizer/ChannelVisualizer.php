@@ -3,9 +3,9 @@
 
 class ChannelVisualizer {
     public static function getChannels() {
-        $sql = "SELECT * FROM channel_events ORDER BY name, date";
+        $sql = "SELECT date,name FROM channel_events ORDER BY name, date";
         $query = DB::$DB->query($sql);
-        $rows = $query->fetchAll();
+        $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 
         $result = array();
 
@@ -19,7 +19,7 @@ class ChannelVisualizer {
 
             $i++;
 
-            $result[] = array($a, $b);
+            $result[] = array("name" => $a['name'], "created" => $a["date"], "deleted" => $b["date"]);
         }
 
         return $result;

@@ -10,6 +10,9 @@
             .when('/user/:userId', {
                 templateUrl: 'partials/user.php'
             })
+            .when('/channels', {
+                templateUrl: 'partials/channels.php'
+            })
             .otherwise({
                 redirectTo: '/'
             })
@@ -592,6 +595,27 @@
         }, function() {
             $scope.loading = false;
             $scope.errored = true;
+        });
+    }]);
+
+    //
+    // CHANNELS CONTROLLER
+    //
+    app.controller('ChannelsCtrl', ['$scope', '$http', 'Utils', function($scope, $http, Utils) {
+        $scope.Utils = Utils;
+        $scope.channels = [];
+        $scope.loading = true;
+
+        $('body').removeClass('container-fluid').addClass('container');
+
+        $http({
+            method: 'GET',
+            url: 'api/channels/all.php'
+        }).then(function(response) {
+            $scope.channels = response.data;
+            $scope.loading = false;
+        }, function() {
+            $location.path('/');
         });
     }]);
 

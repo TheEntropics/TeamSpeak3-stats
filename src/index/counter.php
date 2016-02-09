@@ -43,7 +43,7 @@
             <dd>{{counter.fileDeletedCount}}</dd>
         </dl>
 
-        <h4><a href="channels.php">Canali</a></h4>
+        <h4><a href="#/channels">Canali</a></h4>
         <dl class="dl-horizontal">
             <dt>Canali creati</dt>
             <dd>{{counter.channelCreated}}</dd>

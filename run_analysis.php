@@ -17,6 +17,7 @@ if (isset($options['h'])) {
     echo "    -p passcode  Use the specified passcode" . PHP_EOL;
     echo "    -u           Cache update only, do not do the analysis" . PHP_EOL;
     echo "    -f           Do the analysis and run only fast analyzers" . PHP_EOL;
+    echo "    -d           Enable debug features" . PHP_EOL;
     exit;
 }
 
