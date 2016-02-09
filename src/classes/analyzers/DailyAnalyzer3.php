@@ -4,13 +4,14 @@
 class DailyAnalyzer3 extends BaseAnalyzer {
 
     /**
-     * The scale of precision used in finwick tree.
+     * The scale of precision used in fenwick tree.
      * 1 => seconds
      * 60 => minutes
      *
      * The timestamp is divided by this value
      */
     const TIME_SCALE = 60;
+    private static $TIME_SCALE;
 
     /**
      * @var null|DateTime
@@ -34,6 +35,8 @@ class DailyAnalyzer3 extends BaseAnalyzer {
     private static $fenwickTree = null;
 
     public static function runAnalysis() {
+        DailyAnalyzer3::$TIME_SCALE = Config::get("analyzers.DailyAnalyzer3.time_scale", DailyAnalyzer3::TIME_SCALE);
+
         DailyAnalyzer3::getBounds();
         DailyAnalyzer3::$fenwickTree = new FenwickTree(DailyAnalyzer3::$timeSpan + 10);
 
@@ -73,7 +76,7 @@ class DailyAnalyzer3 extends BaseAnalyzer {
      * @return int
      */
     private static function getIndexFromDate($date) {
-        return intval($date->getTimestamp() / DailyAnalyzer3::TIME_SCALE) + 1;
+        return intval($date->getTimestamp() / DailyAnalyzer3::$TIME_SCALE) + 1;
     }
 
     /**
@@ -98,22 +101,22 @@ class DailyAnalyzer3 extends BaseAnalyzer {
         $base = DailyAnalyzer3::$lowerBound->getTimestamp();
         $base -= $base % 3600;
 
-        for ($i = 0; $i < DailyAnalyzer3::$timeSpan; $i += DailyAnalyzer3::TIME_SCALE) {
+        for ($i = 0; $i < DailyAnalyzer3::$timeSpan; $i += DailyAnalyzer3::$TIME_SCALE) {
             $start = $i;
-            $end = min($i + DailyAnalyzer3::TIME_SCALE - 1, DailyAnalyzer3::$timeSpan);
+            $end = min($i + DailyAnalyzer3::$TIME_SCALE - 1, DailyAnalyzer3::$timeSpan);
 
             $sum = DailyAnalyzer3::$fenwickTree->rangeQuery($start, $end);
             $average = $sum * 1.0 / ($end - $start);
             if ($average > 0)
-                $averages[$base + $i*DailyAnalyzer3::TIME_SCALE] = $average;
+                $averages[$base + $i*DailyAnalyzer3::$TIME_SCALE] = $average;
         }
 
         return $averages;
     }
 
     private static function saveAverages($averages) {
-        if (count($averages) > 500) {
-            $chunks = array_chunk($averages, 500, true);
+        if (count($averages) > Config::get("max_per_insert", 500)) {
+            $chunks = array_chunk($averages, Config::get("max_per_insert", 500), true);
             foreach ($chunks as $chunk)
                 DailyAnalyzer3::saveAverages($chunk);
         } else {

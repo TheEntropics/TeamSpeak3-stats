@@ -12,11 +12,23 @@ class UserCollapser extends BaseAnalyzer {
     const MERGE_THRESHOLD = 0.9;
     const MERGE_FIXED_THRESHOLD = 0.95;
 
+    private static $K1;
+    private static $K2;
+    private static $IP_SUBNET;
+    private static $MERGE_THRESHOLD;
+    private static $MERGE_FIXED_THRESHOLD;
+
     private static $unionFind = array();
 
     private static $users = array();
 
     public static function runAnalysis() {
+        UserCollapser::$K1 = Config::get("analyzers.UserCollapser.K1", UserCollapser::K1);
+        UserCollapser::$K2 = Config::get("analyzers.UserCollapser.K2", UserCollapser::K2);
+        UserCollapser::$IP_SUBNET = Config::get("analyzers.UserCollapser.ip_subnet", UserCollapser::IP_SUBNET);
+        UserCollapser::$MERGE_THRESHOLD = Config::get("analyzers.UserCollapser.merge_threshold", UserCollapser::MERGE_THRESHOLD);
+        UserCollapser::$MERGE_FIXED_THRESHOLD = Config::get("analyzers.UserCollapser.merge_fixed_threshold", UserCollapser::MERGE_FIXED_THRESHOLD);
+
         $startTime = microtime(true);
         UserCollapser::$users = UserCollapser::prepare();
         $endTime = microtime(true);
@@ -96,8 +108,8 @@ class UserCollapser extends BaseAnalyzer {
                 $data[] = array($client_id, $parent);
 
             UserCollapser::saveResults($data);
-        } elseif (count($data) > 500) {
-            $chunks = array_chunk($data, 500);
+        } elseif (count($data) > Config::get("max_per_insert", 500)) {
+            $chunks = array_chunk($data, Config::get("max_per_insert", 500));
             foreach ($chunks as $chunk)
                 UserCollapser::saveResults($chunk);
         } else {
@@ -128,13 +140,13 @@ class UserCollapser extends BaseAnalyzer {
         $ip = 2 * $ip - $ip * $ip;
         $username = 2 * $username - $username * $username;
 
-        if (($ip >= UserCollapser::MERGE_FIXED_THRESHOLD && $username >= 1 - UserCollapser::MERGE_FIXED_THRESHOLD) ||
-            ($username >= UserCollapser::MERGE_FIXED_THRESHOLD && $ip >= 1 - UserCollapser::MERGE_FIXED_THRESHOLD)) {
+        if (($ip >= UserCollapser::$MERGE_FIXED_THRESHOLD && $username >= 1 - UserCollapser::$MERGE_FIXED_THRESHOLD) ||
+            ($username >= UserCollapser::$MERGE_FIXED_THRESHOLD && $ip >= 1 - UserCollapser::$MERGE_FIXED_THRESHOLD)) {
             return true;
         }
 
         $value = $ip * 0.5 + $username * 0.5;
-        return $value >= UserCollapser::MERGE_THRESHOLD;
+        return $value >= UserCollapser::$MERGE_THRESHOLD;
     }
 
     /**
@@ -156,8 +168,8 @@ class UserCollapser extends BaseAnalyzer {
         // se ogni ip è usato da entrambi per almeno K1% del tempo totale allora lo considero ed avrà un valore
         // proporzionale al tempo utilizzato rispetto al tempo totale
         foreach ($commonIPs as $ip) {
-            $tresh1 = $user1['time'] / count($user1['ips']) * UserCollapser::K1;
-            $tresh2 = $user2['time'] / count($user2['ips']) * UserCollapser::K1;
+            $tresh1 = $user1['time'] / count($user1['ips']) * UserCollapser::$K1;
+            $tresh2 = $user2['time'] / count($user2['ips']) * UserCollapser::$K1;
             if ($user1['ips'][$ip] >= $tresh1 && $user2['ips'][$ip] >= $tresh2)
                 $value += $user1['ips'][$ip] / $user1['time'] + $user2['ips'][$ip] / $user2['time'];
         }
@@ -186,9 +198,9 @@ class UserCollapser extends BaseAnalyzer {
                 $l1 = strlen($username1_stripped);
                 $l2 = strlen($username2_stripped);
                     // firstly use the levenshtein method
-                if (levenshtein($username1_stripped, $username2_stripped) < min($l1, $l2) * UserCollapser::K2 ||
+                if (levenshtein($username1_stripped, $username2_stripped) < min($l1, $l2) * UserCollapser::$K2 ||
                     // if it failed try using similar_text only on usernames longer than 8
-                    (min($l1, $l2) >= 8 && similar_text($username1_stripped, $username2_stripped, $perc) > 0 && $perc/100 > UserCollapser::K2))
+                    (min($l1, $l2) >= 8 && similar_text($username1_stripped, $username2_stripped, $perc) > 0 && $perc/100 > UserCollapser::$K2))
                     $value += $user1['usernames'][$username1]/$user1['time'] + $user2['usernames'][$username2]/$user2['time'];
             }
 
@@ -249,7 +261,7 @@ class UserCollapser extends BaseAnalyzer {
      */
     private static function preprocessIP($ip) {
         $num = ip2long($ip);
-        $mask = (-1 << (32 - UserCollapser::IP_SUBNET)) & ip2long('255.255.255.255');
+        $mask = (-1 << (32 - UserCollapser::$IP_SUBNET)) & ip2long('255.255.255.255');
         return $num & $mask;
     }
 

@@ -88,8 +88,8 @@ class StreakAnalyzer extends BaseAnalyzer {
     }
 
     private static function saveStreaks($streaks) {
-        if (count($streaks) > 500) {
-            $chunkes = array_chunk($streaks, 500);
+        if (count($streaks) > Config::get("max_per_insert", 500)) {
+            $chunkes = array_chunk($streaks, Config::get("max_per_insert", 500));
             foreach ($chunkes as $chunk)
                 StreakAnalyzer::saveStreaks($chunk);
         } else {

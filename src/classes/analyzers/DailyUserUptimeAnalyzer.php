@@ -61,8 +61,8 @@ class DailyUserUptimeAnalyzer extends BaseAnalyzer {
                 foreach ($list as $date => $time)
                     $chunks[] = "($user, '$date', $time)";
             DailyUserUptimeAnalyzer::saveTimes($chunks, true);
-        } else if (count($times) > 500) {
-            $chunks = array_chunk($times, 500);
+        } else if (count($times) > Config::get("max_per_insert", 500)) {
+            $chunks = array_chunk($times, Config::get("max_per_insert", 500));
             foreach ($chunks as $chunk)
                 DailyUserUptimeAnalyzer::saveTimes($chunk, true);
         } else {

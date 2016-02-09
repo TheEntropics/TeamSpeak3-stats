@@ -13,7 +13,7 @@ require_once __DIR__ . '/../config/config.php';
         <div class="col-md-1"></div>
         <div class="col-md-5">
             <?php include __DIR__ . "/../src/index/counter.php"; ?>
-            <?php if (Config::REALTIME_ENABLED) include __DIR__ . "/../src/index/realtime.php"; ?>
+            <?php if (Config::get("realtime.enabled")) include __DIR__ . "/../src/index/realtime.php"; ?>
         </div>
     </div>
     <div class="clearfix"></div>

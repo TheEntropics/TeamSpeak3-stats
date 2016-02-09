@@ -4,6 +4,7 @@
 class ProbableUsernameAnalyzer extends BaseAnalyzer {
 
     const USE_LAST_N = 20;
+    private static $USE_LAST_N;
 
     public static $priority = 10;
 
@@ -11,6 +12,8 @@ class ProbableUsernameAnalyzer extends BaseAnalyzer {
     private static $usernames = array();
 
     public static function runAnalysis() {
+        ProbableUsernameAnalyzer::$USE_LAST_N = Config::get("analyzers.ProbableUsernameAnalyzer.use_last_n", ProbableUsernameAnalyzer::USE_LAST_N);
+
         $ranges = OnlineRange::getRanges();
 
         ProbableUsernameAnalyzer::splitRanges($ranges);
@@ -31,8 +34,8 @@ class ProbableUsernameAnalyzer extends BaseAnalyzer {
     }
 
     private static function saveUsernames($usernames) {
-        if (count($usernames) > 500) {
-            $chunks = array_chunk($usernames, 500, true);
+        if (count($usernames) > Config::get("max_per_insert", 500)) {
+            $chunks = array_chunk($usernames, Config::get("max_per_insert", 500), true);
             foreach ($chunks as $chunk)
                 ProbableUsernameAnalyzer::saveUsernames($chunk);
         } else {
@@ -52,7 +55,7 @@ class ProbableUsernameAnalyzer extends BaseAnalyzer {
 
             $usernames = array();
 
-            for ($i = max(0, count($user) - 1 - ProbableUsernameAnalyzer::USE_LAST_N); $i < count($user); $i++) {
+            for ($i = max(0, count($user) - 1 - ProbableUsernameAnalyzer::$USE_LAST_N); $i < count($user); $i++) {
                 $range = $user[$i];
 
                 $username = $range->user->username;

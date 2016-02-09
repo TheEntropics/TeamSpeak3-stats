@@ -20,8 +20,8 @@ class UsernameUptimeAnalyzer extends BaseAnalyzer {
     }
 
     private static function saveTimes($times) {
-        if (count($times) > 500) {
-            $chunkes = array_chunk($times, 500, true);
+        if (count($times) > Config::get("max_per_insert", 500)) {
+            $chunkes = array_chunk($times, Config::get("max_per_insert", 500), true);
             foreach ($chunkes as $chunk)
                 UsernameUptimeAnalyzer::saveTimes($chunk);
         } else {

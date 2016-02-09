@@ -5,13 +5,11 @@ class Logger {
 
     private static $logFile;
 
-    const LOG_FULL_FILE_NAME = __DIR__ . "/../../" . Config::APP_LOG_FILE;
-
     /**
      * Initialize the log file
      */
     public static function init() {
-        Logger::$logFile = fopen(Logger::LOG_FULL_FILE_NAME, "a");
+        Logger::$logFile = fopen(__DIR__ . "/../../" . Config::get("log"), "a");
         if (!QUIET)
             fputs(Logger::$logFile, "--------------------------------------\n");
         if (!CONSOLE && !QUIET)

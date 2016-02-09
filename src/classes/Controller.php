@@ -22,12 +22,12 @@ class Controller {
         $count = Controller::updateCache();
         Logger::log($count, "nuovi eventi nei log");
         if ($runAnalysis) {
-            if ($count > 0 || Config::DEBUG || Utils::getMiscResult("pending_analysis") == "yes")
+            if ($count > 0 || Config::get("debug") || Utils::getMiscResult("pending_analysis") == "yes")
                 Controller::runAnalysis($fastOnly);
             else
                 Logger::log("Nessuna azione eseguita");
         } else {
-            if ($count > 0 || Config::DEBUG) {
+            if ($count > 0 || Config::get("debug")) {
                 Utils::saveMiscResult("pending_analysis", "yes");
                 if ($fastOnly) {
                     Logger::log("Running fast-only analysis even if \$runAnalysis is false");
@@ -97,7 +97,7 @@ class Controller {
 
     private static function initDB() {
         try {
-            DB::$DB = new PDO(Config::DB_STRING, Config::USERNAME, Config::PASSWORD);
+            DB::$DB = new PDO(Config::get("database.string"), Config::get("database.username"), Config::get("database.password"));
             DB::$DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             DB::$DB->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         } catch (PDOException $ex) {

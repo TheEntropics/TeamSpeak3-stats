@@ -1,10 +1,6 @@
 <?php
 
 class Atomic {
-    /**
-     * The file to lock
-     */
-    const LOCK_FILE_NAME = Logger::LOG_FULL_FILE_NAME;
     private static $handle = null;
 
     /**
@@ -47,8 +43,9 @@ class Atomic {
     }
 
     private static function createLockFile() {
-        if (!file_exists(Atomic::LOCK_FILE_NAME))
-            fclose(fopen(Atomic::LOCK_FILE_NAME, 'w'));
-        Atomic::$handle = fopen(Atomic::LOCK_FILE_NAME, 'r');
+        $LOCK_FILE_NAME = __DIR__ . "/../../" . Config::get("log");
+        if (!file_exists($LOCK_FILE_NAME))
+            fclose(fopen($LOCK_FILE_NAME, 'w'));
+        Atomic::$handle = fopen($LOCK_FILE_NAME, 'r');
     }
 }

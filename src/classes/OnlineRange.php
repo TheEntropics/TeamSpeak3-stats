@@ -9,7 +9,6 @@ class OnlineRangePriorityQueue extends SplPriorityQueue {
 
 class OnlineRange {
 
-    const MAX_RANGES_PER_INSERT = 500;
     const MAX_ONLINE_TIME = 60*60*24;
 
     /**
@@ -134,7 +133,7 @@ class OnlineRange {
                 if (count($sessions) > 0) {
                     foreach ($sessions as $range) {
                         $onlineTime = $range->getTimeFromStart();
-                        if ($onlineTime < OnlineRange::MAX_ONLINE_TIME) {
+                        if ($onlineTime < Config::get("max_online_time", OnlineRange::MAX_ONLINE_TIME)) {
                             // FIXME if a user is connected multiple times what happens?
                             OnlineRange::$online_ranges[$range->user->master_client_id] = $range;
                             Logger::log("    online user $currentClientId [{$range->user->master_client_id}] for $onlineTime seconds");
@@ -172,7 +171,7 @@ class OnlineRange {
                 if (!isset(OnlineRange::$last_online[$range->user->master_client_id]) || Utils::getTimestamp($end) > Utils::getTimestamp(OnlineRange::$last_online[$range->user->master_client_id]))
                     OnlineRange::$last_online[$range->user->master_client_id] = $end;
 
-                if (Utils::getTimestamp($range->end) - Utils::getTimestamp($range->start) <= OnlineRange::MAX_ONLINE_TIME)
+                if (Utils::getTimestamp($range->end) - Utils::getTimestamp($range->start) <= Config::get("max_online_time", OnlineRange::MAX_ONLINE_TIME))
                     $ranges[] = $range;
             }
         }
@@ -185,8 +184,8 @@ class OnlineRange {
     }
 
     private static function saveRanges($ranges) {
-        if (count($ranges) > OnlineRange::MAX_RANGES_PER_INSERT) {
-            $chunks = array_chunk($ranges, OnlineRange::MAX_RANGES_PER_INSERT);
+        if (count($ranges) > Config::get("max_per_insert", 500)) {
+            $chunks = array_chunk($ranges, Config::get("max_per_insert", 500));
             foreach($chunks as $chunk)
                 OnlineRange::saveRanges($chunk);
         } else {

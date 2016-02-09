@@ -3,11 +3,6 @@
 abstract class Event {
 
     /**
-     * Max number of events in an insert query
-     */
-    const MAX_EVENTS_IN_INSERT = 500;
-
-    /**
      * @var int
      */
     public $id;
@@ -42,8 +37,8 @@ abstract class Event {
     protected abstract function createEvent();
 
     public static function saveEvents($class, $list) {
-        if (count($list) > Event::MAX_EVENTS_IN_INSERT) {
-            $chunks = array_chunk($list, Event::MAX_EVENTS_IN_INSERT);
+        if (count($list) > Config::get("max_per_insert", 500)) {
+            $chunks = array_chunk($list, Config::get("max_per_insert", 500));
             foreach($chunks as $chunk)
                 Event::saveEvents($class, $chunk);
         } else {

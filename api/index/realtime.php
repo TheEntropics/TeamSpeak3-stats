@@ -3,11 +3,14 @@
 require_once __DIR__ . '/../API.php';
 API::init();
 
-if (!Config::REALTIME_ENABLED)
-    die('Realtime not enabled');
+if (!Config::get("realtime.enabled")) {
+    http_response_code(403);
+    API::printJSON(array('error' => 'Realtime disabled'));
+}
 
 try {
-    $ts3 = new Ts3ServerQuery(Config::REALTIME_HOST, Config::REALTIME_PORT, Config::REALTIME_USER, Config::REALTIME_PASS);
+    $ts3 = new Ts3ServerQuery(Config::get("realtime.host"), Config::get("realtime.port", 10011),
+            Config::get("realtime.username", "serveradmin"), Config::get("realtime.password"));
 
     $users = RealtimeUsers::getOnlineUsers($ts3);
     $channels = RealtimeChannels::getChannels($ts3);

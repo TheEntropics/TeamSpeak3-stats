@@ -13,7 +13,7 @@ class FileReader {
     public function __construct($lastDate = null) {
         $this->logFiles = array();
 
-        foreach(Config::LOG_FOLDERS as $i)
+        foreach(Config::get("input") as $i)
             $this->loadFolder($i);
 
         sort($this->logFiles);
@@ -47,7 +47,7 @@ class FileReader {
             if ($file == "." || $file == "..") continue;
             if (is_dir("$folder/$file"))
                 loadFolder("$folder/$file");
-            else if (Utils::endWith($file, "_" . Config::VIRTUAL_SERVER . ".log"))
+            else if (Utils::endWith($file, "_" . Config::get("virtual_server") . ".log"))
                 $this->logFiles[] = "$folder/$file";
         }
     }
