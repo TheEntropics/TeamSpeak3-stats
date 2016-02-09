@@ -24,5 +24,8 @@
     "angular-sanitize": "^1.5.0",
     "angular-tree-control": "^0.2.23",
     "angular-google-chart": "^0.1.0"
+  },
+  "resolutions": {
+    "angular": "1.5.0"
   }
 }
