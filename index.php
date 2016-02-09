@@ -2,19 +2,19 @@
 <html ng-app="ts3stats">
 <head>
     <title>TeamSpeak3 - The Entropics</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
-    <link href="css/rzslider.min.css" rel="stylesheet">
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="bower_components/angularjs-slider/dist/rzslider.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-    <link href="css/tree-control-attribute.css" rel="stylesheet">
-    <script src="js/jquery-2.1.4.min.js"></script>
-    <script src="js/angular.min.js"></script>
-    <script src="js/angular-route.min.js"></script>
-    <script src="js/angular-sanitize.min.js"></script>
-    <script src="js/angular-tree-control.js"></script>
-    <script src="js/ng-google-chart.min.js"></script>
-    <script src="js/rzslider.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <link href="bower_components/angular-tree-control/css/tree-control-attribute.css" rel="stylesheet">
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-route/angular-route.min.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="bower_components/angular-tree-control/angular-tree-control.js"></script>
+    <script src="bower_components/angular-google-chart/ng-google-chart.min.js"></script>
+    <script src="bower_components/angularjs-slider/dist/rzslider.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/app.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">

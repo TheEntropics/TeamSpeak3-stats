@@ -5,3 +5,5 @@ logs/*.log
 db/*.sqlite
 
 config/config.php
+
+bower_components/
