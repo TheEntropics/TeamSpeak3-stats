@@ -8,7 +8,7 @@ class FenwickTree {
 
     /**
      * Prepare the Fenwick tree structure
-     * @param $size The size of the fenwick tree
+     * @param int $size The size of the fenwick tree
      */
     public function __construct($size) {
         $this->size = $size;

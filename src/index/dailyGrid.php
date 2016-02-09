@@ -28,4 +28,6 @@
             </td>
         </tr>
     </table>
+
+    <rzslider ng-hide="loading || errored" rz-slider-model="slider.minValue" rz-slider-high="slider.maxValue" rz-slider-options="slider.options"></rzslider>
 </div>

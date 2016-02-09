@@ -4,6 +4,7 @@ require_once __DIR__ . '/../FenwickTree.php';
 
 class DailyAnalyzer2 extends BaseAnalyzer {
 
+    public static $enabled = false;
     public static $fast = false;
 
     /**

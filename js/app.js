@@ -1,6 +1,6 @@
 (function() {
 
-    var app = angular.module('ts3stats', ['ngRoute', 'ngSanitize', 'treeControl', 'googlechart']);
+    var app = angular.module('ts3stats', ['ngRoute', 'ngSanitize', 'treeControl', 'googlechart', 'rzModule']);
 
     app.config(['$routeProvider', function($routeProvider) {
         $routeProvider
@@ -293,13 +293,33 @@
 
     }]);
 
-    app.controller('DailyGridCtrl', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
+    app.controller('DailyGridCtrl', ['$scope', '$rootScope', '$http', '$timeout', 'Utils', function($scope, $rootScope, $http, $timeout, Utils) {
+        $scope.Utils = Utils;
         $scope.hours = []; for (var i = 0; i < 24; i++) $scope.hours.push(i);
         $scope.rows = [];
-        $scope.loading = true;
-        $scope.spinnerIndex = 0;
+        $scope.sums = [];
+        $scope.maxAvg = 0;
+        $scope.startDate = null;
 
-        var days = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'];
+        $scope.loading = true;
+        $scope.errored = false;
+        $scope.slider = {
+            minValue: 0,
+            maxValue: 0,
+            options: {
+                floor: 0,
+                ceil: 0,
+                draggableRange: true,
+                onChange: function() {
+                    updateGrid();
+                },
+                translate: function(value) {
+                    return Utils.formatLongDate(new Date(($scope.startDate + value*604800)*1000));
+                }
+            }
+        };
+
+        var days = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
 
         $scope.reload = function() {
             $scope.loading = true;
@@ -308,28 +328,110 @@
                 method: 'GET',
                 url: 'api/index/daily.php'
             }).then(function(response) {
+                saveGrid(response.data);
+                $timeout(function () {
+                    $scope.$broadcast('rzSliderForceRender');
+                });
+                updateGrid();
                 $scope.loading = false;
                 $scope.errored = false;
-                applyGrid(response.data);
             }, function() {
                 $scope.loading = false;
                 $scope.errored = true;
             });
         };
 
-        var applyGrid = function(data) {
-            $scope.rows = [];
-            for (d in data) {
-                var cells = data[d];
-                var day = days[d];
-
-                $scope.rows[d] = { day: day, cells: cells };
+        var saveGrid = function(data) {
+            var sums = [];
+            for (var i = 0; i < 24*7; i++) {
+                sums[i] = 0;
+                $scope.sums[i] = [];
             }
+
+            var addHour = function(timestamp, avg) {
+                var date = new Date(timestamp*1000);
+                var week = date.getDay();
+                var hour = date.getHours();
+
+                var cell_id = week*24 + hour;
+                var prefix = sums[cell_id] = sums[cell_id] + avg;
+                $scope.sums[cell_id].push(prefix);
+                $scope.maxAvg = Math.max($scope.maxAvg, avg);
+            };
+
+            for (var i in data) {
+                var prev = i > 0 ? data[i-1].timestamp + 3600 : 0;
+                while (i > 0 && prev < data[i].timestamp) {
+                    var timestamp = prev;
+                    var avg = 0;
+                    addHour(timestamp, avg);
+
+                    prev += 3600;
+                }
+                var timestamp = data[i].timestamp;
+                var avg = data[i].average;
+
+                addHour(timestamp, avg);
+            }
+
+            $scope.slider.options.ceil = $scope.slider.maxValue = $scope.sums[0].length - 1;
+            $scope.slider.minValue = Math.max(0, $scope.slider.maxValue-4);
+            $scope.startDate = data[0].timestamp;
+        };
+
+        var updateGrid = function() {
+
+            var interpolate = function (from, to, t) {
+                return from * (1 - t) + to * t;
+            };
+
+            var getColor = function(value, max) {
+                var start = [ 208, 1.0, 0.64 ];
+                var end = [ 0, 1.0, 0.64 ];
+
+                var t = Math.min(value / Math.max(3, max), 1.0);
+
+                return 'hsl(' +
+                    interpolate(start[0], end[0], t) + ',' +
+                    interpolate(start[1], end[1], t)*100 + '%,' +
+                    interpolate(start[2], end[2], t)*100 + '%)';
+            };
+
+            var getAverage = function(cell_id) {
+                var sums = $scope.sums[cell_id];
+                var min = $scope.slider.minValue;
+                var max = $scope.slider.maxValue;
+
+                if (min > 0)
+                    return (sums[max] - sums[min-1]) / (max-min+1);
+                return sums[max] / (max-min+1);
+            };
+
+            var max = 0;
+
+            for (var i in days) {
+                var row = {
+                    day: days[i],
+                    cells: []
+                };
+                for (var j = 0; j < 24; j++) {
+                    var avg = getAverage(i*24+j);
+                    max = Math.max(max, avg);
+                    row.cells.push({
+                        value: avg
+                    });
+                }
+                $scope.rows[((i|0)+6)%7] = row;
+            }
+
+            max = (max * 3 + $scope.maxAvg) / 4;
+
+            for (var i in days)
+                for (var j = 0; j < 24; j++)
+                    $scope.rows[i].cells[j].color = getColor($scope.rows[i].cells[j].value, max);
         };
 
         $scope.reload();
-
-        setTimeout($scope.reload, 10000);
     }]);
 
     //

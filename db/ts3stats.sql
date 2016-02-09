@@ -60,7 +60,7 @@ CREATE TABLE `client_disconnected_events` (
 --
 
 CREATE TABLE `daily_results` (
-  `cell_id` int(11) NOT NULL,
+  `timestamp` int(11) NOT NULL,
   `average` float NOT NULL
 ) ;
 
@@ -227,7 +227,7 @@ ADD KEY `user_id` (`user_id`);
 -- Indici per le tabelle `daily_results`
 --
 ALTER TABLE `daily_results`
-ADD PRIMARY KEY (`cell_id`);
+ADD PRIMARY KEY (`timestamp`);
 
 --
 -- Indici per le tabelle `daily_user_result`
