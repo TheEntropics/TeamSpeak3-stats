@@ -23,8 +23,9 @@
         </tr>
         <tr ng-repeat="row in rows">
             <td>{{row.day}}</td>
-            <td ng-repeat="cell in row.cells" ng-style="{'background-color': cell.color}">
-                {{cell.value.toFixed(2)}}
+            <td ng-repeat="cell in row.cells" ng-style="{'background-color': cell.value < 0 ? '#bbb' : cell.color}">
+                <span ng-show="cell.value >= 0">{{cell.value.toFixed(2)}}</span>
+                <span ng-show="cell.value < 0">???</span>
             </td>
         </tr>
     </table>

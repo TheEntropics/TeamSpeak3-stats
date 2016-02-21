@@ -406,6 +406,8 @@
                 var min = $scope.slider.minValue;
                 var max = $scope.slider.maxValue;
 
+                if (max >= sums.length)
+                    return -1;
                 if (min > 0)
                     return (sums[max] - sums[min-1]) / (max-min+1);
                 return sums[max] / (max-min+1);
