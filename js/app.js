@@ -256,6 +256,7 @@
                 client_id: user.client_id,
                 name: user.name,
                 status: user.away ? 'away' : (user.silenced ? 'silenced' : (user.muted ? 'muted' : 'normal')),
+                away_message: user.away_message,
                 channels: []
             };
         };
