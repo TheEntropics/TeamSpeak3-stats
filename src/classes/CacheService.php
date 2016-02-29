@@ -41,7 +41,11 @@ class CacheService {
         $fileReader = new FileReader($lastDate);
 
         while (($line = $fileReader->getLine()) != null) {
-            $event = Parser::parseLine($line);
+            if (is_a($line, "DateTime"))
+                $event = new ServerStartedEvent($line);
+            else
+                $event = Parser::parseLine($line);
+
             if ($event && Utils::getTimestamp($event->date) > Utils::getTimestamp($lastDate))
                 $events[] = $event;
         }

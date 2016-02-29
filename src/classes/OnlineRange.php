@@ -115,6 +115,8 @@ class OnlineRange {
                   SELECT id, ip, user_id, DATE_FORMAT(date, '%Y-%m-%d %H:%i:%s.%f') as date, 'c' as type FROM client_connected_events
                   UNION
                   SELECT id, reason, user_id, DATE_FORMAT(date, '%Y-%m-%d %H:%i:%s.%f') as date, 'd' as type FROM client_disconnected_events
+                  UNION
+                  SELECT server_started_events.id, 'SERVER_STARTED' as x, users.id AS user_id, DATE_FORMAT(date, '%Y-%m-%d %H:%i:%s.%f') as date, 'k' as type FROM server_started_events, users
                 ) as x JOIN users ON x.user_id = users.id ORDER BY client_id, date, type";
         $query = DB::$DB->query($sql);
         return $query->fetchAll();
@@ -155,7 +157,7 @@ class OnlineRange {
                 $range->start_id = $start_id;
 
                 $sessions[] = $range;
-            } else {
+            } else if ($row['type'] == 'd') {
                 if (count($sessions) == 0) {
                     Logger::log("    No sessions found in stack for client_id = $currentClientId");
                     continue;
@@ -173,6 +175,24 @@ class OnlineRange {
 
                 if (Utils::getTimestamp($range->end) - Utils::getTimestamp($range->start) <= Config::get("max_online_time", OnlineRange::MAX_ONLINE_TIME))
                     $ranges[] = $range;
+            } else {
+                foreach ($sessions as $session) {
+                    $end = new DateTime($row['date']);
+                    $end_id = -1;
+
+                    $range = $session;
+                    $range->end = $end;
+                    $range->end_id = $end_id;
+
+                    Logger::log("Removed session " . Utils::formatDate($range->start) . " crash on " . Utils::formatDate($end));
+
+                    if (!isset(OnlineRange::$last_online[$range->user->master_client_id]) || Utils::getTimestamp($end) > Utils::getTimestamp(OnlineRange::$last_online[$range->user->master_client_id]))
+                        OnlineRange::$last_online[$range->user->master_client_id] = $end;
+
+                    if (Utils::getTimestamp($range->end) - Utils::getTimestamp($range->start) <= Config::get("max_online_time", OnlineRange::MAX_ONLINE_TIME))
+                        $ranges[] = $range;
+                }
+                $sessions = [];
             }
         }
 

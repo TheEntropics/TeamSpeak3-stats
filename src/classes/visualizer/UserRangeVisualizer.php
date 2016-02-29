@@ -7,7 +7,7 @@ class UserRangeVisualizer {
                     users.username as username, TIMESTAMPDIFF(SECOND, client_connected_events.date, client_disconnected_events.date) as duration
                     FROM ranges
                     JOIN client_connected_events ON client_connected_events.id = ranges.connected_id
-                    JOIN client_disconnected_events ON client_disconnected_events.id = ranges.disconnected_id
+                    LEFT JOIN client_disconnected_events ON client_disconnected_events.id = ranges.disconnected_id
                     JOIN users ON users.id = client_connected_events.user_id
                     JOIN user_collapser_results ON users.client_id = user_collapser_results.client_id1
                     WHERE user_collapser_results.client_id2 = :client_id

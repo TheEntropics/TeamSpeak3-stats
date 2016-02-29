@@ -6,6 +6,7 @@ class FileReader {
     private $logFiles;
     private $currentFile;
     private $currentHandle;
+    private $lastFile;
 
     /**
      * @param null|DateTime $lastDate Skip all the files before the specified date
@@ -21,12 +22,18 @@ class FileReader {
         $this->currentFile = $lastDate ? $this->skipFiles($lastDate) : 0;
         Logger::log("    Skipped {$this->currentFile} log files");
         $this->currentHandle = fopen($this->logFiles[$this->currentFile], "r");
+        $this->newFileFlag = "";
     }
 
     /**
      * @return null|string The next line to read, null on end
      */
     public function getLine() {
+        if ($this->logFiles[$this->currentFile] != $this->lastFile) {
+            $this->lastFile = $this->logFiles[$this->currentFile];
+            return FileReader::getDateFromFilename($this->lastFile);
+        }
+
         $line = fgets($this->currentHandle);
 
         if ($line == null) {
@@ -34,9 +41,11 @@ class FileReader {
             $this->currentFile++;
             if ($this->currentFile == count($this->logFiles))
                 return null;
+
             $this->currentHandle = fopen($this->logFiles[$this->currentFile], "r");
 
-            $line = fgets($this->currentHandle);
+            $this->lastFile = $this->logFiles[$this->currentFile];
+            return FileReader::getDateFromFilename($this->lastFile);
         }
         return $line;
     }

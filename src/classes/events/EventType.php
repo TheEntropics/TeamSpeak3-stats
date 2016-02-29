@@ -17,4 +17,8 @@ class EventType {
      * A channel was created/removed
      */
     const Channel               = 4;
+    /**
+     * The server was started
+     */
+    const ServerStarted         = 5;
 }
