@@ -3,14 +3,14 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Creato il: Feb 04, 2016 alle 17:59
+-- Creato il: Feb 29, 2016 alle 20:33
 -- Versione del server: 10.1.11-MariaDB-log
--- Versione PHP: 7.0.2
+-- Versione PHP: 7.0.3
 
 SET time_zone = "+00:00";
 
 --
--- Database: `ts3stats_debug`
+-- Database: `ts3stats`
 --
 
 -- --------------------------------------------------------
@@ -23,7 +23,7 @@ CREATE TABLE `channel_events` (
   `id` int(11) NOT NULL,
   `date` timestamp(6) NOT NULL,
   `type` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL COLLATE utf8_bin,
+  `name` varchar(50) BINARY NOT NULL,
   `user_id` int(11) NOT NULL
 ) ;
 
@@ -36,7 +36,7 @@ CREATE TABLE `channel_events` (
 CREATE TABLE `client_connected_events` (
   `id` int(11) NOT NULL,
   `date` timestamp(6) NOT NULL,
-  `ip` varchar(15) NOT NULL COLLATE utf8_bin,
+  `ip` varchar(15) BINARY NOT NULL,
   `user_id` int(11) NOT NULL
 ) ;
 
@@ -49,7 +49,7 @@ CREATE TABLE `client_connected_events` (
 CREATE TABLE `client_disconnected_events` (
   `id` int(11) NOT NULL,
   `date` timestamp(6) NOT NULL,
-  `reason` varchar(200) NOT NULL COLLATE utf8_bin,
+  `reason` varchar(200) BINARY NOT NULL,
   `user_id` int(11) NOT NULL
 ) ;
 
@@ -96,8 +96,8 @@ CREATE TABLE `file_manager_events` (
 --
 
 CREATE TABLE `misc_results` (
-  `key` varchar(50) NOT NULL COLLATE utf8_bin,
-  `value` varchar(100) NOT NULL COLLATE utf8_bin
+  `key` varchar(50) BINARY NOT NULL,
+  `value` varchar(100) BINARY NOT NULL
 ) ;
 
 -- --------------------------------------------------------
@@ -119,7 +119,7 @@ CREATE TABLE `online_results` (
 
 CREATE TABLE `probable_username` (
   `client_id` int(11) NOT NULL,
-  `username` varchar(50) NOT NULL COLLATE utf8_bin
+  `username` varchar(50) BINARY NOT NULL
 ) ;
 
 -- --------------------------------------------------------
@@ -131,6 +131,17 @@ CREATE TABLE `probable_username` (
 CREATE TABLE `ranges` (
   `connected_id` int(11) NOT NULL,
   `disconnected_id` int(11) NOT NULL
+) ;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `server_started_events`
+--
+
+CREATE TABLE `server_started_events` (
+  `id` int(11) NOT NULL,
+  `date` timestamp(6) NOT NULL
 ) ;
 
 -- --------------------------------------------------------
@@ -166,7 +177,7 @@ CREATE TABLE `uptime_results` (
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `username` varchar(100) NOT NULL COLLATE utf8_bin,
+  `username` varchar(100) BINARY NOT NULL,
   `client_id` int(11) NOT NULL
 ) ;
 
@@ -269,6 +280,13 @@ ALTER TABLE `ranges`
 ADD PRIMARY KEY (`connected_id`,`disconnected_id`);
 
 --
+-- Indici per le tabelle `server_started_events`
+--
+ALTER TABLE `server_started_events`
+ADD PRIMARY KEY (`id`),
+ADD UNIQUE KEY `date` (`date`);
+
+--
 -- Indici per le tabelle `streak_results`
 --
 ALTER TABLE `streak_results`
@@ -324,6 +342,11 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT per la tabella `file_manager_events`
 --
 ALTER TABLE `file_manager_events`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT per la tabella `server_started_events`
+--
+ALTER TABLE `server_started_events`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT per la tabella `users`
